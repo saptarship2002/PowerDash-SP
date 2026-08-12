@@ -1,0 +1,90 @@
+/* Validated categorical palette (8 hues, fixed order — see dataviz skill palette.md).
+   Assigned in fixed order, never cycled per-render: each state gets a permanent
+   "home" hue; comparison colors are assigned dynamically by selection order so any
+   2-8 states picked together stay adjacent-pair CVD-safe. */
+export const CATEGORICAL = ['#2a78d6', '#eb6834', '#1baf7a', '#eda100', '#e87ba4', '#008300', '#4a3aa7', '#e34948'];
+
+export const STATUS = {
+  good: '#0ca30c',
+  warning: '#e2960f',
+  critical: '#d03b3b',
+  mapNone: '#dfe2e8',
+};
+
+/** Map-context variants of STATUS — the hero's own institutional palette (muted, unsaturated)
+ * so the map is the lightest/most prominent thing on the page, not a UI chrome color reused
+ * as a fill. Just two states, factual not graded: a state either has tracked DISCOM data for
+ * the selected year or it doesn't — there's no "how much/how good" tier on top of that.
+ * Mirrors --map-good/--map-idle in tokens.css. */
+export const MAP_STATUS = {
+  hasData: '#3fae78',
+  idle: '#d9e0e7',
+};
+
+export function stateHueMap(stateOrder: string[]): Record<string, string> {
+  const map: Record<string, string> = {};
+  stateOrder.forEach((s, i) => {
+    map[s] = CATEGORICAL[i % CATEGORICAL.length];
+  });
+  return map;
+}
+
+export function hexToRgb(hex: string): [number, number, number] {
+  const h = hex.replace('#', '');
+  return [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16)) as [number, number, number];
+}
+
+export function rgbToHex([r, g, b]: [number, number, number]): string {
+  return '#' + [r, g, b].map((v) => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, '0')).join('');
+}
+
+function rgbToHsl(r: number, g: number, b: number): [number, number, number] {
+  r /= 255;
+  g /= 255;
+  b /= 255;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  let h = 0;
+  let s = 0;
+  const l = (max + min) / 2;
+  const d = max - min;
+  if (d !== 0) {
+    s = d / (1 - Math.abs(2 * l - 1));
+    if (max === r) h = ((g - b) / d) % 6;
+    else if (max === g) h = (b - r) / d + 2;
+    else h = (r - g) / d + 4;
+    h *= 60;
+    if (h < 0) h += 360;
+  }
+  return [h, s, l];
+}
+
+function hslToRgb(h: number, s: number, l: number): [number, number, number] {
+  const c = (1 - Math.abs(2 * l - 1)) * s;
+  const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+  const m = l - c / 2;
+  let r = 0;
+  let g = 0;
+  let b = 0;
+  if (h < 60) [r, g, b] = [c, x, 0];
+  else if (h < 120) [r, g, b] = [x, c, 0];
+  else if (h < 180) [r, g, b] = [0, c, x];
+  else if (h < 240) [r, g, b] = [0, x, c];
+  else if (h < 300) [r, g, b] = [x, 0, c];
+  else [r, g, b] = [c, 0, x];
+  return [(r + m) * 255, (g + m) * 255, (b + m) * 255];
+}
+
+/** n distinct shades of baseHex, lightness-ramped, for DISCOMs within one state. */
+export function shades(baseHex: string, n: number): string[] {
+  if (n <= 1) return [baseHex];
+  const [h, s] = rgbToHsl(...hexToRgb(baseHex));
+  const lo = 0.35;
+  const hi = 0.62;
+  return Array.from({ length: n }, (_, i) => rgbToHex(hslToRgb(h, Math.min(1, s * 1.05), lo + (i / (n - 1)) * (hi - lo))));
+}
+
+export function hexToRgba(hex: string, alpha: number): string {
+  const [r, g, b] = hexToRgb(hex);
+  return `rgba(${r},${g},${b},${alpha})`;
+}

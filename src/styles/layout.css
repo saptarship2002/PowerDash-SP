@@ -1,0 +1,118 @@
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 248px;
+  flex: 0 0 248px;
+  background: var(--charcoal);
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  height: 100vh;
+  box-shadow: var(--shadow-lg);
+  z-index: 2;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 22px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.brand-mark {
+  width: 38px;
+  height: 38px;
+  background: var(--red);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 38px;
+  box-shadow: var(--shadow-md);
+}
+.brand-text {
+  display: flex;
+  flex-direction: column;
+}
+.brand-name {
+  font-family: var(--font-condensed);
+  font-weight: 700;
+  font-size: 19px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fff;
+}
+.brand-sub {
+  font-size: 12px;
+  color: #8891ab;
+  letter-spacing: 0.04em;
+}
+nav.sidenav {
+  display: flex;
+  flex-direction: column;
+  padding: 14px 0;
+  gap: 2px;
+}
+nav.sidenav a {
+  all: unset;
+  box-sizing: border-box;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 20px;
+  font-size: 14.5px;
+  color: #8891ab;
+  border-left: 3px solid transparent;
+  font-family: inherit;
+  transition: background 180ms var(--ease), color 180ms var(--ease), padding-left 180ms var(--ease);
+}
+nav.sidenav a:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  padding-left: 24px;
+}
+nav.sidenav a.active {
+  background: rgba(139, 26, 26, 0.22);
+  color: #fff;
+  border-left-color: var(--red);
+  font-weight: 500;
+}
+nav.sidenav svg {
+  display: flex;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+}
+.sidebar-foot {
+  margin-top: auto;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 14px 20px;
+  font-size: 12.5px;
+  color: #6c7590;
+}
+.sidebar-foot code {
+  background: rgba(255, 255, 255, 0.08);
+  color: #b7bfd6;
+  padding: 1px 4px;
+  border-radius: 4px;
+}
+
+main.app-main {
+  flex: 1;
+  min-width: 0;
+  padding: 40px 44px 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+@media (max-width: 980px) {
+  .sidebar {
+    display: none;
+  }
+}

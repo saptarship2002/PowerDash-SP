@@ -1,0 +1,830 @@
+/* ---------- kicker (generic — reused by the report page in red; overridden to cyan in the hero) ---------- */
+.kicker {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.kicker > span.bar {
+  width: 34px;
+  height: 2px;
+  background: var(--red-light);
+}
+.kicker > span.label {
+  font-family: var(--font-condensed);
+  font-size: 14px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--red-light);
+}
+
+/* ---------- scrollytelling hero: full-bleed map backdrop behind the header, unblurring into a
+   clickable choropleth as you scroll — the map is never boxed, it IS the section's backdrop ---------- */
+.hero-stage {
+  height: 230vh;
+  position: relative;
+  margin: -40px -44px 0;
+}
+.hero-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  background: #07111f;
+}
+
+/* ---------- ambient glow: two large, very soft blurred blobs that drift slowly — always on,
+   including on landing, unlike the fabric/tower-photo below it (which stays hidden until
+   scroll). Just enough motion that the landing view doesn't read as a static image. ---------- */
+.hero-ambient-glow {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.hero-ambient-glow::before,
+.hero-ambient-glow::after {
+  content: '';
+  position: absolute;
+  width: 60vw;
+  height: 60vw;
+  border-radius: 50%;
+  filter: blur(50px);
+}
+.hero-ambient-glow::before {
+  top: -6%;
+  left: 2%;
+  background: radial-gradient(circle, rgba(111, 168, 201, 0.34), transparent 70%);
+  animation: ambient-drift-a 32s ease-in-out infinite;
+}
+.hero-ambient-glow::after {
+  bottom: -10%;
+  right: 4%;
+  background: radial-gradient(circle, rgba(63, 174, 120, 0.24), transparent 70%);
+  animation: ambient-drift-b 38s ease-in-out infinite;
+}
+@keyframes ambient-drift-a {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(6%, 5%) scale(1.1);
+  }
+}
+@keyframes ambient-drift-b {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-5%, -6%) scale(1.08);
+  }
+}
+
+/* ---------- background fabric: a few large, soft navy/blue radial glows plus the tower
+   photo cutout (tower-photo.png), right-aligned and scaled to the frame's full height —
+   a proper illustrated backdrop rather than an abstract texture, but still clearly behind
+   the map/panels. Hidden on landing (opacity 0) and faded in by the scroll rig as the map
+   pulls forward, so the very first view is just the map + header, not a busy composite. ---------- */
+.hero-bg-fabric {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(70% 55% at 42% 32%, rgba(52, 92, 140, 0.09), transparent 70%),
+    radial-gradient(60% 50% at 68% 64%, rgba(40, 72, 116, 0.06), transparent 70%),
+    radial-gradient(120% 90% at 50% 12%, rgba(30, 56, 92, 0.05), transparent 75%);
+}
+.tower-photo-layer {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  justify-content: end;
+}
+.tower-photo-img {
+  grid-area: 1 / 1;
+  height: 100%;
+  width: auto;
+  display: block;
+  opacity: 0.55;
+}
+/* lives inside .hero-map-backdrop (not hero-bg-fabric), so it scales/shifts together with the
+   map through the scroll transition and always reads as attached to it */
+.tower-flow-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: grid;
+  justify-content: end;
+  pointer-events: none;
+}
+.tower-photo-overlay {
+  height: 100%;
+  width: auto;
+  display: block;
+}
+.tower-flow-dot {
+  fill: #ffd873;
+  filter: drop-shadow(0 0 4px rgba(255, 216, 115, 0.85)) drop-shadow(0 0 9px rgba(255, 216, 115, 0.4));
+  /* duration/delay come from inline styles per-dot (see TOWER_FLOW_PATHS in HeroSection.tsx) */
+  animation-name: tower-flow-travel;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+@keyframes tower-flow-travel {
+  from {
+    offset-distance: 0%;
+  }
+  to {
+    offset-distance: 100%;
+  }
+}
+
+/* on landing the map is crisp (no blur) and, via a right-of-center transform-origin, reads as
+   clearly docked to the right side of the frame; scrolling eases it the rest of the way to
+   scale(1) about that same origin, landing it at its normal full-bleed, centered position */
+.hero-map-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  will-change: transform, filter;
+  transform-origin: 160% 50%;
+  filter: brightness(0.88);
+  transform: scale(0.8);
+}
+#mapWrap {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+#mapWrap svg {
+  display: block;
+  overflow: visible;
+  width: 100%;
+  height: 100%;
+}
+#mapWrap path.state-path {
+  /* transform gets its own bouncier, slightly overshooting curve (vs. the plain ease everything
+     else uses) — a small tactile "jelly" pop on hover rather than a mechanical lift */
+  transition: fill 320ms var(--ease), stroke 320ms var(--ease), transform 380ms cubic-bezier(0.34, 1.56, 0.64, 1), filter 240ms var(--ease),
+    opacity 240ms var(--ease);
+  stroke: rgba(7, 17, 31, 0.32);
+  stroke-width: 0.8;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+#mapWrap path.selected {
+  filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.35));
+}
+#mapWrap path.clickable {
+  cursor: pointer;
+}
+/* hover "lift": the hovered state rises with a plain dark shadow and a crisp, unblurred
+   highlight border — a restrained cartographic emphasis, not a lit-up glow; everything else
+   recedes slightly */
+#mapWrap path.clickable:hover,
+#mapWrap path.clickable.hovered {
+  transform: scale(1.015);
+  filter: drop-shadow(0 8px 16px rgba(7, 17, 31, 0.45));
+  stroke: var(--map-highlight);
+  stroke-width: 1.3;
+}
+/* Dim via brightness, not opacity — opacity < 1 makes the fill translucent, letting the
+   background fabric (sine wave etc., sitting behind the whole map) bleed through every
+   non-hovered state; every path must stay fully opaque so nothing can ever show through it. */
+#mapWrap path.dimmed {
+  filter: brightness(0.6);
+}
+#mapWrap path.selected.dimmed {
+  filter: brightness(0.6) drop-shadow(0 3px 8px rgba(0, 0, 0, 0.35));
+}
+/* ---------- ambient transmission layer: dark pylons + a warm animated current between them.
+   Always on (not hover-gated) and driven purely by a CSS stroke-dashoffset keyframe loop —
+   no JS timing math, so the motion can't drift, stall, or compute an invalid value. ---------- */
+.transmission-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.flow-line-base {
+  fill: none;
+  stroke: var(--map-transmission);
+  stroke-opacity: 0.55;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 1 8;
+}
+.flow-pulse {
+  fill: var(--map-transmission);
+  stroke: rgba(7, 17, 31, 0.45);
+  stroke-width: 0.6;
+  animation: flow-travel 5s linear infinite;
+}
+@keyframes flow-travel {
+  from {
+    transform: translate(0, 0);
+  }
+  to {
+    transform: translate(var(--dx), var(--dy));
+  }
+}
+.pylon-leg {
+  fill: none;
+  stroke: rgba(7, 17, 31, 0.55);
+  stroke-width: 1.2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.pylon-bar {
+  stroke: rgba(7, 17, 31, 0.42);
+  stroke-width: 1.1;
+  stroke-linecap: round;
+}
+.pylon-light {
+  fill: var(--map-transmission);
+}
+.map-tip {
+  position: absolute;
+  transform: translate(-50%, -140%);
+  pointer-events: none;
+  background: #0f1626;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #fff;
+  padding: 5px 10px;
+  font-size: 12.5px;
+  border-radius: 6px;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+  display: none;
+  z-index: 5;
+}
+
+.hero-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background: radial-gradient(ellipse 70% 60% at 25% 38%, rgba(7, 17, 31, 0.62), transparent 70%),
+    linear-gradient(to bottom, rgba(7, 17, 31, 0.45) 0%, rgba(7, 17, 31, 0.05) 42%, rgba(7, 17, 31, 0.22) 100%);
+}
+
+/* ---------- header: overlays the backdrop, fades/lifts away as the map comes forward ---------- */
+.hero-header {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 64px;
+  max-width: 760px;
+  pointer-events: none;
+}
+.hero-header .kicker > span.bar {
+  background: var(--map-highlight);
+}
+.hero-header .kicker > span.label {
+  color: var(--map-highlight);
+}
+.hero-header h1 {
+  color: #fff;
+  font-weight: 700;
+  font-size: 46px;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+.hero-header p.lede {
+  margin: 12px 0 0;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 15.5px;
+  max-width: 60ch;
+}
+.scroll-cue {
+  margin-top: 26px;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.65);
+  animation: bob 1.8s ease-in-out infinite;
+}
+
+/* ---------- reveal layer: stat cards, legend, control panel — fade in once the map has unblurred ---------- */
+.hero-reveal-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  opacity: 0;
+  pointer-events: none;
+}
+/* only the control panel itself should catch clicks — the layer spans the whole viewport and
+   must never block clicks through to the map beneath it */
+.hero-sticky.revealed .hero-reveal-layer .control-panel {
+  pointer-events: auto;
+}
+
+/* compact analytical indicators, not floating cards: a thin rule + label/value pair, the way
+   a figure callout reads in a printed report — no glass panel, no shadow, no card boundary */
+.stat-card {
+  position: absolute;
+  background: transparent;
+  border: none;
+  border-left: 2px solid rgba(217, 224, 231, 0.32);
+  border-radius: 0;
+  padding: 2px 0 2px 14px;
+  box-shadow: none;
+}
+.stat-card.pos-tl {
+  top: 20px;
+  left: 20px;
+}
+.stat-card.pos-tl2 {
+  top: 98px;
+  left: 20px;
+}
+.stat-card-label {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  margin-bottom: 4px;
+}
+.stat-card-status {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #fff;
+  font-family: var(--font-condensed);
+  font-weight: 600;
+  font-size: 14px;
+}
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--map-good);
+  animation: pulseDot 2.2s ease-out infinite;
+}
+@keyframes pulseDot {
+  0% {
+    box-shadow: 0 0 0 0 rgba(47, 158, 120, 0.55);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(47, 158, 120, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(47, 158, 120, 0);
+  }
+}
+.stat-card-value {
+  font-family: var(--font-condensed);
+  font-weight: 700;
+  font-size: 22px;
+  color: #fff;
+}
+.stat-card-of {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.55);
+}
+/* ---------- control panel: floating glass card, docked right, part of the reveal layer ---------- */
+.hero-reveal-layer .control-stack {
+  position: absolute;
+  top: 50%;
+  right: max(24px, 5%);
+  transform: translateY(-50%);
+  width: 320px;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.control-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  background: rgba(19, 28, 42, 0.94);
+  border: 1px solid rgba(217, 224, 231, 0.16);
+  border-radius: 3px;
+  padding: 26px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+.control-panel-head {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.control-panel-eyebrow {
+  font-size: 10.5px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--map-highlight);
+}
+.control-panel-head h3 {
+  color: #fff;
+  font-size: 19px;
+  font-weight: 600;
+}
+.toggle-row {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 13px;
+}
+.toggle-switch {
+  position: relative;
+  flex: 0 0 auto;
+  width: 34px;
+  height: 19px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(217, 224, 231, 0.2);
+  transition: background 160ms var(--ease), border-color 160ms var(--ease);
+}
+.toggle-switch[data-on='true'] {
+  background: rgba(111, 168, 201, 0.55);
+  border-color: rgba(111, 168, 201, 0.7);
+}
+.toggle-thumb {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 160ms var(--ease);
+}
+.toggle-switch[data-on='true'] .toggle-thumb {
+  transform: translateX(15px);
+}
+
+.control-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.control-label {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+}
+.control-select-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(217, 224, 231, 0.2);
+  border-radius: 3px;
+  padding: 10px 12px;
+  transition: border-color 160ms var(--ease);
+}
+.control-select-wrap:hover {
+  border-color: rgba(217, 224, 231, 0.36);
+}
+.control-select {
+  all: unset;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  flex: 1;
+  color: #fff;
+  font-family: var(--font-condensed);
+  font-weight: 600;
+  font-size: 14.5px;
+  cursor: pointer;
+}
+.control-select option {
+  color: #1c2127;
+  background: #fff;
+}
+.control-chevron {
+  flex: 0 0 auto;
+  color: rgba(255, 255, 255, 0.55);
+  pointer-events: none;
+}
+
+.multiselect {
+  position: relative;
+}
+.multiselect-trigger {
+  cursor: pointer;
+  font: inherit;
+  color: #fff;
+  font-family: var(--font-condensed);
+  font-weight: 600;
+  font-size: 14.5px;
+  text-align: left;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.multiselect-popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 20;
+  background: #131c2a;
+  border: 1px solid rgba(217, 224, 231, 0.16);
+  border-radius: 3px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  max-height: 220px;
+  overflow-y: auto;
+  padding: 6px;
+}
+.multiselect-option {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 2px;
+  color: #fff;
+  font-size: 13.5px;
+  cursor: pointer;
+}
+.multiselect-option:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+.multiselect-option .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: 0 0 8px;
+}
+.multiselect-empty {
+  padding: 10px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 12.5px;
+}
+.multiselect-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+.multiselect-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px 4px 10px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(217, 224, 231, 0.18);
+  color: #fff;
+  font-size: 12.5px;
+}
+.multiselect-chip .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: 0 0 8px;
+}
+.multiselect-chip button {
+  all: unset;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1;
+}
+.multiselect-chip button:hover {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+}
+
+.control-compare-btn {
+  all: unset;
+  box-sizing: border-box;
+  cursor: pointer;
+  text-align: center;
+  padding: 11px 16px;
+  border-radius: 3px;
+  background: rgba(111, 168, 201, 0.14);
+  border: 1px solid rgba(111, 168, 201, 0.42);
+  color: #eaf3f9;
+  font-family: var(--font-condensed);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 13px;
+  transition: background 160ms var(--ease), border-color 160ms var(--ease);
+}
+.control-compare-btn:hover:not(:disabled) {
+  background: rgba(111, 168, 201, 0.22);
+  border-color: rgba(111, 168, 201, 0.62);
+}
+.control-compare-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.control-ghost-btn {
+  all: unset;
+  box-sizing: border-box;
+  cursor: pointer;
+  padding: 11px 14px;
+  border-radius: 3px;
+  border: 1px solid rgba(217, 224, 231, 0.2);
+  color: rgba(255, 255, 255, 0.75);
+  font-family: var(--font-condensed);
+  font-weight: 600;
+  font-size: 13px;
+  text-align: center;
+  transition: border-color 160ms var(--ease), color 160ms var(--ease);
+}
+.control-ghost-btn:hover {
+  border-color: rgba(217, 224, 231, 0.4);
+  color: #fff;
+}
+
+.control-hint {
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.5;
+}
+/* ---------- state click popup: a small callout anchored at the clicked point (position:fixed,
+   coordinates computed in HeroSection from the click's centroid + hero-map-backdrop's own
+   bounding rect — see handleStateClick). The state's own silhouette sits behind the content as
+   a faint watermark, computed on the fly from the same geojson feature the map itself uses. ---------- */
+.state-popup {
+  position: fixed;
+  z-index: 20;
+  width: 240px;
+  transform: translate(-38%, calc(-100% - 18px));
+  background: rgba(19, 28, 42, 0.97);
+  border: 1px solid rgba(217, 224, 231, 0.18);
+  border-radius: 6px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  padding: 18px 18px 16px;
+  overflow: hidden;
+  animation: state-popup-in 220ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+/* speech-bubble tail, pointing down toward the state that was clicked */
+.state-popup::before {
+  content: '';
+  position: absolute;
+  left: 38%;
+  bottom: -7px;
+  width: 14px;
+  height: 14px;
+  background: rgba(19, 28, 42, 0.97);
+  border-right: 1px solid rgba(217, 224, 231, 0.18);
+  border-bottom: 1px solid rgba(217, 224, 231, 0.18);
+  transform: rotate(45deg);
+}
+@keyframes state-popup-in {
+  from {
+    opacity: 0;
+    transform: translate(-38%, calc(-100% - 18px)) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-38%, calc(-100% - 18px)) scale(1);
+  }
+}
+.state-popup-outline {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.16;
+  pointer-events: none;
+}
+.state-popup-outline path {
+  fill: none;
+  stroke: var(--map-highlight);
+  stroke-width: 2.2;
+  stroke-linejoin: round;
+}
+.state-popup-close {
+  all: unset;
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  cursor: pointer;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 17px;
+  line-height: 1;
+  transition: background 140ms var(--ease), color 140ms var(--ease);
+}
+.state-popup-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+.state-popup-head {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-right: 20px;
+}
+.state-popup-head .dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex: 0 0 9px;
+}
+.state-popup-head h4 {
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+}
+.state-popup-hint {
+  position: relative;
+  margin-top: 4px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+}
+.state-popup-rows {
+  position: relative;
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.state-popup-rows .report-row {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+.state-popup-rows .report-row .k {
+  color: rgba(255, 255, 255, 0.55);
+}
+.state-popup-rows .report-row .v {
+  color: #fff;
+  font-size: 14px;
+}
+.state-popup-cta {
+  all: unset;
+  box-sizing: border-box;
+  position: relative;
+  display: block;
+  width: 100%;
+  text-align: center;
+  margin-top: 14px;
+  padding: 10px 14px;
+  border-radius: 3px;
+  background: rgba(111, 168, 201, 0.14);
+  border: 1px solid rgba(111, 168, 201, 0.42);
+  color: #eaf3f9;
+  font-family: var(--font-condensed);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 12.5px;
+  cursor: pointer;
+  transition: background 160ms var(--ease), border-color 160ms var(--ease);
+}
+.state-popup-cta:hover {
+  background: rgba(111, 168, 201, 0.22);
+  border-color: rgba(111, 168, 201, 0.62);
+}
+
+@media (max-width: 720px) {
+  .tower-flow-layer {
+    display: none;
+  }
+  .hero-header {
+    padding: 0 24px;
+  }
+  .hero-header h1 {
+    font-size: 32px;
+  }
+  .stat-card.pos-tl2 {
+    display: none;
+  }
+  .hero-reveal-layer .control-stack {
+    top: auto;
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+    width: auto;
+    transform: none;
+    max-height: 55vh;
+  }
+}
