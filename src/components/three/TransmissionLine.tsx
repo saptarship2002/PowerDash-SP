@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { useFrame, type ThreeEvent } from '@react-three/fiber';
 
-const flowParticleGeo = new THREE.SphereGeometry(0.022, 10, 10);
+const flowParticleGeo = new THREE.SphereGeometry(0.028, 10, 10);
 
 function hashStr(s: string): number {
   let h = 0;
@@ -38,20 +38,20 @@ export default function TransmissionLine({ id, from, to, flow, hovered, onHoverC
     const c = new THREE.CatmullRomCurve3([a, mid, b]);
     return {
       curve: c,
-      coreGeo: new THREE.TubeGeometry(c, 24, 0.011, 8, false),
-      glowGeo: new THREE.TubeGeometry(c, 24, 0.03, 8, false),
+      coreGeo: new THREE.TubeGeometry(c, 24, 0.016, 8, false),
+      glowGeo: new THREE.TubeGeometry(c, 24, 0.05, 8, false),
       midpoint: mid,
     };
   }, [from, to]);
 
-  const intensity = 0.55 + (flow / 100) * 0.55;
+  const intensity = 0.95 + (flow / 100) * 0.65;
   const coreMat = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: '#f3ad3d', emissive: '#f3ad3d', emissiveIntensity: intensity, roughness: 0.35, metalness: 0.05 }),
+    () => new THREE.MeshStandardMaterial({ color: '#ffb84d', emissive: '#ffb84d', emissiveIntensity: intensity, roughness: 0.3, metalness: 0.05 }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
   const glowMat = useMemo(
-    () => new THREE.MeshBasicMaterial({ color: '#ffd68a', transparent: true, opacity: 0.1, blending: THREE.AdditiveBlending, depthWrite: false }),
+    () => new THREE.MeshBasicMaterial({ color: '#ffd68a', transparent: true, opacity: 0.22, blending: THREE.AdditiveBlending, depthWrite: false }),
     []
   );
   // react-hooks/immutability assumes useMemo's result is never written to, which is right for
@@ -59,13 +59,13 @@ export default function TransmissionLine({ id, from, to, flow, hovered, onHoverC
   // objects in place rather than reallocating them every render.
   useEffect(() => {
     // eslint-disable-next-line react-hooks/immutability
-    coreMat.emissiveIntensity = hovered ? intensity * 1.8 : intensity;
+    coreMat.emissiveIntensity = hovered ? intensity * 1.7 : intensity;
     // eslint-disable-next-line react-hooks/immutability
-    glowMat.opacity = hovered ? 0.32 : 0.1;
+    glowMat.opacity = hovered ? 0.42 : 0.22;
   }, [coreMat, glowMat, hovered, intensity]);
 
   const particleMat = useMemo(
-    () => new THREE.MeshBasicMaterial({ color: '#ffe3a8', transparent: true, opacity: 0.9 }),
+    () => new THREE.MeshBasicMaterial({ color: '#fff0cf', transparent: true, opacity: 1 }),
     []
   );
 

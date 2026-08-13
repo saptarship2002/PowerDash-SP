@@ -72,6 +72,10 @@ export default function HeroSection({
   const headerRef = useRef<HTMLDivElement>(null);
   const revealLayerRef = useRef<HTMLDivElement>(null);
   const revealedRef = useRef(false);
+  // plain mutable box, not React state: GridExplorer3D's camera reads this every rendered frame
+  // (via useFrame) to animate between its landing/isometric poses — routing the scroll fraction
+  // through React state instead would re-render the whole 3D scene ~60x/sec for nothing.
+  const scroll3DRef = useRef({ p: 0 });
   const [centroids, setCentroids] = useState<Record<string, [number, number]>>({});
   const [popupPoint, setPopupPoint] = useState<{ x: number; y: number } | null>(null);
 
@@ -116,9 +120,12 @@ export default function HeroSection({
     }
 
     function applyStyles(p: number) {
-      // map starts crisp and docked toward the right (via transform-origin), then eases to its
-      // full centered/full-bleed size as the section scrolls into view
-      mapBg!.style.transform = `scale(${lerp(0.8, 1, p)})`;
+      // no CSS scale transform here (unlike the old flat-SVG map): the 3D scene's own camera
+      // (GridCamera, animated between a top-down and isometric pose) already carries the
+      // "docked small on landing, full on scroll" effect. A continuously-changing CSS transform
+      // on the canvas's container also actively breaks react-three-fiber's size measurement —
+      // the canvas gets stuck at whatever scale was in effect when it last measured, since
+      // nothing re-triggers a resize as an ancestor's transform changes on its own.
       mapBg!.style.filter = `brightness(${lerp(0.88, 1, p)})`;
       // tower-photo fabric backdrop is hidden on landing, fades in over the first half of the scroll
       bgFabric!.style.opacity = String(Math.max(0, Math.min(1, (p - 0.08) / 0.55)));
@@ -141,6 +148,7 @@ export default function HeroSection({
       const settled = Math.abs(targetP - smoothP) < 0.0008;
       if (settled) smoothP = targetP;
       applyStyles(smoothP);
+      scroll3DRef.current.p = smoothP;
       revealedRef.current = targetP > 0.8;
       sticky!.classList.toggle('revealed', revealedRef.current);
       rafId = settled ? null : requestAnimationFrame(loop);
@@ -170,6 +178,7 @@ export default function HeroSection({
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onResize);
     applyStyles(smoothP); // paint the initial state immediately, with no lag
+    scroll3DRef.current.p = smoothP;
     return () => {
       window.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', onResize);
@@ -200,6 +209,7 @@ export default function HeroSection({
             compareColorOf={(name) => compareColor(compareSet, name)}
             onStateClick={handleStateClick}
             revealedRef={revealedRef}
+            scrollRef={scroll3DRef}
             onCentroids={(c) => setCentroids(c)}
           />
 
@@ -237,6 +247,26 @@ export default function HeroSection({
 
         <div className="hero-reveal-layer" ref={revealLayerRef}>
           <StatCards discoms={discoms} allStates={allStates} year={year} />
+
+          <div className="grid3d-chrome" aria-hidden="true">
+            <div className="grid3d-compass">
+              <span className="grid3d-compass-n">N</span>
+              <span className="grid3d-compass-e">E</span>
+              <span className="grid3d-compass-s">S</span>
+              <span className="grid3d-compass-w">W</span>
+              <div className="grid3d-compass-needle" />
+            </div>
+            <div className="grid3d-legend">
+              <div className="grid3d-legend-row">
+                <span className="grid3d-legend-dot grid3d-legend-dot--data" />
+                Reporting
+              </div>
+              <div className="grid3d-legend-row">
+                <span className="grid3d-legend-dot grid3d-legend-dot--none" />
+                No data
+              </div>
+            </div>
+          </div>
 
           <div className="control-stack">
             <ControlPanel years={years} year={year} onYearChange={onYearChange} />

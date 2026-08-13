@@ -25,6 +25,7 @@ export interface GridConnection {
 
 export const GRID_NODES: GridNode[] = [
   { id: 'himachal-01', region: 'north', state: 'Himachal Pradesh' },
+  { id: 'punjab-01', region: 'north', state: 'Punjab' },
   { id: 'haryana-01', region: 'north', state: 'Haryana' },
   { id: 'jk-01', region: 'north', state: 'Jammu & Kashmir' },
   { id: 'rajasthan-01', region: 'north', state: 'Rajasthan' },
@@ -33,10 +34,15 @@ export const GRID_NODES: GridNode[] = [
   { id: 'tripura-01', region: 'northeast', state: 'Tripura' },
 ];
 
+// north cluster is a closed loop (each node has exactly 2 neighbors) rather than a chain or a
+// denser mesh — still clearly a connected network, but with zero crossing lines, which reads
+// far cleaner than a triangulated mesh at this node spacing
 export const GRID_CONNECTIONS: GridConnection[] = [
-  { id: 'himachal-01-haryana-01', from: 'himachal-01', to: 'haryana-01', status: 'active', flow: 68 },
-  { id: 'himachal-01-jk-01', from: 'himachal-01', to: 'jk-01', status: 'active', flow: 54 },
+  { id: 'jk-01-himachal-01', from: 'jk-01', to: 'himachal-01', status: 'active', flow: 54 },
+  { id: 'himachal-01-punjab-01', from: 'himachal-01', to: 'punjab-01', status: 'active', flow: 63 },
+  { id: 'punjab-01-haryana-01', from: 'punjab-01', to: 'haryana-01', status: 'active', flow: 68 },
   { id: 'haryana-01-rajasthan-01', from: 'haryana-01', to: 'rajasthan-01', status: 'active', flow: 72 },
+  { id: 'rajasthan-01-jk-01', from: 'rajasthan-01', to: 'jk-01', status: 'active', flow: 45 },
   { id: 'assam-01-meghalaya-01', from: 'assam-01', to: 'meghalaya-01', status: 'active', flow: 61 },
   { id: 'meghalaya-01-tripura-01', from: 'meghalaya-01', to: 'tripura-01', status: 'active', flow: 47 },
 ];

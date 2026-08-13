@@ -102,17 +102,75 @@ app, not by reading the code)
    materials are an intentional mutable-imperative boundary the compiler's purity model doesn't
    apply to. This is the standard resolution for this known R3F/React-Compiler tension.
 
-## Composition tuning (GridExplorer3D.tsx)
+## Round 2: scroll-driven camera transition + reference-image polish
 
-Final camera: `position: [PAN_X + 2.3, 6.7, -7.5]`, `fov: 56`, look-at target
-`[PAN_X, 0.15, 0.25]`, `PAN_X = 2.02`. Arrived at empirically by iterating screenshots at the
-fully-scrolled resting state: zoom (FOV) controls how much of the frame the map fills, `PAN_X`
-controls how far left the whole rig shifts to clear the right-docked control panel. The
-northeast cluster's mainland sliver sits very close to the panel's left edge at this setting —
-tried pushing further left, but past a point the whole northeast cluster (pylons included) went
-fully behind/occluded by the panel, which is worse than a small sliver near the edge. If the
-control panel's own position/width changes later, re-tune `PAN_X` and `fov` the same way: scroll
-to the fully-revealed state, screenshot, adjust.
+The user's actual intent turned out to be: land on something that reads as the *old flat 2D
+chart*, then morph into the isometric 3D scene on scroll — not "always-3D, just docked small at
+landing" (what round 1 built). They also pasted a reference render (bold chunky lattice towers,
+brighter glowing lines/bases, a compass rose + legend) and said the pylons/lines "look stupid" by
+comparison.
+
+**Camera now animates between two full poses, not just a look-at target:**
+`GridCamera.tsx` takes `{scrollRef, from, to}` and every frame (`useFrame`, not React state — see
+below) lerps position, look-at target, and FOV between them using `scrollRef.current.p`, the same
+eased scroll fraction `HeroSection`'s existing rAF loop already computes. `scrollRef` is a plain
+mutable ref (`{p: number}`), NOT React state — routing a value that updates ~60x/sec through
+`useState`/props would re-render the whole scene every frame for nothing; the camera reads it
+imperatively instead, same as any other per-frame Three.js mutation in this codebase.
+
+- **Landing pose** (`CAMERA_TOP_DOWN`): near-overhead, narrow-ish FOV, panned toward
+  `PAN_X_LANDING` — reads as a flat 2D chart, docked toward the right of the frame exactly like
+  the old flat-SVG map was (clear of the header text on the left).
+- **Fully-scrolled pose** (`CAMERA_ISO`): the isometric view, panned toward `PAN_X` to clear the
+  right-docked control panel.
+
+**Visual polish pass**, chasing the reference image:
+- `grid3d.ts`: added a 5th north node (Punjab) and changed the north cluster from a chain/dense
+  mesh to a **closed loop** (each node has exactly 2 neighbors, zero crossing lines) — a
+  triangulated mesh among 5 close-together nodes read as a tangled spiderweb, especially from the
+  near-top-down landing camera; a loop reads as clearly "connected network" with no visual mess.
+- `TransmissionPylon.tsx`: scaled up substantially (tower height 0.85 → 1.4, all radii ~1.6-1.7x)
+  — the first pass was technically fine but read as thin dark spikes at normal viewing distance.
+  Added a bright solid amber "plinth" (flattened octahedron) at the base, on top of the existing
+  soft glow halo, plus a third crossarm level and more diagonal bracing for a denser lattice
+  silhouette.
+- `TransmissionLine.tsx`: brighter/thicker core and glow tubes, warmer amber color, bigger flow
+  particle.
+- Added `.grid3d-chrome` (compass rose + legend) to `HeroSection.tsx`/`hero.css`, bottom-left
+  (kept off the right side entirely — the control panel already docks there), fading in with the
+  existing reveal layer for free (no new scroll wiring needed).
+
+**Composition had to be re-tuned from round 1's values** because (a) bigger pylons need more
+lateral clearance from the control panel, and (b) fixing the canvas-sizing bug below changed the
+effective zoom. Current values, arrived at the same way as before — scroll to the target scroll
+state, screenshot, adjust:
+- Landing: `CAMERA_TOP_DOWN = { position: [PAN_X_LANDING, 24, 0.05], target: [PAN_X_LANDING, 0, 0.15], fov: 32 }`, `PAN_X_LANDING = 2.6`.
+- Fully-scrolled: `CAMERA_ISO = { position: [PAN_X + 2.3, 6.7, -7.5], target: [PAN_X, 0.15, 0.25], fov: 70 }`, `PAN_X = 1.9`.
+- The northeast cluster still sits close to the control panel's edge at full scroll — same
+  structural tension as round 1 (total angular width at a size that reads well vs. available
+  clear width), just re-balanced after the pylon scale-up. Re-tune `PAN_X`/`fov` together if this
+  needs revisiting: panning alone shifts the tension between the two edges without fixing it;
+  zooming out (higher FOV) is what actually creates simultaneous clearance on both sides.
+
+### Bug: canvas size gets stuck when its container has an animated CSS transform
+
+`HeroSection.tsx` used to apply `transform: scale(lerp(0.8, 1, p))` to `.hero-map-backdrop` (the
+canvas's ancestor) every frame via direct style mutation — a leftover from the old flat-map
+"docked small, grows on scroll" effect. This actively breaks react-three-fiber's canvas sizing:
+the canvas measures its container once and doesn't re-measure just because an ancestor's
+transform changed (transforms don't change layout/content-box size, so nothing tells the resize
+observer to re-fire) — so the canvas gets stuck at whatever scale was in effect the last time it
+happened to measure, then visibly fails to fill its container as the scale animates toward 1,
+leaving an uncovered gap. Caught by scripting an instant scroll to a mid-transition position and
+noticing a stray light/white rectangle in that gap; confirmed via
+`canvas.getBoundingClientRect()` showing a smaller-than-expected box. Fixed by removing the CSS
+transform entirely — the camera's own landing-vs-isometric pose already carries that "docked
+small, grows" effect now, so the CSS scale was redundant on top of being actively harmful. (A
+follow-up instant-scroll test appeared to show a *different* stray white rectangle at another mid
+scroll position even after this fix; a realistic incremental `mouse.wheel()` scroll through the
+same range rendered cleanly throughout, so that appears to be a Playwright instant-`scrollTo`
+artifact — real/continuous scrolling doesn't hit it — not a real bug. Worth a second look if a
+real user ever reports seeing a flash while scrolling, but not chased further here.)
 
 ## Known follow-ups / not done
 
@@ -127,6 +185,9 @@ to the fully-revealed state, screenshot, adjust.
 - Tilt/extrusion/lighting constants (`EXTRUDE_HEIGHT`, tower proportions, light angles/intensities)
   are first-pass values tuned by eye against the actual render, not derived from a formula — fine
   to keep adjusting the same way (screenshot, tweak, re-screenshot).
+- The northeast cluster's clearance from the control panel is a tight fit tuned by eye (see
+  Round 2 composition notes above), not a robust/responsive layout calculation — will need
+  re-tuning if the panel or viewport assumptions change materially.
 
 ## Progress log
 
@@ -138,3 +199,8 @@ to the fully-revealed state, screenshot, adjust.
   end-to-end with Playwright against the real dev server (screenshots + computed-transform
   checks), found and fixed the four bugs listed above, deleted the now-dead `HeroMap.tsx`/
   `TransmissionLayer.tsx`, confirmed a clean `next build`.
+- 2026-08-13 (round 2): Added the scroll-driven camera transition (landing reads as a flat 2D
+  chart, morphs to isometric), visual polish pass on pylons/lines/network topology chasing a
+  reference image, compass+legend chrome, found and fixed the CSS-transform-vs-canvas-sizing bug
+  above, re-tuned composition for the bigger pylons, re-verified with both scripted and simulated
+  real-scroll Playwright checks, confirmed a clean `next build`.
