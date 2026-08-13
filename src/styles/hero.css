@@ -155,99 +155,25 @@
   filter: brightness(0.88);
   transform: scale(0.8);
 }
-#mapWrap {
+/* ---------- real 3D scene: replaces the old flat-SVG #mapWrap/.transmission-layer pair with a
+   single WebGL canvas (see GridExplorer3D.tsx) — India as an extruded solid, pylons/lines as
+   real 3D objects standing on it, not painted-on icons. ---------- */
+.grid3d-wrap {
   position: absolute;
   inset: 0;
   z-index: 1;
 }
-#mapWrap svg {
+/* the tooltip content itself is a plain DOM node inside drei's <Html>, which already handles
+   positioning it at the hovered object's projected screen point via its own transform — this
+   just restyles the inner box (reusing .map-tip's look) without fighting that positioning with
+   a second position:absolute of its own. */
+.map-tip.grid3d-tip {
+  position: relative;
   display: block;
-  overflow: visible;
-  width: 100%;
-  height: 100%;
+  transform: translate(-50%, -140%);
 }
-#mapWrap path.state-path {
-  /* transform gets its own bouncier, slightly overshooting curve (vs. the plain ease everything
-     else uses) — a small tactile "jelly" pop on hover rather than a mechanical lift */
-  transition: fill 320ms var(--ease), stroke 320ms var(--ease), transform 380ms cubic-bezier(0.34, 1.56, 0.64, 1), filter 240ms var(--ease),
-    opacity 240ms var(--ease);
-  stroke: rgba(7, 17, 31, 0.32);
-  stroke-width: 0.8;
-  transform-box: fill-box;
-  transform-origin: center;
-}
-#mapWrap path.selected {
-  filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.35));
-}
-#mapWrap path.clickable {
-  cursor: pointer;
-}
-/* hover "lift": the hovered state rises with a plain dark shadow and a crisp, unblurred
-   highlight border — a restrained cartographic emphasis, not a lit-up glow; everything else
-   recedes slightly */
-#mapWrap path.clickable:hover,
-#mapWrap path.clickable.hovered {
-  transform: scale(1.015);
-  filter: drop-shadow(0 8px 16px rgba(7, 17, 31, 0.45));
-  stroke: var(--map-highlight);
-  stroke-width: 1.3;
-}
-/* Dim via brightness, not opacity — opacity < 1 makes the fill translucent, letting the
-   background fabric (sine wave etc., sitting behind the whole map) bleed through every
-   non-hovered state; every path must stay fully opaque so nothing can ever show through it. */
-#mapWrap path.dimmed {
-  filter: brightness(0.6);
-}
-#mapWrap path.selected.dimmed {
-  filter: brightness(0.6) drop-shadow(0 3px 8px rgba(0, 0, 0, 0.35));
-}
-/* ---------- ambient transmission layer: dark pylons + a warm animated current between them.
-   Always on (not hover-gated) and driven purely by a CSS stroke-dashoffset keyframe loop —
-   no JS timing math, so the motion can't drift, stall, or compute an invalid value. ---------- */
-.transmission-layer {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-}
-.flow-line-base {
-  fill: none;
-  stroke: var(--map-transmission);
-  stroke-opacity: 0.55;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-dasharray: 1 8;
-}
-.flow-pulse {
-  fill: var(--map-transmission);
-  stroke: rgba(7, 17, 31, 0.45);
-  stroke-width: 0.6;
-  animation: flow-travel 5s linear infinite;
-}
-@keyframes flow-travel {
-  from {
-    transform: translate(0, 0);
-  }
-  to {
-    transform: translate(var(--dx), var(--dy));
-  }
-}
-.pylon-leg {
-  fill: none;
-  stroke: rgba(7, 17, 31, 0.55);
-  stroke-width: 1.2;
-  stroke-linejoin: round;
-  stroke-linecap: round;
-}
-.pylon-bar {
-  stroke: rgba(7, 17, 31, 0.42);
-  stroke-width: 1.1;
-  stroke-linecap: round;
-}
-.pylon-light {
-  fill: var(--map-transmission);
+.grid3d-tip-sub {
+  color: rgba(255, 255, 255, 0.6);
 }
 .map-tip {
   position: absolute;

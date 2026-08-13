@@ -1,8 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import HeroMap from './HeroMap';
-import TransmissionLayer from './TransmissionLayer';
+import GridExplorer3D from './GridExplorer3D';
 import StatCards from './StatCards';
 import ControlPanel from './ControlPanel';
 import ComparePanel from './ComparePanel';
@@ -74,7 +73,6 @@ export default function HeroSection({
   const revealLayerRef = useRef<HTMLDivElement>(null);
   const revealedRef = useRef(false);
   const [centroids, setCentroids] = useState<Record<string, [number, number]>>({});
-  const [mapSize, setMapSize] = useState({ width: 0, height: 0 });
   const [popupPoint, setPopupPoint] = useState<{ x: number; y: number } | null>(null);
 
   // popup visibility is derived from compareSet (not tracked separately), so anything else that
@@ -195,20 +193,15 @@ export default function HeroSection({
         </div>
 
         <div className="hero-map-backdrop" ref={mapBgRef}>
-          <HeroMap
+          <GridExplorer3D
             discoms={discoms}
             geojson={geojson}
             year={year}
-            compareSet={compareSet}
             compareColorOf={(name) => compareColor(compareSet, name)}
             onStateClick={handleStateClick}
             revealedRef={revealedRef}
-            onCentroids={(c, size) => {
-              setCentroids(c);
-              setMapSize(size);
-            }}
+            onCentroids={(c) => setCentroids(c)}
           />
-          <TransmissionLayer centroids={centroids} size={mapSize} />
 
           {/* animated current dot: lives inside the same scaled/shifted container as the map
               itself, so it stays visually attached to it through the whole scroll transition
