@@ -5,9 +5,10 @@ import * as THREE from 'three';
 import type { ThreeEvent } from '@react-three/fiber';
 import type { StateGeometryEntry } from '@/lib/geo3d';
 
-/** Shared by every state's side walls — a fixed darker blue-grey/teal regardless of that
- * state's top-surface color, so the extrusion thickness reads as structural, not data-colored. */
-const SIDE_MATERIAL = new THREE.MeshStandardMaterial({ color: '#212e3c', metalness: 0.22, roughness: 0.64 });
+/** Shared by every state's side walls — a fixed richer teal-blue regardless of that state's
+ * top-surface color, so the extrusion thickness reads as structural, not data-colored, while
+ * still feeling vivid rather than flat dark navy. */
+const SIDE_MATERIAL = new THREE.MeshStandardMaterial({ color: '#2f6b8c', metalness: 0.32, roughness: 0.5 });
 const EDGE_MATERIAL = new THREE.LineBasicMaterial({ color: '#0b131f', transparent: true, opacity: 0.5 });
 
 interface Props {
@@ -33,7 +34,7 @@ export default function StateMesh({ entry, fillColor, outlineColor, hovered, dim
   // defeat the memoization instead of respecting it. Effect (not render body) so the mutation
   // is at least an explicit side effect, not inline in render.
   useEffect(() => {
-    const color = new THREE.Color(fillColor);
+    const color = new THREE.Color(fillColor).multiplyScalar(1.15);
     if (dimmed) color.multiplyScalar(0.6);
     if (hovered) color.multiplyScalar(1.12);
     topMat.color.copy(color);

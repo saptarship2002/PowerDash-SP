@@ -128,7 +128,7 @@ function SceneContent({
 /** How far (world units, +X = west per geo3d.ts's axis mapping) the ISO pose's camera rig slides
  * sideways — position and target shift by the same amount, a true pan, to clear room for the
  * right-docked control panel once it's revealed. */
-const PAN_X = 1.9;
+const PAN_X = 0.9;
 /** Landing pose pans the opposite way (screen-right, negative world X) so the map docks toward
  * the right of the frame, leaving the header text clear on the left — mirroring the old flat-map
  * design's right-docked landing composition. */
@@ -142,7 +142,7 @@ const PAN_X_LANDING = 2.6;
 const CAMERA_TOP_DOWN: CameraPose = { position: [PAN_X_LANDING, 24, 0.05], target: [PAN_X_LANDING, 0, 0.15], fov: 32 };
 /** Fully-scrolled pose: the isometric view showing extrusion, pylons, and the transmission
  * network at an angle. */
-const CAMERA_ISO: CameraPose = { position: [PAN_X + 2.3, 6.7, -7.5], target: [PAN_X, 0.15, 0.25], fov: 70 };
+const CAMERA_ISO: CameraPose = { position: [PAN_X + 2.3, 6.7, -7.5], target: [PAN_X, 0.15, 0.25], fov: 54 };
 
 /** Real 3D grid visualization: India as an extruded solid, pylons and transmission lines as
  * separate 3D objects standing on it — replaces the old flat-SVG HeroMap/TransmissionLayer pair

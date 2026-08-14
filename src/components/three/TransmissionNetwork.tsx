@@ -2,7 +2,15 @@
 
 import TransmissionPylon, { LINE_ATTACH_HEIGHT } from './TransmissionPylon';
 import TransmissionLine from './TransmissionLine';
-import { GRID_NODES, GRID_CONNECTIONS } from '@/lib/grid3d';
+import { GRID_NODES, GRID_CONNECTIONS, type GridNode } from '@/lib/grid3d';
+
+const REGION_LABEL: Record<GridNode['region'], string> = {
+  north: 'Northern',
+  west: 'Western',
+  south: 'Southern',
+  east: 'Eastern',
+  northeast: 'North-eastern',
+};
 
 export interface HoverInfo {
   kind: 'pylon' | 'line';
@@ -59,7 +67,7 @@ export default function TransmissionNetwork({ topCentroids, hoveredId, onHover }
             key={n.id}
             id={n.id}
             label={n.state}
-            sub={n.region === 'north' ? 'Northern grid node' : 'North-eastern grid node'}
+            sub={`${REGION_LABEL[n.region]} grid node`}
             position={pos}
             hovered={hoveredId === n.id}
             onHoverChange={(hovered, id, label, sub, position) => onHover(hovered ? { kind: 'pylon', id, label, sub, position } : null)}

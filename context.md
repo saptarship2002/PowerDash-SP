@@ -204,3 +204,28 @@ real user ever reports seeing a flash while scrolling, but not chased further he
   reference image, compass+legend chrome, found and fixed the CSS-transform-vs-canvas-sizing bug
   above, re-tuned composition for the bigger pylons, re-verified with both scripted and simulated
   real-scroll Playwright checks, confirmed a clean `next build`.
+- 2026-08-13 (round 3): Composition/color feedback — map felt small and off-center, pylons were
+  dark and clustered into two congested corners. Changes:
+  - `grid3d.ts`: replaced the two regional clusters (8 nodes crammed into the north + northeast
+    corners) with one node per state dispersed across the whole country as a single backbone tree
+    (J&K → Punjab → Rajasthan → Maharashtra → Karnataka → Tamil Nadu, plus a Rajasthan → West
+    Bengal → Assam branch) — zero crossing lines, no congestion, reads as a real national grid
+    rather than two dense knots. `GridNode.region` widened from `'north'|'northeast'` to
+    `'north'|'west'|'south'|'east'|'northeast'`; `TransmissionNetwork.tsx` labels tooltips off a
+    `REGION_LABEL` map instead of a hardcoded ternary.
+  - `TransmissionPylon.tsx`: `STEEL`/`STEEL_DARK` recolored from dark gunmetal (#2c3239/#1d2127)
+    to bright white/light chrome (#f1f4f8/#c7ceda) — towers were nearly disappearing into the dark
+    navy background before.
+  - `GridLighting.tsx`: all intensities raised (ambient 0.6→0.82, key 1.05→1.4, rim 0.22→0.36,
+    hemisphere 0.32→0.45) for an overall brighter scene.
+  - `StateMesh.tsx`: side-wall material recolored from flat dark navy (#212e3c) to a richer
+    teal-blue (#2f6b8c) with a bit more shine; top-surface fill gets an unconditional ×1.15
+    brighten on top of the existing hover/dim multipliers. Deliberately scoped to the 3D scene's
+    own materials, not the shared `MAP_STATUS`/`CATEGORICAL` tokens in `lib/colors.ts` — those
+    feed the 2D report/legend/comparison chips elsewhere in the app and changing them would have
+    a much wider, likely unintended blast radius.
+  - `GridExplorer3D.tsx`: `PAN_X` (the isometric pose's rightward pan clearing the control panel)
+    cut from 1.9 to 0.9, and `CAMERA_ISO.fov` cut from 70 to 54 (zoom in) — now that pylons aren't
+    clustered on one side anymore, the composition needed far less panning to stay clear of the
+    panel, which freed up room to zoom in and recenter. Re-verified both landing and fully-scrolled
+    states plus hover on the new node layout; confirmed a clean `next build`.

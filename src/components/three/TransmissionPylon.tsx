@@ -6,9 +6,10 @@ import type { ThreeEvent } from '@react-three/fiber';
 
 /** Shared across every pylon instance — the steel body never changes color/emissive per
  * instance (hover feedback is carried entirely by the per-instance beacon/glow below), so one
- * material each is enough; no need to clone per tower. */
-const STEEL = new THREE.MeshStandardMaterial({ color: '#2c3239', metalness: 0.78, roughness: 0.36 });
-const STEEL_DARK = new THREE.MeshStandardMaterial({ color: '#1d2127', metalness: 0.7, roughness: 0.42 });
+ * material each is enough; no need to clone per tower. Bright white/chrome steel rather than
+ * dark — reads clearly against the dark navy background instead of nearly disappearing into it. */
+const STEEL = new THREE.MeshStandardMaterial({ color: '#f1f4f8', metalness: 0.55, roughness: 0.28 });
+const STEEL_DARK = new THREE.MeshStandardMaterial({ color: '#c7ceda', metalness: 0.5, roughness: 0.34 });
 
 // scaled up substantially from a first pass that was technically-correct but read as thin dark
 // spikes at normal viewing distance — these need to be an obvious focal element, not a subtle
