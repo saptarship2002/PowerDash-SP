@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ACPET Power Quality Dashboard — Multi-State DISCOMs FY 2021-22</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --red:        #8B1A1A;
+    --red-light:  #C0392B;
+    --charcoal:   #1C2127;
+    --slate:      #2C3E50;
+    --bg:         #FFFFFF;
+    --bg-light:   #F8F8F8;
+    --border:     #E0E0E0;
+    --text:       #1C2127;
+    --text-muted: #6B7280;
+    --good:       #0ca30c;
+    --warn:       #b7770d;
+    --bad:        #C0392B;
+  }
+
+  body {
+    font-family: 'Barlow', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--charcoal);
+    padding: 0 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 72px;
+    flex-wrap: wrap;
+  }
+  .header-brand { display: flex; align-items: center; gap: 14px; }
+  .header-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: #FFFFFF;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .header-subtitle {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px;
+    color: #A0AEC0;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+  .header-meta { text-align: right; }
+  .header-fy {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #CBD5E0;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .header-state { font-size: 12px; color: #718096; letter-spacing: 0.08em; }
+
+  /* ── RED HERO BAND ── */
+  .hero-band {
+    background: var(--red);
+    padding: 20px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .hero-band h1 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: #FFFFFF;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .hero-band p { font-size: 13px; color: rgba(255,255,255,0.8); max-width: 680px; margin-top: 4px; }
+  .hero-stats { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero-badge {
+    background: rgba(255,255,255,0.12);3
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 4px;
+    padding: 8px 16px;
+    text-align: center;
+    color: #FFFFFF;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    min-width: 84px;
+  }
+  .hero-badge span { display: block; font-size: 26px; font-weight: 700; line-height: 1.1; margin-bottom: 2px; }
+
+  /* ── STATE FILTER BAR ── */
+  .filter-bar {
+    background: var(--bg-light);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 48px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+  .filter-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-right: 6px;
+  }
+  .filter-btn {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 7px 16px;
+    border-radius: 20px;
+    border: 1.5px solid var(--border);
+    background: #fff;
+    color: var(--text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all .15s ease;
+  }
+  .filter-btn .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--text-muted); }
+  .filter-btn:hover { border-color: var(--red-light); }
+  .filter-btn.active { background: var(--charcoal); color: #fff; border-color: var(--charcoal); }
+  .filter-btn.active .dot { background: #fff; }
+  .filter-btn[data-state="all"].active { background: var(--red); border-color: var(--red); }
+
+  /* ── MAIN LAYOUT ── */
+  .main { padding: 36px 48px; max-width: 1440px; margin: 0 auto; }
+
+  .section-header { display: flex; align-items: baseline; gap: 16px; margin-bottom: 20px; margin-top: 48px; }
+  .section-header:first-child { margin-top: 0; }
+  .section-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--red);
+    background: rgba(139,26,26,0.08);
+    padding: 4px 10px;
+    border-radius: 3px;
+  }
+  .section-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 21px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+  .section-note { font-size: 12.5px; color: var(--text-muted); max-width: 900px; margin: -8px 0 20px 0; }
+
+  /* ── SCORECARDS ── */
+  .state-group { margin-bottom: 28px; }
+  .state-group-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .state-group-title .dot { width: 11px; height: 11px; border-radius: 50%; }
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; align-items: start; }
+  .score-card {
+    border: 1px solid var(--border);
+    border-top: 4px solid var(--card-color, var(--red));
+    border-radius: 6px;
+    padding: 16px;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .score-card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+  .score-card-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+  .score-card-full { font-size: 11px; color: var(--text-muted); margin-top: 1px; line-height: 1.3; }
+  .grade-badge {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    width: 34px; height: 34px;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .grade-A { background: var(--good); }
+  .grade-B { background: var(--warn); }
+  .grade-C { background: var(--bad); }
+  .card-bar-wrap { width: 100%; height: 190px; }
+  .no-data-box {
+    border: 1.5px dashed var(--border);
+    border-radius: 6px;
+    padding: 16px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-muted);
+    background: var(--bg-light);
+  }
+  .score-total-row { font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.04em; color: var(--text-muted); text-transform: uppercase; }
+  .score-total-row b { color: var(--text); font-size: 15px; }
+  .card-gap { font-size: 12px; color: var(--text-muted); border-top: 1px dashed var(--border); padding-top: 8px; line-height: 1.4; }
+  .phantom-flag {
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--bad);
+    background: rgba(192,57,43,0.08);
+    border: 1px solid rgba(192,57,43,0.25);
+    border-radius: 3px;
+    padding: 3px 6px;
+    display: inline-block;
+  }
+
+  /* ── CHART GRID ── */
+  .chart-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .chart-grid.single { grid-template-columns: 1fr; }
+  .chart-card {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: #fff;
+    padding: 18px 20px 12px;
+  }
+  .chart-card-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .chart-card-sub { font-size: 11.5px; color: var(--text-muted); margin: 2px 0 12px; }
+  .chart-wrap { position: relative; height: 440px; }
+  .chart-wrap.tall { height: 500px; }
+
+  /* ── HEATMAP TABLE ── */
+  .heatmap-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 6px; }
+  table.heatmap { border-collapse: collapse; width: 100%; font-size: 12px; min-width: 900px; }
+  table.heatmap th, table.heatmap td { padding: 8px 10px; text-align: center; border-bottom: 1px solid var(--border); }
+  table.heatmap th { background: var(--bg-light); font-family: 'Barlow Condensed', sans-serif; font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+  table.heatmap td.discom-cell { text-align: left; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  table.heatmap td.discom-cell .dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+  .cell-pill { display: inline-block; min-width: 44px; padding: 3px 6px; border-radius: 3px; font-weight: 700; font-size: 10.5px; letter-spacing: 0.03em; }
+  .cell-yes { background: rgba(12,163,12,0.12); color: #0a7a0a; }
+  .cell-no { background: rgba(107,114,128,0.12); color: var(--text-muted); }
+  .cell-na { background: transparent; color: #C3C2B7; }
+  .cell-phantom { background: rgba(192,57,43,0.12); color: var(--bad); position: relative; }
+  .heatmap-legend { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 10px; font-size: 11.5px; color: var(--text-muted); }
+  .heatmap-legend .cell-pill { margin-right: 6px; }
+
+  /* ── KEY GAPS ── */
+  .gap-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+  .gap-card {
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--red-light);
+    border-radius: 6px;
+    padding: 14px 16px;
+    background: var(--bg-light);
+  }
+  .gap-card-num {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px; font-weight: 700; color: var(--red);
+    letter-spacing: 0.08em; margin-bottom: 4px;
+  }
+  .gap-card p { font-size: 12.5px; color: var(--text); line-height: 1.5; }
+
+  footer { text-align: center; padding: 28px 0 40px; font-size: 11.5px; color: var(--text-muted); }
+
+  @media (max-width: 900px) {
+    .chart-grid { grid-template-columns: 1fr; }
+    .header, .hero-band, .filter-bar, .main { padding-left: 20px; padding-right: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-brand">
+    <div>
+      <div class="header-title">ACPET</div>
+      <div class="header-subtitle">Power Quality Intelligence</div>
+    </div>
+  </div>
+  <div class="header-meta">
+    <div class="header-fy">FY 2021-22</div>
+    <div class="header-state">5 States · 13 Distribution Licensees</div>
+  </div>
+</div>
+
+<div class="hero-band">
+  <div>
+    <h1>Multi-State Power Quality &amp; Reliability Dashboard</h1>
+    <p>Comparing SAIDI, SAIFI, CAIDI, MAIFI, voltage variation, harmonics, transformer restoration and billing-complaint performance across 13 distribution licensees in Maharashtra, Gujarat, Madhya Pradesh, Rajasthan and Odisha — built strictly from what each state regulator's own performance-reporting sheet contains.</p>
+  </div>
+  <div class="hero-stats" id="heroStats"></div>
+</div>
+
+<div class="filter-bar" id="filterBar"></div>
+
+<div class="main">
+
+  <div class="section-header">
+    <span class="section-label">Overview</span>
+    <span class="section-title">Licensee Scorecards</span>
+  </div>
+  <p class="section-note">Since this workbook has no scoring/grading sheet, each score below is computed directly from the licensee's own reporting columns: 25% standards availability, 25% data actually reported, 30% indicators genuinely comparable (a standard exists <em>and</em> a value was reported), 20% compliance rate among those comparable. Grade A ≥ 70, B ≥ 45, C below.</p>
+  <div id="scorecards"></div>
+
+  <div class="section-header">
+    <span class="section-label">Analytics Overview</span>
+    <span class="section-title">Cross-Cutting Views</span>
+  </div>
+  <p class="section-note">The same underlying data, read through different chart forms: distribution, ranking and duration-vs-frequency comparison — each pools all applicable licensees across states rather than looking at one indicator at a time.</p>
+  <div class="chart-grid">
+    <div class="chart-card"><div class="chart-card-title">Grade distribution</div><div class="chart-card-sub">Count of licensees by computed grade</div><div class="chart-wrap" style="height:420px;"><canvas id="chartGradeDoughnut"></canvas></div></div>
+    <div class="chart-card"><div class="chart-card-title">Comparability distribution</div><div class="chart-card-sub">All 104 licensee × indicator cells in the gap-analysis heatmap</div><div class="chart-wrap" style="height:420px;"><canvas id="chartComparabilityDoughnut"></canvas></div></div>
+  </div>
+  <div class="chart-grid single" style="margin-top:20px;">
+    <div class="chart-card"><div class="chart-card-title">Duration vs. frequency, compared</div><div class="chart-card-sub">SAIDI &amp; SAIFI indexed to 0-100 (100 = highest in this group of 8) so both sit on one scale — hover a bar for the actual hours/count</div><div class="chart-wrap tall"><canvas id="chartScatter"></canvas></div></div>
+  </div>
+  <div class="chart-grid single" style="margin-top:20px;">
+    <div class="chart-card"><div class="chart-card-title">Composite score by licensee</div><div class="chart-card-sub">Grouped by state (matching the scorecards above), ranked highest to lowest within each state — grade thresholds (A ≥ 70, B ≥ 45) for reference</div><div class="chart-wrap tall"><canvas id="chartScoreLine"></canvas></div></div>
+  </div>
+  <div class="chart-grid single" style="margin-top:20px;">
+    <div class="chart-card"><div class="chart-card-title">Comparability breakdown per licensee</div><div class="chart-card-sub">Of each licensee's 8 tracked indicators — how many are comparable, not comparable, not applicable, or phantom-comparable</div><div class="chart-wrap" style="height:560px;"><canvas id="chartStack"></canvas></div></div>
+  </div>
+
+  <div class="section-header">
+    <span class="section-label">Reliability</span>
+    <span class="section-title">Duration — SAIDI &amp; CAIDI (hours/year)</span>
+  </div>
+  <p class="section-note">Normalized to hours from whatever unit each sheet used (minutes, Hr:Min clock values, or multi-day durations) — the source workbook is not internally consistent on units. PGVCL (~209 hrs) and TPCODL (~155 hrs) are order-of-magnitude outliers against the rest of the group.</p>
+  <div class="chart-grid single">
+    <div class="chart-card"><div class="chart-card-title">SAIDI — total outage duration</div><div class="chart-card-sub">Hours of interruption per consumer per year</div><div class="chart-wrap tall"><canvas id="chartSaidi"></canvas></div></div>
+  </div>
+  <div class="chart-grid single" style="margin-top:20px;">
+    <div class="chart-card"><div class="chart-card-title">CAIDI — average restoration time</div><div class="chart-card-sub">Hours per sustained interruption event (not defined for AVVNL/JdVVNL/TPCODL)</div><div class="chart-wrap tall"><canvas id="chartCaidi"></canvas></div></div>
+  </div>
+
+  <div class="section-header">
+    <span class="section-label">Reliability</span>
+    <span class="section-title">Frequency — SAIFI &amp; MAIFI (events/year)</span>
+  </div>
+  <p class="section-note">MAIFI (momentary, &lt;1 min interruptions) is not tracked under Maharashtra's, Rajasthan's or Odisha-TPCODL's 2021-22 reporting cycle for some licensees — gaps in the chart are genuine non-reporting, not zeros.</p>
+  <div class="chart-grid single">
+    <div class="chart-card"><div class="chart-card-title">SAIFI — sustained interruptions</div><div class="chart-card-sub">Count per consumer per year</div><div class="chart-wrap tall"><canvas id="chartSaifi"></canvas></div></div>
+  </div>
+  <div class="chart-grid single" style="margin-top:20px;">
+    <div class="chart-card"><div class="chart-card-title">MAIFI — momentary interruptions</div><div class="chart-card-sub">Count per consumer per year</div><div class="chart-wrap tall"><canvas id="chartMaifi"></canvas></div></div>
+  </div>
+
+  <div class="section-header">
+    <span class="section-label">Power Quality</span>
+    <span class="section-title">Voltage Variation &amp; Harmonics</span>
+  </div>
+  <p class="section-note">These two definitions differ by state: Gujarat measures "% of sample tests showing NIL deviation" (compliance rate); Maharashtra, Rajasthan measure "% of cases resolved within standard" (a different resolution-rate metric). Both read as higher-is-better percentages, so they're charted together with the distinction called out in each tooltip. Odisha reported voltage variation as a raw complaint count (0 complaints) rather than a percentage, so TPCODL/TPNODL are excluded from this chart — see Key Gaps.</p>
+  <div class="chart-grid single">
+    <div class="chart-card"><div class="chart-card-title">Voltage Variation compliance</div><div class="chart-card-sub">% — Gujarat sample-compliance rate vs. Maharashtra/Rajasthan case-resolution rate</div><div class="chart-wrap tall"><canvas id="chartVoltage"></canvas></div></div>
+  </div>
+  <div class="chart-grid single" style="margin-top:20px;">
+    <div class="chart-card"><div class="chart-card-title">Harmonics (THD) compliance</div><div class="chart-card-sub">% of sample tests within THD limits — only Gujarat DISCOMs reported this</div><div class="chart-wrap tall"><canvas id="chartHarmonics"></canvas></div></div>
+  </div>
+
+  <div class="section-header">
+    <span class="section-label">Service Quality</span>
+    <span class="section-title">Transformer Restoration &amp; Billing Complaints</span>
+  </div>
+  <p class="section-note">"Transformer Failure" means two different things in this workbook. Everywhere except Gujarat it's a <strong>restoration-compliance rate</strong> against a 90–95% benchmark (higher = better). Gujarat's four DISCOMs instead reported a raw <strong>failure rate</strong> with no benchmark at all (lower = better) — charted separately below so the two are never conflated.</p>
+  <div class="chart-grid single">
+    <div class="chart-card"><div class="chart-card-title">Transformer restoration compliance</div><div class="chart-card-sub">% resolved within the standard (benchmark 90-95% depending on state — see tooltip)</div><div class="chart-wrap tall"><canvas id="chartTransformerRestore"></canvas></div></div>
+  </div>
+  <div class="chart-grid single" style="margin-top:20px;">
+    <div class="chart-card"><div class="chart-card-title">Gujarat transformer failure rate</div><div class="chart-card-sub">% of distribution transformers that failed — no GERC benchmark exists; lower is better</div><div class="chart-wrap tall"><canvas id="chartGujaratFailure"></canvas></div></div>
+  </div>
+  <p class="section-note" style="margin-top:20px;">Billing complaint resolution follows one consistent definition everywhere <em>except</em> Odisha, whose sheets report bill <strong>accuracy</strong> (% of bills that were faulty) rather than complaint-resolution speed — TPCODL/TPNODL are excluded from the chart below for that reason.</p>
+  <div class="chart-grid single">
+    <div class="chart-card"><div class="chart-card-title">Billing complaint resolution</div><div class="chart-card-sub">% of billing complaints resolved within the standard timeframe</div><div class="chart-wrap tall"><canvas id="chartBilling"></canvas></div></div>
+  </div>
+
+  <div class="section-header">
+    <span class="section-label">Regulatory Gap Analysis</span>
+    <span class="section-title">Comparability Across All 13 Licensees</span>
+  </div>
+  <p class="section-note">"Comparison Possible?" as marked by each state's own sheet. A red "claims Yes / no data" cell means the sheet asserts comparability and a passing standard despite no reported value — a reporting-integrity issue distinct from a genuine regulatory gap.</p>
+  <div class="heatmap-wrap">
+    <table class="heatmap" id="heatmapTable"></table>
+  </div>
+  <div class="heatmap-legend">
+    <span><span class="cell-pill cell-yes">YES</span> comparable, value reported</span>
+    <span><span class="cell-pill cell-no">NO</span> not comparable (no benchmark / not applicable)</span>
+    <span><span class="cell-pill cell-na">—</span> not applicable to this regulation</span>
+    <span><span class="cell-pill cell-phantom">Yes*</span> claims comparable, no data reported</span>
+  </div>
+
+  <div class="section-header">
+    <span class="section-label">Data Quality</span>
+    <span class="section-title">Key Gaps Found In The Source Workbook</span>
+  </div>
+  <div class="gap-grid" id="gapGrid"></div>
+
+</div>
+
+<footer>Generated from <code>data/PQ_Dashboard_ACPET.xlsx</code> (13 licensee sheets across 5 states) · Dashboard file: <code>index.html</code> · Two blank placeholder sheets (Sheet13, Sheet14) were excluded as non-data artifacts.</footer>
+
+<script>
+const DASH = __DASH_JSON__;
+
+function fmt(v, digits=1) {
+  if (v === null || v === undefined) return '—';
+  return Number(v).toLocaleString(undefined, {maximumFractionDigits: digits});
+}
+
+// ---------- Hero stats ----------
+(function() {
+  const total = DASH.scorecards.length;
+  const states = DASH.state_order.length;
+  const noData = DASH.scorecards.filter(s => s.scoring.data_reported_pct === 0).length;
+  const phantom = DASH.scorecards.filter(s => s.scoring.phantom_comparable_count > 0).length;
+  const stats = [
+    ['Licensees', total],
+    ['States', states],
+    ['No data reported', noData],
+    ['Phantom comparability', phantom],
+  ];
+  const el = document.getElementById('heroStats');
+  el.innerHTML = stats.map(([label, val]) => `
+    <div class="hero-badge"><span>${val}</span>${label}</div>
+  `).join('');
+})();
+
+// ---------- Filter bar ----------
+let activeState = 'all';
+(function() {
+  const el = document.getElementById('filterBar');
+  const btns = [{state:'all', label:'All States', color:'#8B1A1A'}].concat(
+    DASH.state_order.map(s => ({state:s, label:s, color:DASH.state_hue[s]}))
+  );
+  el.innerHTML = '<span class="filter-label">Filter by state</span>' + btns.map(b => `
+    <button class="filter-btn ${b.state==='all'?'active':''}" data-state="${b.state}">
+      <span class="dot" style="background:${b.state==='all'?'#fff':b.color}"></span>${b.label}
+    </button>
+  `).join('');
+  el.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeState = btn.dataset.state;
+      el.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b === btn));
+      renderScorecards();
+      renderHeatmap();
+      Object.values(charts).forEach(c => c.update());
+    });
+  });
+})();
+
+function stateMatch(state) {
+  return activeState === 'all' || state === activeState;
+}
+
+// ---------- Scorecards ----------
+const cardCharts = {};
+function canvasIdFor(sheet) { return 'bar-' + sheet.replace(/[^a-zA-Z0-9]/g, '_'); }
+
+const barEndLabelPlugin = {
+  id: 'barEndLabel',
+  afterDatasetsDraw(chart) {
+    const { ctx } = chart;
+    chart.data.datasets.forEach((dataset, dsIndex) => {
+      const meta = chart.getDatasetMeta(dsIndex);
+      meta.data.forEach((bar, index) => {
+        const text = dataset.labels[index];
+        ctx.save();
+        ctx.font = "700 11.5px 'Barlow Condensed', sans-serif";
+        ctx.fillStyle = '#1C2127';
+        ctx.textBaseline = 'middle';
+        ctx.textAlign = 'left';
+        ctx.fillText(text, bar.x + 8, bar.y);
+        ctx.restore();
+      });
+    });
+  }
+};
+
+function renderScorecards() {
+  Object.values(cardCharts).forEach(c => c.destroy());
+  Object.keys(cardCharts).forEach(k => delete cardCharts[k]);
+
+  const grouped = {};
+  DASH.scorecards.forEach(s => {
+    if (!stateMatch(s.state)) return;
+    (grouped[s.state] = grouped[s.state] || []).push(s);
+  });
+  const el = document.getElementById('scorecards');
+  el.innerHTML = DASH.state_order.filter(st => grouped[st]).map(state => `
+    <div class="state-group">
+      <div class="state-group-title"><span class="dot" style="background:${DASH.state_hue[state]}"></span>${state}</div>
+      <div class="card-grid">
+        ${grouped[state].map(cardHtml).join('')}
+      </div>
+    </div>
+  `).join('');
+
+  DASH.scorecards.filter(s => stateMatch(s.state)).forEach(s => {
+    const sc = s.scoring;
+    const canvas = document.getElementById(canvasIdFor(s.sheet));
+    if (!canvas) return;
+    const values = [sc.standards_available_pct, sc.data_reported_pct, sc.comparable_pct, sc.compliance_pct];
+    cardCharts[s.sheet] = new Chart(canvas.getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: ['Standards', 'Data reported', 'Comparable', 'Compliant'],
+        datasets: [{
+          data: values.map(v => v === null ? 0 : v),
+          labels: values.map(v => v === null ? 'n/a' : fmt(v,0) + '%'),
+          backgroundColor: s.color,
+          borderRadius: 4,
+          borderSkipped: false,
+          maxBarThickness: 22,
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true, maintainAspectRatio: false,
+        layout: { padding: { right: 44 } },
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: (ctx) => {
+            const v = values[ctx.dataIndex];
+            return v === null ? 'not applicable' : fmt(v,0) + '%';
+          } } },
+        },
+        scales: {
+          x: { min: 0, max: 100, grid: { color: '#E1E0D9' }, ticks: { callback: (v) => v + '%', font: { size: 10 } } },
+          y: { grid: { display: false }, ticks: { font: { family: "'Barlow Condensed', sans-serif", size: 12 } } }
+        }
+      },
+      plugins: [barEndLabelPlugin]
+    });
+  });
+}
+
+function cardHtml(s) {
+  const sc = s.scoring;
+  return `
+    <div class="score-card" style="--card-color:${s.color}">
+      <div class="score-card-top">
+        <div>
+          <div class="score-card-name">${s.short_name}</div>
+          <div class="score-card-full">${s.full_name}</div>
+        </div>
+        <div class="grade-badge grade-${sc.grade}">${sc.grade}</div>
+      </div>
+      <div class="score-total-row">Composite score <b>${fmt(sc.composite_score)}</b> / 100</div>
+      ${sc.data_reported_pct > 0
+        ? `<div class="card-bar-wrap"><canvas id="${canvasIdFor(s.sheet)}"></canvas></div>`
+        : `<div class="no-data-box">No data reported for any of its ${sc.total_indicators} tracked indicators — nothing to chart.</div>`}
+      ${sc.phantom_comparable_count > 0 ? `<div class="phantom-flag">⚠ Claims comparable on ${sc.phantom_comparable_count} indicator${sc.phantom_comparable_count>1?'s':''} with no data reported</div>` : ''}
+      <div class="card-gap">${s.gap}</div>
+    </div>
+  `;
+}
+renderScorecards();
+
+// ---------- Chart.js helpers ----------
+const charts = {};
+Chart.defaults.font.family = "'Barlow', sans-serif";
+Chart.defaults.color = '#6B7280';
+
+function baseTooltip(series) {
+  return {
+    callbacks: {
+      label: (ctx) => {
+        const e = series[ctx.dataIndex];
+        if (!e || e.value === null || e.value === undefined) return 'No data reported';
+        let lines = [`${ctx.dataset.label || ''}: ${fmt(e.value)}`.trim()];
+        if (e.meaning) lines.push(e.meaning);
+        if (e.benchmark !== undefined && e.benchmark !== null && e.benchmark !== 'N/A') {
+          lines.push(`Benchmark: ${e.benchmark}${e.benchmark_meaning ? ' — ' + e.benchmark_meaning : ''}`);
+        }
+        return lines;
+      }
+    }
+  };
+}
+
+function makeBarChart(canvasId, series, {label, unitSuffix=''} = {}) {
+  const ctx = document.getElementById(canvasId).getContext('2d');
+  const chart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: series.map(e => e.label),
+      datasets: [{
+        label: label || '',
+        data: series.map(e => e.value),
+        backgroundColor: series.map(e => e.color),
+        borderRadius: 4,
+        borderSkipped: false,
+        maxBarThickness: 24,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: baseTooltip(series),
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { font: { family: "'Barlow Condensed', sans-serif", size: 11 }, autoSkip: false, maxRotation: 45, minRotation: 0 }
+        },
+        y: {
+          beginAtZero: true,
+          grid: { color: '#E1E0D9' },
+          ticks: { callback: (v) => v + unitSuffix }
+        }
+      }
+    },
+    plugins: [{
+      id: `filter-${canvasId}`,
+      beforeUpdate(c) {
+        c.data.labels = series.map(e => e.label);
+        c.data.datasets[0].data = series.map(e => stateMatch(e.state) ? e.value : null);
+        c.data.datasets[0].backgroundColor = series.map(e => e.color);
+      }
+    }]
+  });
+  return chart;
+}
+
+charts.saidi = makeBarChart('chartSaidi', DASH.charts.saidi, {unitSuffix: 'h'});
+charts.caidi = makeBarChart('chartCaidi', DASH.charts.caidi, {unitSuffix: 'h'});
+charts.saifi = makeBarChart('chartSaifi', DASH.charts.saifi);
+charts.maifi = makeBarChart('chartMaifi', DASH.charts.maifi);
+charts.voltage = makeBarChart('chartVoltage', DASH.charts.voltage, {unitSuffix: '%'});
+charts.harmonics = makeBarChart('chartHarmonics', DASH.charts.harmonics, {unitSuffix: '%'});
+charts.transformerRestore = makeBarChart('chartTransformerRestore', DASH.charts.transformer_restore, {unitSuffix: '%'});
+charts.gujaratFailure = makeBarChart('chartGujaratFailure', DASH.charts.gujarat_transformer_failure, {unitSuffix: '%'});
+charts.billing = makeBarChart('chartBilling', DASH.charts.billing, {unitSuffix: '%'});
+
+// ---------- Grade distribution doughnut ----------
+const GRADE_COLORS = {A: '#0ca30c', B: '#b7770d', C: '#C0392B'};
+(function() {
+  const ctx = document.getElementById('chartGradeDoughnut').getContext('2d');
+  charts.gradeDoughnut = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Grade A', 'Grade B', 'Grade C'],
+      datasets: [{ data: [0,0,0], backgroundColor: ['#0ca30c','#b7770d','#C0392B'], borderWidth: 2, borderColor: '#fff' }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { font: { family: "'Barlow Condensed', sans-serif", size: 12 } } },
+        tooltip: { callbacks: { label: (ctx) => `${ctx.label}: ${ctx.parsed} licensee${ctx.parsed===1?'':'s'}` } },
+      },
+    },
+    plugins: [{
+      id: 'filter-gradeDoughnut',
+      beforeUpdate(c) {
+        const counts = {A:0,B:0,C:0};
+        DASH.scorecards.forEach(s => { if (stateMatch(s.state)) counts[s.scoring.grade]++; });
+        c.data.datasets[0].data = [counts.A, counts.B, counts.C];
+      }
+    }]
+  });
+})();
+
+// ---------- Comparability distribution doughnut ----------
+(function() {
+  const ctx = document.getElementById('chartComparabilityDoughnut').getContext('2d');
+  const labels = ['Comparable (Yes)', 'Not comparable (No)', 'Not applicable', 'Phantom (claims Yes, no data)'];
+  const colors = ['#0ca30c', '#898781', '#c3c2b7', '#C0392B'];
+  charts.comparabilityDoughnut = new Chart(ctx, {
+    type: 'doughnut',
+    data: { labels, datasets: [{ data: [0,0,0,0], backgroundColor: colors, borderWidth: 2, borderColor: '#fff' }] },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 12, font: { family: "'Barlow Condensed', sans-serif", size: 11 } } },
+        tooltip: { callbacks: { label: (ctx) => `${ctx.label}: ${ctx.parsed} cells` } },
+      },
+    },
+    plugins: [{
+      id: 'filter-comparabilityDoughnut',
+      beforeUpdate(c) {
+        const counts = {yes:0, no:0, na:0, phantom:0};
+        DASH.heatmap.rows.forEach(r => {
+          if (!stateMatch(r.state)) return;
+          r.cells.forEach(cell => {
+            const st = cell.status === 'absent' ? 'na' : cell.status;
+            counts[st]++;
+          });
+        });
+        c.data.datasets[0].data = [counts.yes, counts.no, counts.na, counts.phantom];
+      }
+    }]
+  });
+})();
+
+// ---------- SAIDI vs SAIFI, indexed grouped bar ----------
+(function() {
+  const ctx = document.getElementById('chartScatter').getContext('2d');
+  const pts = DASH.duration_frequency;
+  charts.scatter = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: pts.map(p => p.short_name),
+      datasets: [
+        {
+          label: 'SAIDI (duration)',
+          data: pts.map(p => p.saidi_index),
+          backgroundColor: '#2a78d6',
+          borderRadius: 4, borderSkipped: false, maxBarThickness: 28,
+        },
+        {
+          label: 'SAIFI (frequency)',
+          data: pts.map(p => p.saifi_index),
+          backgroundColor: '#eb6834',
+          borderRadius: 4, borderSkipped: false, maxBarThickness: 28,
+        },
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { font: { family: "'Barlow Condensed', sans-serif", size: 12 } } },
+        tooltip: { callbacks: { label: (ctx) => {
+          const p = pts[ctx.dataIndex];
+          return ctx.datasetIndex === 0
+            ? `SAIDI: ${fmt(p.saidi_hours)} hours/year (index ${fmt(p.saidi_index,0)})`
+            : `SAIFI: ${fmt(p.saifi_count)} events/year (index ${fmt(p.saifi_index,0)})`;
+        } } },
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { family: "'Barlow Condensed', sans-serif", size: 12 } } },
+        y: { min: 0, max: 100, title: { display: true, text: 'Index (100 = highest in this group of 8)' }, grid: { color: '#E1E0D9' } },
+      }
+    },
+    plugins: [{
+      id: 'filter-scatter',
+      beforeUpdate(c) {
+        c.data.datasets[0].data = pts.map(p => stateMatch(p.state) ? p.saidi_index : null);
+        c.data.datasets[1].data = pts.map(p => stateMatch(p.state) ? p.saifi_index : null);
+      }
+    }]
+  });
+})();
+
+// ---------- Composite score ranked line/area ----------
+(function() {
+  const ctx = document.getElementById('chartScoreLine').getContext('2d');
+  const sr = DASH.score_ranked;
+  charts.scoreLine = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: sr.map(s => s.short_name),
+      datasets: [
+        {
+          label: 'Composite score',
+          data: sr.map(s => s.score),
+          borderColor: '#1C2127',
+          backgroundColor: 'rgba(28,33,39,0.06)',
+          fill: true,
+          tension: 0.25,
+          pointBackgroundColor: sr.map(s => s.color),
+          pointBorderColor: sr.map(s => s.color),
+          pointRadius: 6,
+          pointHoverRadius: 8,
+          borderWidth: 2,
+        },
+        {
+          label: 'Grade A threshold (70)',
+          data: sr.map(() => 70),
+          borderColor: '#0ca30c',
+          borderDash: [4,4],
+          borderWidth: 1.5,
+          pointRadius: 0,
+          fill: false,
+        },
+        {
+          label: 'Grade B threshold (45)',
+          data: sr.map(() => 45),
+          borderColor: '#b7770d',
+          borderDash: [4,4],
+          borderWidth: 1.5,
+          pointRadius: 0,
+          fill: false,
+        },
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { font: { family: "'Barlow Condensed', sans-serif", size: 12 } } },
+        tooltip: { callbacks: { label: (ctx) => ctx.datasetIndex===0 ? `${ctx.label}: ${fmt(ctx.parsed.y)} / 100` : ctx.dataset.label } },
+      },
+      scales: {
+        x: { ticks: { font: { family: "'Barlow Condensed', sans-serif", size: 11 }, maxRotation: 45 }, grid: { display: false } },
+        y: { min: 0, max: 100, grid: { color: '#E1E0D9' } },
+      }
+    },
+    plugins: [{
+      id: 'filter-scoreLine',
+      beforeUpdate(c) {
+        c.data.datasets[0].data = sr.map(s => stateMatch(s.state) ? s.score : null);
+      }
+    }]
+  });
+})();
+
+// ---------- Comparability stacked horizontal bar ----------
+(function() {
+  const ctx = document.getElementById('chartStack').getContext('2d');
+  const st = DASH.comparability_stack;
+  charts.stack = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: st.map(s => s.short_name),
+      datasets: [
+        { label: 'Comparable (Yes)', data: st.map(s => s.yes), backgroundColor: '#0ca30c', stack: 's' },
+        { label: 'Not comparable (No)', data: st.map(s => s.no), backgroundColor: '#898781', stack: 's' },
+        { label: 'Not applicable', data: st.map(s => s.na), backgroundColor: '#c3c2b7', stack: 's' },
+        { label: 'Phantom comparable', data: st.map(s => s.phantom), backgroundColor: '#C0392B', stack: 's' },
+      ]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { font: { family: "'Barlow Condensed', sans-serif", size: 12 } } },
+      },
+      scales: {
+        x: { stacked: true, max: 8, ticks: { stepSize: 1 }, grid: { color: '#E1E0D9' } },
+        y: { stacked: true, ticks: { font: { family: "'Barlow Condensed', sans-serif", size: 12 } }, grid: { display: false } },
+      }
+    },
+    plugins: [{
+      id: 'filter-stack',
+      beforeUpdate(c) {
+        const idxs = st.map(s => stateMatch(s.state));
+        c.data.datasets.forEach(ds => {
+          const key = ds.label.includes('Yes') ? 'yes' : ds.label.includes('No') ? 'no' : ds.label.includes('applicable') ? 'na' : 'phantom';
+          ds.data = st.map((s, i) => idxs[i] ? s[key] : null);
+        });
+      }
+    }]
+  });
+})();
+
+// ---------- Heatmap ----------
+function renderHeatmap() {
+  const h = DASH.heatmap;
+  const rows = h.rows.filter(r => stateMatch(r.state));
+  const thead = `<thead><tr><th>Licensee</th>${h.indicators.map(i => `<th>${i.replace(/ /g,'<br>')}</th>`).join('')}</tr></thead>`;
+  const tbody = '<tbody>' + rows.map(r => `
+    <tr>
+      <td class="discom-cell"><span class="dot" style="background:${r.color}"></span>${r.short_name}</td>
+      ${r.cells.map(c => cellPill(c.status)).join('')}
+    </tr>
+  `).join('') + '</tbody>';
+  document.getElementById('heatmapTable').innerHTML = thead + tbody;
+}
+function cellPill(status) {
+  const map = {
+    yes: ['cell-yes', 'YES'],
+    no: ['cell-no', 'NO'],
+    na: ['cell-na', '—'],
+    absent: ['cell-na', '—'],
+    phantom: ['cell-phantom', 'Yes*'],
+  };
+  const [cls, txt] = map[status] || map.na;
+  return `<td><span class="cell-pill ${cls}">${txt}</span></td>`;
+}
+renderHeatmap();
+
+// ---------- Key gaps ----------
+const GAPS = [
+  "No state in this dataset (except Rajasthan and, partially, TPCODL/Maharashtra) has a numerical GERC/SERC-style benchmark for SAIDI, SAIFI, CAIDI or MAIFI — most reliability comparisons are marked \"Comparison Possible: No\" by the regulator's own sheet, a systemic regulatory gap rather than a DISCOM failing to report.",
+  "JVVNL (Jaipur) reports \"Comparison Possible: Yes\" and \"Standard Met: Yes\" on 6 of 8 indicators — yet not one of those indicators has an actual reported value. That inflated its raw comparability metadata; this dashboard's score treats those as not-actually-comparable rather than taking the sheet's claim at face value.",
+  "TPNODL (Odisha) reported zero values for every one of its 8 indicators — only benchmark and standard metadata exists in its sheet for FY 2021-22.",
+  "\"Transformer Failure\" is measured two incompatible ways in this workbook: a restoration-compliance % (higher = better, benchmarked at 90-95%) everywhere except Gujarat, where it's a raw failure rate (lower = better, unbenchmarked). They are charted separately so the two are never mixed into one comparison.",
+  "Odisha's Billing Complaint Resolution indicator measures bill accuracy (% of bills that were faulty) rather than complaint-resolution speed used by every other state — TPCODL and TPNODL are excluded from the billing chart for that reason.",
+  "Voltage Variation is reported three different ways: a sample-test compliance % (Gujarat), a case-resolution % (Maharashtra, Rajasthan), and a raw complaint count (Odisha, 0 complaints) — the first two are charted together with the distinction flagged in tooltips; Odisha's count-based figure is excluded from the % chart entirely.",
+  "SAIDI's raw units are inconsistent across sheets in the source file itself — plain minutes (Maharashtra, Odisha-TPCODL), an Hr:Min clock value (Gujarat's DGVCL/MGVCL), and multi-day durations (UGVCL, PGVCL). All were normalized to hours here, but the source workbook does not self-normalize.",
+  "PGVCL's SAIDI (~209 hrs/yr) and TPCODL's SAIDI (~155 hrs/yr) are roughly 5-10x every other licensee's figure — real outliers that dominate the SAIDI chart's scale and are worth verifying against the original filing before treating as directly comparable to the rest of the group.",
+  "Three Madhya Pradesh zones (MPEZ, MPWZ, MPCZ) reported no data at all for SAIDI, SAIFI, MAIFI, CAIDI, Voltage Variation or Harmonics — only billing-complaint and transformer-restoration figures were filled in, and both pass at or near 100% for all three.",
+  "The workbook contained two exact duplicate placeholder sheets (Sheet13, Sheet14 — blank copies of the TPCODL/TPNODL template with no data) which were excluded entirely as non-data artifacts, not treated as additional licensees.",
+];
+document.getElementById('gapGrid').innerHTML = GAPS.map((g, i) => `
+  <div class="gap-card"><div class="gap-card-num">GAP ${String(i+1).padStart(2,'0')}</div><p>${g}</p></div>
+`).join('');
+</script>
+</body>
+</html>

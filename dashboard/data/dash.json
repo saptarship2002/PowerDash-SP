@@ -1,0 +1,1960 @@
+{
+  "state_order": [
+    "Maharashtra",
+    "Gujarat",
+    "Madhya Pradesh",
+    "Rajasthan",
+    "Odisha"
+  ],
+  "state_hue": {
+    "Maharashtra": "#2a78d6",
+    "Gujarat": "#eb6834",
+    "Madhya Pradesh": "#1baf7a",
+    "Rajasthan": "#c98500",
+    "Odisha": "#e87ba4"
+  },
+  "color_by_sheet": {
+    "MSEDCL,MAHARASHTRA": "#2a78d6",
+    "DGCVL,GUJARAT": "#b43d0d",
+    "MGVCL,GUJARAT": "#da4a10",
+    "UGVCL,GUJARAT": "#ef5e25",
+    "PGVCL,GUJARAT": "#f27a4b",
+    "MPEZ,MADHYA PRADESH": "#16ab76",
+    "MPWZ,MADHYA PRADESH": "#1de29b",
+    "MPCZ, MADHYA PRADESH": "#54e9b3",
+    "AVVNL,RAJASTHAN": "#c28000",
+    "JVVNL,RAJASTHAN": "#ffa900",
+    "JVVNL,RAJ": "#ffbd3d",
+    "TPCODL,ODISHA": "#a8194f",
+    "TPNODL,ODISHA": "#e6578c"
+  },
+  "charts": {
+    "saidi": [
+      {
+        "label": "MSEDCL",
+        "sheet": "MSEDCL,MAHARASHTRA",
+        "state": "Maharashtra",
+        "color": "#2a78d6",
+        "value": 14.792,
+        "raw": 887.54,
+        "meaning": "Total minutes of supply interruption for an average consumer over the year.",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "No",
+        "standard_met": "N/A"
+      },
+      {
+        "label": "DGVCL",
+        "sheet": "DGCVL,GUJARAT",
+        "state": "Gujarat",
+        "color": "#b43d0d",
+        "value": 6.317,
+        "raw": "06:19",
+        "meaning": "Total duration (Hr:Min) of sustained interruptions for an average consumer over the year.",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "NO",
+        "standard_met": "N/A"
+      },
+      {
+        "label": "MGVCL",
+        "sheet": "MGVCL,GUJARAT",
+        "state": "Gujarat",
+        "color": "#da4a10",
+        "value": 4.8,
+        "raw": "04:48",
+        "meaning": "Total duration (Hr:Min) of sustained interruptions for an average consumer over the year.",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "NO",
+        "standard_met": "N/A"
+      },
+      {
+        "label": "UGVCL",
+        "sheet": "UGVCL,GUJARAT",
+        "state": "Gujarat",
+        "color": "#ef5e25",
+        "value": 36.55,
+        "raw": "36.55 hrs (raw timedelta)",
+        "meaning": "Total duration (Hr:Min) of sustained interruptions for an average consumer over the year.",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "NO",
+        "standard_met": "N/A"
+      },
+      {
+        "label": "PGVCL",
+        "sheet": "PGVCL,GUJARAT",
+        "state": "Gujarat",
+        "color": "#f27a4b",
+        "value": 209.133,
+        "raw": "209.13 hrs (raw timedelta)",
+        "meaning": "Total duration (Hr:Min) of sustained interruptions for an average consumer over the year.",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "NO",
+        "standard_met": "N/A"
+      },
+      {
+        "label": "AVVNL",
+        "sheet": "AVVNL,RAJASTHAN",
+        "state": "Rajasthan",
+        "color": "#c28000",
+        "value": 36.8,
+        "raw": 36.8,
+        "meaning": "Total hours of supply interruption for an average consumer over the year.",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "Yes",
+        "standard_met": "Yes"
+      },
+      {
+        "label": "JdVVNL (Jodhpur)",
+        "sheet": "JVVNL,RAJ",
+        "state": "Rajasthan",
+        "color": "#ffbd3d",
+        "value": 21.79,
+        "raw": 21.79,
+        "meaning": "Total hours of supply interruption for an average consumer over the year.",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "Yes",
+        "standard_met": "Yes"
+      },
+      {
+        "label": "TPCODL",
+        "sheet": "TPCODL,ODISHA",
+        "state": "Odisha",
+        "color": "#a8194f",
+        "value": 155.067,
+        "raw": 9304.0,
+        "meaning": "Total minutes of supply interruption for an average consumer over the year.",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "No",
+        "standard_met": "N/A"
+      }
+    ],
+    "caidi": [
+      {
+        "label": "MSEDCL",
+        "sheet": "MSEDCL,MAHARASHTRA",
+        "state": "Maharashtra",
+        "color": "#2a78d6",
+        "value": 10.404,
+        "raw": 624.24,
+        "meaning": "Average time in minutes taken to restore supply for each interruption event over the year",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "No",
+        "standard_met": "N/A"
+      },
+      {
+        "label": "DGVCL",
+        "sheet": "DGCVL,GUJARAT",
+        "state": "Gujarat",
+        "color": "#b43d0d",
+        "value": 1.37,
+        "raw": 82.21,
+        "meaning": "Average restoration time (Minutes) for interrupted consumers over the year",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "NO",
+        "standard_met": "N/A"
+      },
+      {
+        "label": "MGVCL",
+        "sheet": "MGVCL,GUJARAT",
+        "state": "Gujarat",
+        "color": "#da4a10",
+        "value": 1.267,
+        "raw": 76.0,
+        "meaning": "Calculated average restoration time (Minutes) for interrupted consumers over the year.",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "NO",
+        "standard_met": "N/A"
+      },
+      {
+        "label": "UGVCL",
+        "sheet": "UGVCL,GUJARAT",
+        "state": "Gujarat",
+        "color": "#ef5e25",
+        "value": 1.213,
+        "raw": 72.76,
+        "meaning": "Calculated average restoration time (Minutes) for interrupted consumers over the year.",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "NO",
+        "standard_met": "N/A"
+      },
+      {
+        "label": "PGVCL",
+        "sheet": "PGVCL,GUJARAT",
+        "state": "Gujarat",
+        "color": "#f27a4b",
+        "value": 2.194,
+        "raw": 131.61,
+        "meaning": "Calculated average restoration time (Minutes) for interrupted consumers over the year.",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "NO",
+        "standard_met": "N/A"
+      },
+      {
+        "label": "AVVNL",
+        "sheet": "AVVNL,RAJASTHAN",
+        "state": "Rajasthan",
+        "color": "#c28000",
+        "value": null,
+        "raw": "N/A",
+        "meaning": "N/A",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "No",
+        "standard_met": "N/A"
+      },
+      {
+        "label": "JdVVNL (Jodhpur)",
+        "sheet": "JVVNL,RAJ",
+        "state": "Rajasthan",
+        "color": "#ffbd3d",
+        "value": null,
+        "raw": "N/A",
+        "meaning": "N/A",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "No",
+        "standard_met": "N/A"
+      },
+      {
+        "label": "TPCODL",
+        "sheet": "TPCODL,ODISHA",
+        "state": "Odisha",
+        "color": "#a8194f",
+        "value": null,
+        "raw": "N/A",
+        "meaning": "N/A",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "N/A",
+        "standard_met": "N/A"
+      }
+    ],
+    "saifi": [
+      {
+        "label": "MSEDCL",
+        "sheet": "MSEDCL,MAHARASHTRA",
+        "state": "Maharashtra",
+        "color": "#2a78d6",
+        "value": 5.6,
+        "raw": 5.6,
+        "meaning": "Total number of sustained interruptions for an average consumer over the year.",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "No",
+        "standard_met": "N/A"
+      },
+      {
+        "label": "DGVCL",
+        "sheet": "DGCVL,GUJARAT",
+        "state": "Gujarat",
+        "color": "#b43d0d",
+        "value": 4.61,
+        "raw": 4.61,
+        "meaning": "Total number of sustained interruptions for an average consumer over the year.",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "NO",
+        "standard_met": "N/A"
+      },
+      {
+        "label": "MGVCL",
+        "sheet": "MGVCL,GUJARAT",
+        "state": "Gujarat",
+        "color": "#da4a10",
+        "value": 3.79,
+        "raw": 3.79,
+        "meaning": "Total number of sustained interruptions for an average consumer over the year.",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "NO",
+        "standard_met": "N/A"
+      },
+      {
+        "label": "UGVCL",
+        "sheet": "UGVCL,GUJARAT",
+        "state": "Gujarat",
+        "color": "#ef5e25",
+        "value": 30.14,
+        "raw": 30.14,
+        "meaning": "Total number of sustained interruptions for an average consumer over the year.",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "NO",
+        "standard_met": "N/A"
+      },
+      {
+        "label": "PGVCL",
+        "sheet": "PGVCL,GUJARAT",
+        "state": "Gujarat",
+        "color": "#f27a4b",
+        "value": 95.34,
+        "raw": 95.34,
+        "meaning": "Total number of sustained interruptions for an average consumer over the year.",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "NO",
+        "standard_met": "N/A"
+      },
+      {
+        "label": "AVVNL",
+        "sheet": "AVVNL,RAJASTHAN",
+        "state": "Rajasthan",
+        "color": "#c28000",
+        "value": 31.07,
+        "raw": 31.07,
+        "meaning": "Total number of sustained interruptions for an average consumer over the year.",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "Yes",
+        "standard_met": "Yes"
+      },
+      {
+        "label": "JdVVNL (Jodhpur)",
+        "sheet": "JVVNL,RAJ",
+        "state": "Rajasthan",
+        "color": "#ffbd3d",
+        "value": 12.15,
+        "raw": 12.15,
+        "meaning": "Total number of sustained interruptions for an average consumer over the year.",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "Yes",
+        "standard_met": "Yes"
+      },
+      {
+        "label": "TPCODL",
+        "sheet": "TPCODL,ODISHA",
+        "state": "Odisha",
+        "color": "#a8194f",
+        "value": 378.0,
+        "raw": 378.0,
+        "meaning": "Total number of sustained interruptions for an average consumer over the year.",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "No",
+        "standard_met": "N/A"
+      }
+    ],
+    "maifi": [
+      {
+        "label": "MSEDCL",
+        "sheet": "MSEDCL,MAHARASHTRA",
+        "state": "Maharashtra",
+        "color": "#2a78d6",
+        "value": null,
+        "raw": "N/A",
+        "meaning": "Data for momentary interruptions was not reported in this period.",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "No",
+        "standard_met": "N/A"
+      },
+      {
+        "label": "DGVCL",
+        "sheet": "DGCVL,GUJARAT",
+        "state": "Gujarat",
+        "color": "#b43d0d",
+        "value": 10.13,
+        "raw": 10.13,
+        "meaning": "Total number of momentary interruptions for an average consumer over the year.",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "NO",
+        "standard_met": "N/A"
+      },
+      {
+        "label": "MGVCL",
+        "sheet": "MGVCL,GUJARAT",
+        "state": "Gujarat",
+        "color": "#da4a10",
+        "value": 9.82,
+        "raw": 9.82,
+        "meaning": "Total number of momentary interruptions for an average consumer over the year.",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "NO",
+        "standard_met": "N/A"
+      },
+      {
+        "label": "UGVCL",
+        "sheet": "UGVCL,GUJARAT",
+        "state": "Gujarat",
+        "color": "#ef5e25",
+        "value": 64.73,
+        "raw": 64.73,
+        "meaning": "Total number of momentary interruptions for an average consumer over the year.",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "NO",
+        "standard_met": "N/A"
+      },
+      {
+        "label": "PGVCL",
+        "sheet": "PGVCL,GUJARAT",
+        "state": "Gujarat",
+        "color": "#f27a4b",
+        "value": 114.17,
+        "raw": 114.17,
+        "meaning": "Total number of momentary interruptions for an average consumer over the year.",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "NO",
+        "standard_met": "N/A"
+      },
+      {
+        "label": "AVVNL",
+        "sheet": "AVVNL,RAJASTHAN",
+        "state": "Rajasthan",
+        "color": "#c28000",
+        "value": null,
+        "raw": "N/A",
+        "meaning": "N/A",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "No",
+        "standard_met": "N/A"
+      },
+      {
+        "label": "JdVVNL (Jodhpur)",
+        "sheet": "JVVNL,RAJ",
+        "state": "Rajasthan",
+        "color": "#ffbd3d",
+        "value": null,
+        "raw": "N/A",
+        "meaning": "N/A",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "No",
+        "standard_met": "N/A"
+      },
+      {
+        "label": "TPCODL",
+        "sheet": "TPCODL,ODISHA",
+        "state": "Odisha",
+        "color": "#a8194f",
+        "value": 85.0,
+        "raw": 85.0,
+        "meaning": "Total number of average interruptions for an average consumer over the year.",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "No",
+        "standard_met": "N/A"
+      }
+    ],
+    "harmonics": [
+      {
+        "label": "DGVCL",
+        "sheet": "DGCVL,GUJARAT",
+        "state": "Gujarat",
+        "color": "#b43d0d",
+        "value": 100.0,
+        "raw": 1.0,
+        "meaning": "% of sample tests showing NIL deviation from prescribed standards.",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "NO",
+        "standard_met": "N/A"
+      },
+      {
+        "label": "MGVCL",
+        "sheet": "MGVCL,GUJARAT",
+        "state": "Gujarat",
+        "color": "#da4a10",
+        "value": 100.0,
+        "raw": 1.0,
+        "meaning": "% of sample tests showing NIL deviation from prescribed standards.",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "NO",
+        "standard_met": "N/A"
+      },
+      {
+        "label": "UGVCL",
+        "sheet": "UGVCL,GUJARAT",
+        "state": "Gujarat",
+        "color": "#ef5e25",
+        "value": 99.93,
+        "raw": 0.9993,
+        "meaning": "% of sample tests showing NIL deviation from prescribed standards.",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "NO",
+        "standard_met": "N/A"
+      },
+      {
+        "label": "PGVCL",
+        "sheet": "PGVCL,GUJARAT",
+        "state": "Gujarat",
+        "color": "#f27a4b",
+        "value": 100.0,
+        "raw": 1.0,
+        "meaning": "% of sample tests showing NIL deviation from prescribed standards.",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "NO",
+        "standard_met": "N/A"
+      }
+    ],
+    "voltage": [
+      {
+        "label": "MSEDCL",
+        "sheet": "MSEDCL,MAHARASHTRA",
+        "state": "Maharashtra",
+        "color": "#2a78d6",
+        "value": 13.6,
+        "raw": 0.136,
+        "meaning": "% of cases resolved within specified time/standard",
+        "benchmark": "Maintain within limits for 100% of the time.",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "No",
+        "standard_met": "N/A"
+      },
+      {
+        "label": "DGVCL",
+        "sheet": "DGCVL,GUJARAT",
+        "state": "Gujarat",
+        "color": "#b43d0d",
+        "value": 100.0,
+        "raw": 1.0,
+        "meaning": "% of sample tests showing NIL deviation from prescribed standards.",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "N/A",
+        "standard_met": "N/A"
+      },
+      {
+        "label": "MGVCL",
+        "sheet": "MGVCL,GUJARAT",
+        "state": "Gujarat",
+        "color": "#da4a10",
+        "value": 100.0,
+        "raw": 1.0,
+        "meaning": "% of sample tests showing NIL deviation from prescribed standards.",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "N/A",
+        "standard_met": "N/A"
+      },
+      {
+        "label": "UGVCL",
+        "sheet": "UGVCL,GUJARAT",
+        "state": "Gujarat",
+        "color": "#ef5e25",
+        "value": 97.11,
+        "raw": 0.9711,
+        "meaning": "% of sample tests showing NIL deviation from prescribed standards.",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "N/A",
+        "standard_met": "N/A"
+      },
+      {
+        "label": "PGVCL",
+        "sheet": "PGVCL,GUJARAT",
+        "state": "Gujarat",
+        "color": "#f27a4b",
+        "value": 100.0,
+        "raw": 1.0,
+        "meaning": "% of sample tests showing NIL deviation from prescribed standards.",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "N/A",
+        "standard_met": "N/A"
+      },
+      {
+        "label": "AVVNL",
+        "sheet": "AVVNL,RAJASTHAN",
+        "state": "Rajasthan",
+        "color": "#c28000",
+        "value": 98.98,
+        "raw": 0.9898,
+        "meaning": "% of cases resolved within specified time/standard during the year.",
+        "benchmark": 90.0,
+        "benchmark_meaning": "% of cases to be resolved within specified time/standard.",
+        "comparison_possible": "Yes",
+        "standard_met": "Yes"
+      },
+      {
+        "label": "JdVVNL (Jodhpur)",
+        "sheet": "JVVNL,RAJ",
+        "state": "Rajasthan",
+        "color": "#ffbd3d",
+        "value": 97.43,
+        "raw": 0.9743,
+        "meaning": "% of cases resolved within specified time/standard during the year.",
+        "benchmark": 90.0,
+        "benchmark_meaning": "% of cases to be resolved within specified time/standard.",
+        "comparison_possible": "Yes",
+        "standard_met": "Yes"
+      }
+    ],
+    "transformer_restore": [
+      {
+        "label": "MSEDCL (Urban)",
+        "sheet": "MSEDCL,MAHARASHTRA",
+        "state": "Maharashtra",
+        "color": "#2a78d6",
+        "value": 18.29,
+        "raw": 0.1829,
+        "meaning": "% of cases resolved within specified time/standard",
+        "benchmark": 90.0,
+        "benchmark_meaning": "% of cases to be resolved within specified time/standard",
+        "comparison_possible": "Yes",
+        "standard_met": "No"
+      },
+      {
+        "label": "MSEDCL (Rural)",
+        "sheet": "MSEDCL,MAHARASHTRA",
+        "state": "Maharashtra",
+        "color": "#2a78d6",
+        "value": 23.16,
+        "raw": 0.2316,
+        "meaning": "% of cases resolved within specified time/standard",
+        "benchmark": 90.0,
+        "benchmark_meaning": "% of cases to be resolved within specified time/standard",
+        "comparison_possible": "Yes",
+        "standard_met": "No"
+      },
+      {
+        "label": "MPEZ (Urban)",
+        "sheet": "MPEZ,MADHYA PRADESH",
+        "state": "Madhya Pradesh",
+        "color": "#16ab76",
+        "value": 100.0,
+        "raw": 100.0,
+        "meaning": "% of cases resolved against the benchmark",
+        "benchmark": 90.0,
+        "benchmark_meaning": "% of cases to be resolved within specified time/standard",
+        "comparison_possible": "Yes",
+        "standard_met": "Yes"
+      },
+      {
+        "label": "MPEZ (Rural)",
+        "sheet": "MPEZ,MADHYA PRADESH",
+        "state": "Madhya Pradesh",
+        "color": "#16ab76",
+        "value": 100.0,
+        "raw": 100.0,
+        "meaning": "% of cases resolved against the benchmark",
+        "benchmark": 90.0,
+        "benchmark_meaning": "% of cases to be resolved within specified time/standard",
+        "comparison_possible": "Yes",
+        "standard_met": "Yes"
+      },
+      {
+        "label": "MPWZ (Urban)",
+        "sheet": "MPWZ,MADHYA PRADESH",
+        "state": "Madhya Pradesh",
+        "color": "#1de29b",
+        "value": 100.0,
+        "raw": 100.0,
+        "meaning": "% of cases resolved against the benchmark",
+        "benchmark": 90.0,
+        "benchmark_meaning": "% of cases to be resolved within specified time/standard",
+        "comparison_possible": "Yes",
+        "standard_met": "Yes"
+      },
+      {
+        "label": "MPWZ (Rural)",
+        "sheet": "MPWZ,MADHYA PRADESH",
+        "state": "Madhya Pradesh",
+        "color": "#1de29b",
+        "value": 100.0,
+        "raw": 100.0,
+        "meaning": "% of cases resolved against the benchmark",
+        "benchmark": 90.0,
+        "benchmark_meaning": "% of cases to be resolved within specified time/standard",
+        "comparison_possible": "Yes",
+        "standard_met": "Yes"
+      },
+      {
+        "label": "MPCZ (Urban)",
+        "sheet": "MPCZ, MADHYA PRADESH",
+        "state": "Madhya Pradesh",
+        "color": "#54e9b3",
+        "value": 100.0,
+        "raw": 100.0,
+        "meaning": "% of cases resolved against the benchmark",
+        "benchmark": 90.0,
+        "benchmark_meaning": "% of cases to be resolved within specified time/standard",
+        "comparison_possible": "Yes",
+        "standard_met": "Yes"
+      },
+      {
+        "label": "MPCZ (Rural)",
+        "sheet": "MPCZ, MADHYA PRADESH",
+        "state": "Madhya Pradesh",
+        "color": "#54e9b3",
+        "value": 98.2,
+        "raw": 98.2,
+        "meaning": "% of cases resolved against the benchmark",
+        "benchmark": 90.0,
+        "benchmark_meaning": "% of cases to be resolved within specified time/standard",
+        "comparison_possible": "Yes",
+        "standard_met": "Yes"
+      },
+      {
+        "label": "AVVNL",
+        "sheet": "AVVNL,RAJASTHAN",
+        "state": "Rajasthan",
+        "color": "#c28000",
+        "value": 99.11,
+        "raw": 0.9911,
+        "meaning": "% of cases resolved within specified time/standard during the year.",
+        "benchmark": 90.0,
+        "benchmark_meaning": "% of cases to be resolved within specified time/standard.",
+        "comparison_possible": "Yes",
+        "standard_met": "Yes"
+      },
+      {
+        "label": "JdVVNL (Jodhpur)",
+        "sheet": "JVVNL,RAJ",
+        "state": "Rajasthan",
+        "color": "#ffbd3d",
+        "value": 96.78,
+        "raw": 0.9678,
+        "meaning": "% of cases resolved within specified time/standard during the year.",
+        "benchmark": 90.0,
+        "benchmark_meaning": "% of cases to be resolved within specified time/standard.",
+        "comparison_possible": "Yes",
+        "standard_met": "Yes"
+      },
+      {
+        "label": "TPCODL",
+        "sheet": "TPCODL,ODISHA",
+        "state": "Odisha",
+        "color": "#a8194f",
+        "value": 95.98,
+        "raw": 0.9598,
+        "meaning": "% of cases resolved within specified time/standard during the year.",
+        "benchmark": 0.95,
+        "benchmark_meaning": "Minimum percentage of failed transformers that must be replaced within the specified time.",
+        "comparison_possible": "Yes",
+        "standard_met": "No"
+      }
+    ],
+    "gujarat_transformer_failure": [
+      {
+        "label": "DGVCL",
+        "sheet": "DGCVL,GUJARAT",
+        "state": "Gujarat",
+        "color": "#b43d0d",
+        "value": 5.81,
+        "raw": 5.81,
+        "meaning": "% failure rate of Distribution transformer",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "NO",
+        "standard_met": "N/A"
+      },
+      {
+        "label": "MGVCL",
+        "sheet": "MGVCL,GUJARAT",
+        "state": "Gujarat",
+        "color": "#da4a10",
+        "value": 5.39,
+        "raw": 0.0539,
+        "meaning": "% failure rate of Distribution transformer",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "NO",
+        "standard_met": "N/A"
+      },
+      {
+        "label": "UGVCL",
+        "sheet": "UGVCL,GUJARAT",
+        "state": "Gujarat",
+        "color": "#ef5e25",
+        "value": 6.88,
+        "raw": 0.0688,
+        "meaning": "% failure rate of Distribution transformer",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "NO",
+        "standard_met": "N/A"
+      },
+      {
+        "label": "PGVCL",
+        "sheet": "PGVCL,GUJARAT",
+        "state": "Gujarat",
+        "color": "#f27a4b",
+        "value": 2.8,
+        "raw": 0.028,
+        "meaning": "% failure rate of Distribution transformer",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "NO",
+        "standard_met": "N/A"
+      }
+    ],
+    "billing": [
+      {
+        "label": "MSEDCL",
+        "sheet": "MSEDCL,MAHARASHTRA",
+        "state": "Maharashtra",
+        "color": "#2a78d6",
+        "value": 74.55,
+        "raw": 0.7455,
+        "meaning": "% of cases resolved within specified time/standard",
+        "benchmark": 99.0,
+        "benchmark_meaning": "% of cases to be resolved within specified time/standard",
+        "comparison_possible": "Yes",
+        "standard_met": "No"
+      },
+      {
+        "label": "DGVCL",
+        "sheet": "DGCVL,GUJARAT",
+        "state": "Gujarat",
+        "color": "#b43d0d",
+        "value": 82.15,
+        "raw": 0.8215,
+        "meaning": "% of cases resolved within specified time/standard during the year.",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "NO",
+        "standard_met": "N/A"
+      },
+      {
+        "label": "MGVCL",
+        "sheet": "MGVCL,GUJARAT",
+        "state": "Gujarat",
+        "color": "#da4a10",
+        "value": 50.39,
+        "raw": 0.5039,
+        "meaning": "% of cases resolved within specified time/standard during the year.",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "NO",
+        "standard_met": "N/A"
+      },
+      {
+        "label": "UGVCL",
+        "sheet": "UGVCL,GUJARAT",
+        "state": "Gujarat",
+        "color": "#ef5e25",
+        "value": 29.66,
+        "raw": 0.2966,
+        "meaning": "% of cases resolved within specified time/standard during the year.",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "NO",
+        "standard_met": "N/A"
+      },
+      {
+        "label": "PGVCL",
+        "sheet": "PGVCL,GUJARAT",
+        "state": "Gujarat",
+        "color": "#f27a4b",
+        "value": 41.44,
+        "raw": 0.4144,
+        "meaning": "% of cases resolved within specified time/standard during the year.",
+        "benchmark": "N/A",
+        "benchmark_meaning": "N/A",
+        "comparison_possible": "NO",
+        "standard_met": "N/A"
+      },
+      {
+        "label": "MPEZ (Urban)",
+        "sheet": "MPEZ,MADHYA PRADESH",
+        "state": "Madhya Pradesh",
+        "color": "#16ab76",
+        "value": 100.0,
+        "raw": 100.0,
+        "meaning": "% of cases resolved within specified time/standard",
+        "benchmark": 99.0,
+        "benchmark_meaning": "% of cases to be resolved within specified time/standard",
+        "comparison_possible": "Yes",
+        "standard_met": "Yes"
+      },
+      {
+        "label": "MPEZ (Rural)",
+        "sheet": "MPEZ,MADHYA PRADESH",
+        "state": "Madhya Pradesh",
+        "color": "#16ab76",
+        "value": 100.0,
+        "raw": 100.0,
+        "meaning": "% of cases resolved within specified time/standard",
+        "benchmark": 99.0,
+        "benchmark_meaning": "% of cases to be resolved within specified time/standard",
+        "comparison_possible": "Yes",
+        "standard_met": "Yes"
+      },
+      {
+        "label": "MPWZ (Urban)",
+        "sheet": "MPWZ,MADHYA PRADESH",
+        "state": "Madhya Pradesh",
+        "color": "#1de29b",
+        "value": 100.0,
+        "raw": 100.0,
+        "meaning": "% of cases resolved within specified time/standard",
+        "benchmark": 99.0,
+        "benchmark_meaning": "% of cases to be resolved within specified time/standard",
+        "comparison_possible": "Yes",
+        "standard_met": "Yes"
+      },
+      {
+        "label": "MPWZ (Rural)",
+        "sheet": "MPWZ,MADHYA PRADESH",
+        "state": "Madhya Pradesh",
+        "color": "#1de29b",
+        "value": 100.0,
+        "raw": 100.0,
+        "meaning": "% of cases resolved within specified time/standard",
+        "benchmark": 99.0,
+        "benchmark_meaning": "% of cases to be resolved within specified time/standard",
+        "comparison_possible": "Yes",
+        "standard_met": "Yes"
+      },
+      {
+        "label": "MPCZ (Urban)",
+        "sheet": "MPCZ, MADHYA PRADESH",
+        "state": "Madhya Pradesh",
+        "color": "#54e9b3",
+        "value": 99.2,
+        "raw": 99.2,
+        "meaning": "% of cases resolved within specified time/standard",
+        "benchmark": 99.0,
+        "benchmark_meaning": "% of cases to be resolved within specified time/standard",
+        "comparison_possible": "Yes",
+        "standard_met": "Yes"
+      },
+      {
+        "label": "MPCZ (Rural)",
+        "sheet": "MPCZ, MADHYA PRADESH",
+        "state": "Madhya Pradesh",
+        "color": "#54e9b3",
+        "value": 99.0,
+        "raw": 99.0,
+        "meaning": "% of cases resolved within specified time/standard",
+        "benchmark": 99.0,
+        "benchmark_meaning": "% of cases to be resolved within specified time/standard",
+        "comparison_possible": "Yes",
+        "standard_met": "Yes"
+      },
+      {
+        "label": "AVVNL",
+        "sheet": "AVVNL,RAJASTHAN",
+        "state": "Rajasthan",
+        "color": "#c28000",
+        "value": 98.12,
+        "raw": 0.9812,
+        "meaning": "% of cases resolved within specified time/standard during the year.",
+        "benchmark": 90.0,
+        "benchmark_meaning": "% of cases to be resolved within specified time/standard.",
+        "comparison_possible": "Yes",
+        "standard_met": "Yes"
+      },
+      {
+        "label": "JdVVNL (Jodhpur)",
+        "sheet": "JVVNL,RAJ",
+        "state": "Rajasthan",
+        "color": "#ffbd3d",
+        "value": 98.36,
+        "raw": 0.9836,
+        "meaning": "% of cases resolved within specified time/standard during the year.",
+        "benchmark": 90.0,
+        "benchmark_meaning": "% of cases to be resolved within specified time/standard.",
+        "comparison_possible": "Yes",
+        "standard_met": "Yes"
+      }
+    ]
+  },
+  "heatmap": {
+    "indicators": [
+      "SAIDI",
+      "SAIFI",
+      "MAIFI",
+      "CAIDI",
+      "VOLTAGE VARIATION",
+      "HARMONICS",
+      "TRANSFORMER FAILURE",
+      "BILLING COMPLAINT RESOLUTION"
+    ],
+    "rows": [
+      {
+        "sheet": "MSEDCL,MAHARASHTRA",
+        "short_name": "MSEDCL",
+        "state": "Maharashtra",
+        "color": "#2a78d6",
+        "cells": [
+          {
+            "status": "no"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "yes"
+          },
+          {
+            "status": "yes"
+          }
+        ]
+      },
+      {
+        "sheet": "DGCVL,GUJARAT",
+        "short_name": "DGVCL",
+        "state": "Gujarat",
+        "color": "#b43d0d",
+        "cells": [
+          {
+            "status": "no"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "na"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "no"
+          }
+        ]
+      },
+      {
+        "sheet": "MGVCL,GUJARAT",
+        "short_name": "MGVCL",
+        "state": "Gujarat",
+        "color": "#da4a10",
+        "cells": [
+          {
+            "status": "no"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "na"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "no"
+          }
+        ]
+      },
+      {
+        "sheet": "UGVCL,GUJARAT",
+        "short_name": "UGVCL",
+        "state": "Gujarat",
+        "color": "#ef5e25",
+        "cells": [
+          {
+            "status": "no"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "na"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "no"
+          }
+        ]
+      },
+      {
+        "sheet": "PGVCL,GUJARAT",
+        "short_name": "PGVCL",
+        "state": "Gujarat",
+        "color": "#f27a4b",
+        "cells": [
+          {
+            "status": "no"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "na"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "no"
+          }
+        ]
+      },
+      {
+        "sheet": "MPEZ,MADHYA PRADESH",
+        "short_name": "MPEZ",
+        "state": "Madhya Pradesh",
+        "color": "#16ab76",
+        "cells": [
+          {
+            "status": "no"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "na"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "yes"
+          },
+          {
+            "status": "yes"
+          }
+        ]
+      },
+      {
+        "sheet": "MPWZ,MADHYA PRADESH",
+        "short_name": "MPWZ",
+        "state": "Madhya Pradesh",
+        "color": "#1de29b",
+        "cells": [
+          {
+            "status": "no"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "na"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "yes"
+          },
+          {
+            "status": "yes"
+          }
+        ]
+      },
+      {
+        "sheet": "MPCZ, MADHYA PRADESH",
+        "short_name": "MPCZ",
+        "state": "Madhya Pradesh",
+        "color": "#54e9b3",
+        "cells": [
+          {
+            "status": "no"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "na"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "yes"
+          },
+          {
+            "status": "yes"
+          }
+        ]
+      },
+      {
+        "sheet": "AVVNL,RAJASTHAN",
+        "short_name": "AVVNL",
+        "state": "Rajasthan",
+        "color": "#c28000",
+        "cells": [
+          {
+            "status": "yes"
+          },
+          {
+            "status": "yes"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "yes"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "yes"
+          },
+          {
+            "status": "yes"
+          }
+        ]
+      },
+      {
+        "sheet": "JVVNL,RAJASTHAN",
+        "short_name": "JVVNL (Jaipur)",
+        "state": "Rajasthan",
+        "color": "#ffa900",
+        "cells": [
+          {
+            "status": "phantom"
+          },
+          {
+            "status": "phantom"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "phantom"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "phantom"
+          },
+          {
+            "status": "phantom"
+          }
+        ]
+      },
+      {
+        "sheet": "JVVNL,RAJ",
+        "short_name": "JdVVNL (Jodhpur)",
+        "state": "Rajasthan",
+        "color": "#ffbd3d",
+        "cells": [
+          {
+            "status": "yes"
+          },
+          {
+            "status": "yes"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "yes"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "yes"
+          },
+          {
+            "status": "yes"
+          }
+        ]
+      },
+      {
+        "sheet": "TPCODL,ODISHA",
+        "short_name": "TPCODL",
+        "state": "Odisha",
+        "color": "#a8194f",
+        "cells": [
+          {
+            "status": "no"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "na"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "na"
+          },
+          {
+            "status": "yes"
+          },
+          {
+            "status": "yes"
+          }
+        ]
+      },
+      {
+        "sheet": "TPNODL,ODISHA",
+        "short_name": "TPNODL",
+        "state": "Odisha",
+        "color": "#e6578c",
+        "cells": [
+          {
+            "status": "no"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "na"
+          },
+          {
+            "status": "no"
+          },
+          {
+            "status": "na"
+          },
+          {
+            "status": "phantom"
+          },
+          {
+            "status": "phantom"
+          }
+        ]
+      }
+    ]
+  },
+  "scorecards": [
+    {
+      "sheet": "MSEDCL,MAHARASHTRA",
+      "full_name": "Maharashtra State Electricity Distribution Company Limited",
+      "short_name": "MSEDCL",
+      "state": "Maharashtra",
+      "color": "#2a78d6",
+      "regulation": "Maharashtra Electricity Regulatory Commission (Electricity Supply Code and Standards of Performance of Distribution Licensees including Power Quality) Regulations, 2021 | Maharashtra Electricity Regulatory Commission (Electricity Supply Code and Standards of Performance of Distribution Licensees including Power Quality) (First Amendment) Regulations, 2024.",
+      "scoring": {
+        "total_indicators": 9,
+        "standards_available_pct": 66.7,
+        "data_reported_pct": 100.0,
+        "comparable_pct": 33.3,
+        "compliance_pct": 0.0,
+        "composite_score": 51.7,
+        "phantom_comparable_count": 0,
+        "phantom_comparable_indicators": [],
+        "grade": "B"
+      },
+      "gap": "Reports the fullest indicator set of any licensee, but standard/reported units are inconsistent (minutes vs. resolved-% vs. Hr:Min) and most benchmarks (90-99%) are missed by wide margins."
+    },
+    {
+      "sheet": "DGCVL,GUJARAT",
+      "full_name": "Dakshin Gujarat Vij Company Limited",
+      "short_name": "DGVCL",
+      "state": "Gujarat",
+      "color": "#b43d0d",
+      "regulation": "Gujarat Electricity Regulatory Commission (Standards of Performance of Distribution Licensees) Regulations, 2023.",
+      "scoring": {
+        "total_indicators": 8,
+        "standards_available_pct": 100.0,
+        "data_reported_pct": 100.0,
+        "comparable_pct": 0.0,
+        "compliance_pct": null,
+        "composite_score": 50.0,
+        "phantom_comparable_count": 0,
+        "phantom_comparable_indicators": [],
+        "grade": "B"
+      },
+      "gap": "Reliability indicators (SAIDI/SAIFI/MAIFI/CAIDI) have no GERC benchmark to compare against; power-quality sample tests pass at ~100%."
+    },
+    {
+      "sheet": "MGVCL,GUJARAT",
+      "full_name": "Madhya Gujarat Vij Company Limited",
+      "short_name": "MGVCL",
+      "state": "Gujarat",
+      "color": "#da4a10",
+      "regulation": "Gujarat Electricity Regulatory Commission (Standards of Performance of Distribution Licensees) Regulations, 2023.",
+      "scoring": {
+        "total_indicators": 8,
+        "standards_available_pct": 100.0,
+        "data_reported_pct": 100.0,
+        "comparable_pct": 0.0,
+        "compliance_pct": null,
+        "composite_score": 50.0,
+        "phantom_comparable_count": 0,
+        "phantom_comparable_indicators": [],
+        "grade": "B"
+      },
+      "gap": "Same regulatory gap as other Gujarat DISCOMs on reliability; billing complaint resolution is the weakest metric at 50.4%."
+    },
+    {
+      "sheet": "UGVCL,GUJARAT",
+      "full_name": "Uttar Gujarat Vij Company Limited",
+      "short_name": "UGVCL",
+      "state": "Gujarat",
+      "color": "#ef5e25",
+      "regulation": "Gujarat Electricity Regulatory Commission (Standards of Performance of Distribution Licensees) Regulations, 2023.",
+      "scoring": {
+        "total_indicators": 8,
+        "standards_available_pct": 100.0,
+        "data_reported_pct": 100.0,
+        "comparable_pct": 0.0,
+        "compliance_pct": null,
+        "composite_score": 50.0,
+        "phantom_comparable_count": 0,
+        "phantom_comparable_indicators": [],
+        "grade": "B"
+      },
+      "gap": "Billing complaint resolution is the lowest in the dataset (29.7%); reliability indicators remain non-comparable under GERC rules."
+    },
+    {
+      "sheet": "PGVCL,GUJARAT",
+      "full_name": "Paschim Gujarat Vij Company Limited",
+      "short_name": "PGVCL",
+      "state": "Gujarat",
+      "color": "#f27a4b",
+      "regulation": "Gujarat Electricity Regulatory Commission (Standards of Performance of Distribution Licensees) Regulations, 2023.",
+      "scoring": {
+        "total_indicators": 8,
+        "standards_available_pct": 100.0,
+        "data_reported_pct": 100.0,
+        "comparable_pct": 0.0,
+        "compliance_pct": null,
+        "composite_score": 50.0,
+        "phantom_comparable_count": 0,
+        "phantom_comparable_indicators": [],
+        "grade": "B"
+      },
+      "gap": "SAIDI (~209 hrs/yr) and SAIFI (~95/yr) are order-of-magnitude outliers versus peers — worth verifying at source."
+    },
+    {
+      "sheet": "MPEZ,MADHYA PRADESH",
+      "full_name": "Madhya Pradesh Poorv Kshetra Vidyut Vitaran Company Limited",
+      "short_name": "MPEZ",
+      "state": "Madhya Pradesh",
+      "color": "#16ab76",
+      "regulation": "Madhya Pradesh Electricity Regulatory Commission (Distribution Performance Standards) Regulations, 2004",
+      "scoring": {
+        "total_indicators": 10,
+        "standards_available_pct": 90.0,
+        "data_reported_pct": 100.0,
+        "comparable_pct": 40.0,
+        "compliance_pct": 100.0,
+        "composite_score": 79.5,
+        "phantom_comparable_count": 0,
+        "phantom_comparable_indicators": [],
+        "grade": "A"
+      },
+      "gap": "Reports zero data for all four reliability and two power-quality indicators; only billing/transformer-restoration are populated (and pass at ~100%)."
+    },
+    {
+      "sheet": "MPWZ,MADHYA PRADESH",
+      "full_name": "Madhya Pradesh Paschim Kshetra Vidyut Vitaran Company Limited",
+      "short_name": "MPWZ",
+      "state": "Madhya Pradesh",
+      "color": "#1de29b",
+      "regulation": "Madhya Pradesh Electricity Regulatory Commission (Distribution Performance Standards) Regulations, 2004",
+      "scoring": {
+        "total_indicators": 10,
+        "standards_available_pct": 90.0,
+        "data_reported_pct": 100.0,
+        "comparable_pct": 40.0,
+        "compliance_pct": 100.0,
+        "composite_score": 79.5,
+        "phantom_comparable_count": 0,
+        "phantom_comparable_indicators": [],
+        "grade": "A"
+      },
+      "gap": "Same reporting pattern as MPEZ — reliability & power-quality indicators entirely unreported for 2021-22."
+    },
+    {
+      "sheet": "MPCZ, MADHYA PRADESH",
+      "full_name": "Madhya Pradesh Madhya Kshetra Vidyut Vitaran Company Limited",
+      "short_name": "MPCZ",
+      "state": "Madhya Pradesh",
+      "color": "#54e9b3",
+      "regulation": "Madhya Pradesh Electricity Regulatory Commission (Distribution Performance Standards) Regulations, 2004",
+      "scoring": {
+        "total_indicators": 10,
+        "standards_available_pct": 90.0,
+        "data_reported_pct": 100.0,
+        "comparable_pct": 40.0,
+        "compliance_pct": 100.0,
+        "composite_score": 79.5,
+        "phantom_comparable_count": 0,
+        "phantom_comparable_indicators": [],
+        "grade": "A"
+      },
+      "gap": "Same reporting pattern as MPEZ/MPWZ — reliability & power-quality indicators entirely unreported for 2021-22."
+    },
+    {
+      "sheet": "AVVNL,RAJASTHAN",
+      "full_name": "Ajmer Vidyut Vitran Nigam Limited",
+      "short_name": "AVVNL",
+      "state": "Rajasthan",
+      "color": "#c28000",
+      "regulation": "RERC ( Standards of Performance for Distribution Licensees) Regulations, 2021",
+      "scoring": {
+        "total_indicators": 8,
+        "standards_available_pct": 75.0,
+        "data_reported_pct": 100.0,
+        "comparable_pct": 62.5,
+        "compliance_pct": 100.0,
+        "composite_score": 82.5,
+        "phantom_comparable_count": 0,
+        "phantom_comparable_indicators": [],
+        "grade": "A"
+      },
+      "gap": "The most fully comparable licensee in the dataset — RERC benchmarks exist and are met for SAIDI, SAIFI, voltage variation, transformer restoration and billing."
+    },
+    {
+      "sheet": "JVVNL,RAJASTHAN",
+      "full_name": "Jaipur Vidyut Vitran Nigam Limited",
+      "short_name": "JVVNL (Jaipur)",
+      "state": "Rajasthan",
+      "color": "#ffa900",
+      "regulation": "RERC ( Standards of Performance for Distribution Licensees) Regulations, 2021",
+      "scoring": {
+        "total_indicators": 8,
+        "standards_available_pct": 75.0,
+        "data_reported_pct": 0.0,
+        "comparable_pct": 0.0,
+        "compliance_pct": null,
+        "composite_score": 18.8,
+        "phantom_comparable_count": 5,
+        "phantom_comparable_indicators": [
+          "SAIDI",
+          "SAIFI",
+          "Voltage Variation",
+          "Transformer Failure",
+          "Billing Complaint Resolution"
+        ],
+        "grade": "C"
+      },
+      "gap": "Every indicator is tagged \"Comparison Possible: Yes\" and \"Standard Met: Yes\" in the source sheet, yet not a single value was actually reported — a reporting-integrity gap, not a real result."
+    },
+    {
+      "sheet": "JVVNL,RAJ",
+      "full_name": "Jodhpur Vidyut Vitran Nigam Limited",
+      "short_name": "JdVVNL (Jodhpur)",
+      "state": "Rajasthan",
+      "color": "#ffbd3d",
+      "regulation": "RERC ( Standards of Performance for Distribution Licensees) Regulations, 2021",
+      "scoring": {
+        "total_indicators": 8,
+        "standards_available_pct": 75.0,
+        "data_reported_pct": 100.0,
+        "comparable_pct": 62.5,
+        "compliance_pct": 100.0,
+        "composite_score": 82.5,
+        "phantom_comparable_count": 0,
+        "phantom_comparable_indicators": [],
+        "grade": "A"
+      },
+      "gap": "Second-most complete licensee after AVVNL; meets its RERC benchmarks across reliability, voltage variation, transformer restoration and billing."
+    },
+    {
+      "sheet": "TPCODL,ODISHA",
+      "full_name": "Tata Power Central Odisha Distribution Limited",
+      "short_name": "TPCODL",
+      "state": "Odisha",
+      "color": "#a8194f",
+      "regulation": "ORISSA ELECTRICITY REGULATORY COMMISSION (LICENSEES' STANDARDS OF PERFORMANCE) REGULATIONS, 2004",
+      "scoring": {
+        "total_indicators": 8,
+        "standards_available_pct": 87.5,
+        "data_reported_pct": 100.0,
+        "comparable_pct": 25.0,
+        "compliance_pct": 0.0,
+        "composite_score": 54.4,
+        "phantom_comparable_count": 0,
+        "phantom_comparable_indicators": [],
+        "grade": "B"
+      },
+      "gap": "SAIDI (~155 hrs/yr) is a major outlier; its billing indicator measures bill accuracy (% faulty bills), not complaint-resolution speed, so it can't be charted against other states' billing metric."
+    },
+    {
+      "sheet": "TPNODL,ODISHA",
+      "full_name": "Tata Power North Odisha Distribution Limited",
+      "short_name": "TPNODL",
+      "state": "Odisha",
+      "color": "#e6578c",
+      "regulation": "ORISSA ELECTRICITY REGULATORY COMMISSION (LICENSEES' STANDARDS OF PERFORMANCE) REGULATIONS, 2004",
+      "scoring": {
+        "total_indicators": 8,
+        "standards_available_pct": 87.5,
+        "data_reported_pct": 0.0,
+        "comparable_pct": 0.0,
+        "compliance_pct": null,
+        "composite_score": 21.9,
+        "phantom_comparable_count": 2,
+        "phantom_comparable_indicators": [
+          "Transformer Failure",
+          "Billing Complaint Resolution"
+        ],
+        "grade": "C"
+      },
+      "gap": "No reliability, power-quality, or service data reported for 2021-22 — only benchmark/standard metadata exists in the sheet."
+    }
+  ],
+  "grade_distribution": {
+    "A": 5,
+    "B": 6,
+    "C": 2
+  },
+  "comparability_distribution": {
+    "yes": 20,
+    "no": 66,
+    "na": 11,
+    "absent": 0,
+    "phantom": 7
+  },
+  "comparability_stack": [
+    {
+      "short_name": "MSEDCL",
+      "state": "Maharashtra",
+      "color": "#2a78d6",
+      "yes": 2,
+      "no": 6,
+      "na": 0,
+      "phantom": 0
+    },
+    {
+      "short_name": "DGVCL",
+      "state": "Gujarat",
+      "color": "#b43d0d",
+      "yes": 0,
+      "no": 7,
+      "na": 1,
+      "phantom": 0
+    },
+    {
+      "short_name": "MGVCL",
+      "state": "Gujarat",
+      "color": "#da4a10",
+      "yes": 0,
+      "no": 7,
+      "na": 1,
+      "phantom": 0
+    },
+    {
+      "short_name": "UGVCL",
+      "state": "Gujarat",
+      "color": "#ef5e25",
+      "yes": 0,
+      "no": 7,
+      "na": 1,
+      "phantom": 0
+    },
+    {
+      "short_name": "PGVCL",
+      "state": "Gujarat",
+      "color": "#f27a4b",
+      "yes": 0,
+      "no": 7,
+      "na": 1,
+      "phantom": 0
+    },
+    {
+      "short_name": "MPEZ",
+      "state": "Madhya Pradesh",
+      "color": "#16ab76",
+      "yes": 2,
+      "no": 5,
+      "na": 1,
+      "phantom": 0
+    },
+    {
+      "short_name": "MPWZ",
+      "state": "Madhya Pradesh",
+      "color": "#1de29b",
+      "yes": 2,
+      "no": 5,
+      "na": 1,
+      "phantom": 0
+    },
+    {
+      "short_name": "MPCZ",
+      "state": "Madhya Pradesh",
+      "color": "#54e9b3",
+      "yes": 2,
+      "no": 5,
+      "na": 1,
+      "phantom": 0
+    },
+    {
+      "short_name": "AVVNL",
+      "state": "Rajasthan",
+      "color": "#c28000",
+      "yes": 5,
+      "no": 3,
+      "na": 0,
+      "phantom": 0
+    },
+    {
+      "short_name": "JVVNL (Jaipur)",
+      "state": "Rajasthan",
+      "color": "#ffa900",
+      "yes": 0,
+      "no": 3,
+      "na": 0,
+      "phantom": 5
+    },
+    {
+      "short_name": "JdVVNL (Jodhpur)",
+      "state": "Rajasthan",
+      "color": "#ffbd3d",
+      "yes": 5,
+      "no": 3,
+      "na": 0,
+      "phantom": 0
+    },
+    {
+      "short_name": "TPCODL",
+      "state": "Odisha",
+      "color": "#a8194f",
+      "yes": 2,
+      "no": 4,
+      "na": 2,
+      "phantom": 0
+    },
+    {
+      "short_name": "TPNODL",
+      "state": "Odisha",
+      "color": "#e6578c",
+      "yes": 0,
+      "no": 4,
+      "na": 2,
+      "phantom": 2
+    }
+  ],
+  "score_ranked": [
+    {
+      "short_name": "MSEDCL",
+      "state": "Maharashtra",
+      "color": "#2a78d6",
+      "score": 51.7
+    },
+    {
+      "short_name": "DGVCL",
+      "state": "Gujarat",
+      "color": "#b43d0d",
+      "score": 50.0
+    },
+    {
+      "short_name": "MGVCL",
+      "state": "Gujarat",
+      "color": "#da4a10",
+      "score": 50.0
+    },
+    {
+      "short_name": "UGVCL",
+      "state": "Gujarat",
+      "color": "#ef5e25",
+      "score": 50.0
+    },
+    {
+      "short_name": "PGVCL",
+      "state": "Gujarat",
+      "color": "#f27a4b",
+      "score": 50.0
+    },
+    {
+      "short_name": "MPEZ",
+      "state": "Madhya Pradesh",
+      "color": "#16ab76",
+      "score": 79.5
+    },
+    {
+      "short_name": "MPWZ",
+      "state": "Madhya Pradesh",
+      "color": "#1de29b",
+      "score": 79.5
+    },
+    {
+      "short_name": "MPCZ",
+      "state": "Madhya Pradesh",
+      "color": "#54e9b3",
+      "score": 79.5
+    },
+    {
+      "short_name": "AVVNL",
+      "state": "Rajasthan",
+      "color": "#c28000",
+      "score": 82.5
+    },
+    {
+      "short_name": "JdVVNL (Jodhpur)",
+      "state": "Rajasthan",
+      "color": "#ffbd3d",
+      "score": 82.5
+    },
+    {
+      "short_name": "JVVNL (Jaipur)",
+      "state": "Rajasthan",
+      "color": "#ffa900",
+      "score": 18.8
+    },
+    {
+      "short_name": "TPCODL",
+      "state": "Odisha",
+      "color": "#a8194f",
+      "score": 54.4
+    },
+    {
+      "short_name": "TPNODL",
+      "state": "Odisha",
+      "color": "#e6578c",
+      "score": 21.9
+    }
+  ],
+  "duration_frequency": [
+    {
+      "short_name": "MSEDCL",
+      "state": "Maharashtra",
+      "color": "#2a78d6",
+      "saidi_hours": 14.792,
+      "saifi_count": 5.6,
+      "saidi_index": 7.1,
+      "saifi_index": 1.5
+    },
+    {
+      "short_name": "DGVCL",
+      "state": "Gujarat",
+      "color": "#b43d0d",
+      "saidi_hours": 6.317,
+      "saifi_count": 4.61,
+      "saidi_index": 3.0,
+      "saifi_index": 1.2
+    },
+    {
+      "short_name": "MGVCL",
+      "state": "Gujarat",
+      "color": "#da4a10",
+      "saidi_hours": 4.8,
+      "saifi_count": 3.79,
+      "saidi_index": 2.3,
+      "saifi_index": 1.0
+    },
+    {
+      "short_name": "UGVCL",
+      "state": "Gujarat",
+      "color": "#ef5e25",
+      "saidi_hours": 36.55,
+      "saifi_count": 30.14,
+      "saidi_index": 17.5,
+      "saifi_index": 8.0
+    },
+    {
+      "short_name": "PGVCL",
+      "state": "Gujarat",
+      "color": "#f27a4b",
+      "saidi_hours": 209.133,
+      "saifi_count": 95.34,
+      "saidi_index": 100.0,
+      "saifi_index": 25.2
+    },
+    {
+      "short_name": "AVVNL",
+      "state": "Rajasthan",
+      "color": "#c28000",
+      "saidi_hours": 36.8,
+      "saifi_count": 31.07,
+      "saidi_index": 17.6,
+      "saifi_index": 8.2
+    },
+    {
+      "short_name": "JdVVNL (Jodhpur)",
+      "state": "Rajasthan",
+      "color": "#ffbd3d",
+      "saidi_hours": 21.79,
+      "saifi_count": 12.15,
+      "saidi_index": 10.4,
+      "saifi_index": 3.2
+    },
+    {
+      "short_name": "TPCODL",
+      "state": "Odisha",
+      "color": "#a8194f",
+      "saidi_hours": 155.067,
+      "saifi_count": 378.0,
+      "saidi_index": 74.1,
+      "saifi_index": 100.0
+    }
+  ]
+}
