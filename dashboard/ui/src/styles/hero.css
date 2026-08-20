@@ -1,0 +1,684 @@
+/* ---------- hero: a scroll-driven cinematic reveal — an editorial cover (headline + a large,
+   already-substantial map offset toward the right) that transforms, as the user scrolls, into
+   the interactive map view (map centered/full-scale, control chrome cascading in around it).
+   .hero-stage is the tall scroll track; .hero-sticky is what actually pins and holds every layer
+   — editorial text, map, and every overlay panel are all direct children positioned absolutely
+   within it, so the "camera move" (see HeroSection's applyStyles) can freely translate/scale the
+   map independent of anything else. ---------- */
+.hero-stage {
+  position: relative;
+  height: 230vh;
+  margin: -40px -44px 0;
+}
+/* no padding here: every child is position:absolute (there's no in-flow content at all), and a
+   padding box only ever constrains in-flow content or gets used as the containing block for
+   absolutely-positioned descendants when the browser treats this element as establishing one —
+   in testing, absolutely-positioned children here resolved their left/right/top/bottom against
+   this element's full border box, not its padding box, so a padding value here was silently
+   inert (the editorial text and every overlay panel sat flush against the true edge with zero
+   gutter, ignoring it entirely). The gutter is baked directly into each child's own inset value
+   instead — see --hero-gutter below. */
+.hero-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--paper);
+  box-sizing: border-box;
+  --hero-gutter: 48px;
+}
+.hero-sticky::before {
+  content: '';
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  width: 260px;
+  height: 200px;
+  z-index: 0;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(110, 108, 100, 0.22) 0.75px, transparent 0.8px);
+  background-size: 14px 14px;
+  mask-image: linear-gradient(to right, #000 0%, transparent 85%), linear-gradient(to bottom, #000 0%, transparent 80%);
+  mask-composite: intersect;
+  -webkit-mask-image: linear-gradient(to right, #000 0%, transparent 85%), linear-gradient(to bottom, #000 0%, transparent 80%);
+  -webkit-mask-composite: source-in;
+}
+
+/* ---------- ambient glow: two large, very soft blurred blobs that drift slowly — always on,
+   including on landing, unlike the fabric/tower-photo below it (which stays hidden until
+   scroll). Just enough motion that the landing view doesn't read as a static image. ---------- */
+.hero-ambient-glow {
+  display: none;
+}
+.hero-ambient-glow::before,
+.hero-ambient-glow::after {
+  content: '';
+  position: absolute;
+  width: 60vw;
+  height: 60vw;
+  border-radius: 50%;
+  filter: blur(50px);
+}
+.hero-ambient-glow::before {
+  top: -6%;
+  left: 2%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.9), transparent 70%);
+  animation: ambient-drift-a 32s ease-in-out infinite;
+}
+.hero-ambient-glow::after {
+  bottom: -10%;
+  right: 4%;
+  background: radial-gradient(circle, rgba(124, 147, 234, 0.4), transparent 70%);
+  animation: ambient-drift-b 38s ease-in-out infinite;
+}
+@keyframes ambient-drift-a {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(6%, 5%) scale(1.1);
+  }
+}
+@keyframes ambient-drift-b {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-5%, -6%) scale(1.08);
+  }
+}
+
+/* ---------- pylon-lineart.png: the landing backdrop — a visible lattice/crossarm silhouette
+   behind the editorial text, not just a faint texture. Its opacity is scroll-driven (see
+   HeroSection's applyStyles): clearly present on landing, quieting as the camera moves in so it
+   never competes with the interactive map once that's the focus. The CSS opacity below is just
+   the pre-JS/no-JS fallback, matching the landing value. ---------- */
+.hero-bg-fabric {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.tower-photo-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.tower-photo-img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: 72% 38%;
+  opacity: 0.16;
+  filter: blur(1.5px);
+  transform: scale(1.5);
+}
+
+/* ---------- editorial cover: headline block, anchored left. Recedes (fades, lifts left, scales
+   down) as the camera moves in — see HeroSection's applyStyles — rather than staying static, so
+   it genuinely "leaves the main visual field" instead of just sitting beside the map forever. ---------- */
+.hero-editorial {
+  position: absolute;
+  z-index: 2;
+  left: var(--hero-gutter);
+  top: 45%;
+  transform: translateY(-50%);
+  width: 460px;
+  max-width: calc(44% - var(--hero-gutter));
+}
+.hero-editorial h1 {
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 40px;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+.hero-scope {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+.scope-pill {
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-family: var(--font-condensed);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.scope-pill--a {
+  background: rgba(27, 175, 122, 0.12);
+  color: #12855c;
+}
+.scope-pill--b {
+  background: rgba(235, 104, 52, 0.12);
+  color: #b0491f;
+}
+.scope-pill--c {
+  background: rgba(74, 58, 167, 0.1);
+  color: #4a3aa7;
+}
+.hero-editorial p.lede {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 15px;
+  max-width: 42ch;
+}
+.hero-cta {
+  margin-top: 20px;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+/* ---------- the map stage: a fixed-size box, centered via auto margins so it's perfectly
+   centered on any viewport without hardcoded pixel math. No card background/border/radius — the
+   brief is explicit that the map should float naturally on the page rather than being boxed, so
+   it sits directly on the same paper tone as everything else. .hero-map-inner is what actually
+   carries the "camera move" transform (translateX from offset-right to centered, scale up) — see
+   HeroSection's applyStyles — kept as a separate inner layer so the stage's own box (used for the
+   stable, untransformed click-position math in handleStateClick) never itself moves. ---------- */
+.hero-map-stage {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 82%;
+  height: 96%;
+  z-index: 1;
+}
+.hero-map-inner {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 50%;
+  pointer-events: none;
+  will-change: transform;
+}
+.hero-network-layer {
+  position: absolute;
+  inset: 0;
+  /* purely a fade-opacity wrapper around the (already pointer-events:none) TransmissionLayer
+   * SVG — without this, this empty div itself (default pointer-events:auto) would sit on top of
+   * the map in paint order and silently swallow every hover/click before it reaches the state
+   * paths underneath. */
+  pointer-events: none;
+}
+.hero-map-2d {
+  position: absolute;
+  inset: 0;
+}
+.hero-map-svg {
+  display: block;
+}
+.hero-state-path {
+  transition: fill 260ms var(--ease), stroke 220ms var(--ease), filter 200ms var(--ease);
+}
+.hero-state-path.clickable {
+  cursor: pointer;
+}
+.hero-state-path.hovered {
+  filter: brightness(1.05) drop-shadow(0 4px 10px rgba(40, 32, 10, 0.16));
+}
+
+/* small, clean hover tooltip — state name plus a one-line cue, not the full stats popup (that's
+ * StatePopup.tsx, shown on click) */
+.hero-map-tip {
+  position: absolute;
+  transform: translate(-50%, -128%);
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(91, 110, 145, 0.12);
+  border-radius: 10px;
+  padding: 10px 14px;
+  box-shadow: var(--shadow-float);
+  white-space: nowrap;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.hero-map-tip strong {
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 600;
+}
+.hero-map-tip span {
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* ---------- transmission network: thin muted-gold arcs + a soft halo at each node, purely
+ * decorative (pointer-events: none) so it never competes with or intercepts clicks meant for the
+ * state paths beneath it. ---------- */
+.transmission-layer-2d {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+.grid-line {
+  fill: none;
+  stroke: var(--map-transmission);
+  stroke-width: 1.1;
+  stroke-opacity: 0.55;
+}
+.grid-pulse {
+  fill: var(--map-transmission);
+  filter: drop-shadow(0 0 3px rgba(216, 174, 63, 0.85));
+}
+.grid-node-halo {
+  fill: var(--map-transmission);
+  opacity: 0.16;
+  filter: blur(2px);
+}
+.grid-node-core {
+  fill: var(--map-transmission);
+  filter: drop-shadow(0 0 2px rgba(216, 174, 63, 0.85));
+}
+
+/* ---------- overlay chrome: compare tool (left-center) floats over the viewport; map-chrome
+   (legend) floats over the map stage itself. Every one starts faded/lowered and cascades in
+   together off the same chrome progress value (see chromeEls in HeroSection.tsx's applyStyles)
+   once the map has finished centering. No CSS transition: the rAF loop's own per-frame easing
+   already provides the smoothing. ---------- */
+.overlay-compare,
+.map-chrome {
+  position: absolute;
+  z-index: 3;
+  opacity: 0;
+  transform: translateY(14px);
+}
+/* not so low it collides with the legend at the map's own bottom-right (see .map-chrome) — the
+ * two live in different corners at every height combo of Compare panel content (0/1/2+ selected
+ * states) and current map sizing. */
+.overlay-compare {
+  top: 55%;
+  left: var(--hero-gutter);
+  width: 290px;
+}
+
+/* ---------- map chrome: legend anchored at the map's own bottom-right corner — anchored to
+ * .hero-map-stage rather than the viewport, so it hugs the map regardless of how much margin its
+ * 72%/84% sizing leaves around it. Not bottom-left: the map's actual left edge sits well within
+ * the Compare panel's footprint (that panel is anchored to the viewport, not the narrower map
+ * box), so an element there would render underneath it. ---------- */
+.map-chrome {
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+}
+.map-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(91, 110, 145, 0.12);
+  box-shadow: var(--shadow-float);
+}
+.map-legend-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-condensed);
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.map-legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: 0 0 8px;
+}
+.map-legend-dot--tracked {
+  background: var(--map-tracked);
+}
+.map-legend-dot--none {
+  background: var(--map-idle);
+}
+
+.control-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(91, 110, 145, 0.1);
+  border-radius: 14px;
+  padding: 16px 18px;
+  box-shadow: var(--shadow-float);
+  backdrop-filter: blur(18px) saturate(1.2);
+}
+.control-panel-head {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.control-panel-eyebrow {
+  font-size: 10.5px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.control-panel-head h3 {
+  color: var(--ink);
+  font-size: 19px;
+  font-weight: 600;
+}
+.toggle-row {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  color: var(--ink);
+  font-size: 13px;
+}
+.toggle-switch {
+  position: relative;
+  flex: 0 0 auto;
+  width: 34px;
+  height: 19px;
+  border-radius: 999px;
+  background: rgba(18, 23, 42, 0.12);
+  border: 1px solid rgba(18, 23, 42, 0.18);
+  transition: background 160ms var(--ease), border-color 160ms var(--ease);
+}
+.toggle-switch[data-on='true'] {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.toggle-thumb {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  transition: transform 160ms var(--ease);
+}
+.toggle-switch[data-on='true'] .toggle-thumb {
+  transform: translateX(15px);
+}
+
+.control-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.control-label {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.control-select-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(18, 23, 42, 0.03);
+  border: 1px solid rgba(18, 23, 42, 0.14);
+  border-radius: 3px;
+  padding: 10px 12px;
+  transition: border-color 160ms var(--ease);
+}
+.control-select-wrap:hover {
+  border-color: rgba(18, 23, 42, 0.28);
+}
+.control-select {
+  all: unset;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  flex: 1;
+  color: var(--ink);
+  font-family: var(--font-condensed);
+  font-weight: 600;
+  font-size: 14.5px;
+  cursor: pointer;
+}
+.control-select option {
+  color: var(--ink);
+  background: #fff;
+}
+.control-chevron {
+  flex: 0 0 auto;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.multiselect {
+  position: relative;
+}
+.multiselect-trigger {
+  cursor: pointer;
+  font: inherit;
+  color: var(--ink);
+  font-family: var(--font-condensed);
+  font-weight: 600;
+  font-size: 14.5px;
+  text-align: left;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.multiselect-popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 20;
+  background: #ffffff;
+  border: 1px solid rgba(18, 23, 42, 0.12);
+  border-radius: 3px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  max-height: 220px;
+  overflow-y: auto;
+  padding: 6px;
+}
+.multiselect-option {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 2px;
+  color: var(--ink);
+  font-size: 13.5px;
+  cursor: pointer;
+}
+.multiselect-option:hover {
+  background: rgba(18, 23, 42, 0.06);
+}
+.multiselect-option .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: 0 0 8px;
+}
+.multiselect-empty {
+  padding: 10px;
+  color: var(--muted);
+  font-size: 12.5px;
+}
+.multiselect-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+.multiselect-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px 4px 10px;
+  border-radius: 2px;
+  background: rgba(18, 23, 42, 0.04);
+  border: 1px solid rgba(18, 23, 42, 0.14);
+  color: var(--ink);
+  font-size: 12.5px;
+}
+.multiselect-chip .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: 0 0 8px;
+}
+.multiselect-chip button {
+  all: unset;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: var(--muted);
+  line-height: 1;
+}
+.multiselect-chip button:hover {
+  background: rgba(18, 23, 42, 0.1);
+  color: var(--ink);
+}
+
+.control-compare-btn {
+  all: unset;
+  box-sizing: border-box;
+  cursor: pointer;
+  text-align: center;
+  padding: 11px 16px;
+  border-radius: 8px;
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  color: #fff;
+  font-family: var(--font-condensed);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 13px;
+  transition: background 160ms var(--ease), border-color 160ms var(--ease);
+}
+.control-compare-btn:hover:not(:disabled) {
+  background: #2f4bb1;
+  border-color: #2f4bb1;
+}
+.control-compare-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.control-ghost-btn {
+  all: unset;
+  box-sizing: border-box;
+  cursor: pointer;
+  padding: 11px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-family: var(--font-condensed);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-align: center;
+  transition: background 160ms var(--ease), color 160ms var(--ease);
+}
+.control-ghost-btn:hover {
+  background: rgba(59, 95, 224, 0.08);
+  color: var(--accent);
+}
+
+.control-hint {
+  font-size: 12.5px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+/* below this width the scroll rig disables itself entirely (see isMobile() in HeroSection.tsx) —
+   JS never calls applyStyles, so it never writes an inline opacity/transform to fight with here.
+   The `!important` overrides below are still needed for one case: a page that loads at desktop
+   width (where JS has already written inline styles reflecting wherever the user had scrolled to)
+   and is then resized narrower — those stale inline styles must lose to this stylesheet, which
+   only a stylesheet-level `!important` can guarantee over a plain inline style. Everything ends
+   up fully visible/interactive and laid out as a normal static stack instead of the desktop
+   cinematic composition, which doesn't suit a narrow viewport. */
+@media (max-width: 900px) {
+  .hero-stage {
+    height: auto;
+  }
+  .hero-sticky {
+    position: static;
+    height: auto;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .hero-editorial,
+  .hero-map-inner,
+  .hero-network-layer,
+  .overlay-compare {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+  /* pointer-events handled separately from the block above: .hero-network-layer must stay
+   * pointer-events:none (see its own rule) even here — it's an empty wrapper div sitting on top
+   * of the map in paint order, and would otherwise swallow every hover/click on mobile too. */
+  .hero-editorial,
+  .hero-map-inner,
+  .overlay-compare {
+    pointer-events: auto !important;
+  }
+  .tower-photo-img {
+    opacity: 0.14 !important;
+  }
+  .hero-editorial {
+    position: static;
+    width: auto;
+    max-width: none;
+    order: 1;
+  }
+  .hero-map-stage {
+    position: relative;
+    inset: auto;
+    margin: 0;
+    width: auto;
+    height: 60vh;
+    min-height: 420px;
+    order: 2;
+  }
+  .overlay-compare {
+    position: static;
+    width: auto;
+    order: 3;
+  }
+  .map-chrome {
+    display: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .hero-sticky {
+    padding: 40px 24px;
+  }
+  .hero-editorial h1 {
+    font-size: 30px;
+  }
+}
