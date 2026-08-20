@@ -2,7 +2,6 @@
 
 import '@/lib/chartSetup';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import { useData } from '@/lib/DataContext';
 import { CATEGORICAL, hexToRgba, stateHueMap } from '@/lib/colors';
@@ -10,19 +9,20 @@ import { representativeBenchmark } from '@/lib/computations';
 import { fmt, UNIT_LABEL } from '@/lib/format';
 import AnimatedNumber from './AnimatedNumber';
 import DiscomIndicatorTable from './DiscomIndicatorTable';
-import FyButtons from './FyButtons';
 import ScoreCard from './ScoreCard';
 import type { Discom } from '@/lib/types';
 
 export default function StateDetail({ name }: { name: string }) {
   const { discoms, loading, error } = useData();
   const router = useRouter();
-  const [year, setYear] = useState<string | null>(null);
 
   if (loading) return <p className="detail-placeholder">Loading…</p>;
   if (error || !discoms) return <p className="detail-placeholder">Could not load dashboard data.</p>;
 
-  const activeYear = year ?? (discoms.years.includes('2023-24') ? '2023-24' : discoms.years[0]);
+  // no year picker here: the trend charts below already show the full time series at once, and
+  // per-DISCOM detail (DiscomIndicatorTable) needs one representative snapshot year rather than
+  // a user-selectable one — same default year used across the rest of the dashboard.
+  const activeYear = discoms.years.includes('2023-24') ? '2023-24' : discoms.years[0];
   const YEARS_ASC = [...discoms.years].reverse();
   const ds = discoms.discoms.filter((d) => d.state === name);
 
@@ -86,16 +86,7 @@ export default function StateDetail({ name }: { name: string }) {
         </div>
       </header>
 
-      <div className="fy-select standalone">
-        <span className="flabel">Financial Year</span>
-        <FyButtons years={discoms.years} value={activeYear} onChange={setYear} />
-      </div>
-
-      <section className="panel blueprint" id="sec-detail">
-        <i className="corner tl" />
-        <i className="corner tr" />
-        <i className="corner bl" />
-        <i className="corner br" />
+      <section className="panel" id="sec-detail">
         <div className="panel-head">
           <div>
             <h2>DISCOM Scorecards</h2>

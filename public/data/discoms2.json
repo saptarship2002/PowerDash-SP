@@ -193,7 +193,7 @@
           }
         },
         "2025-26": {
-          "regulation": "Maharashtra Electricity Regulatory Commission (Electricity Supply Code and Standards of Performance of Distribution Licensees including Power Quality) (First Amendment) Regulations, 2024.",
+          "regulation": "",
           "indicators": {
             "SAIDI": {
               "value": 9.55,
@@ -2144,9 +2144,9 @@
           "regulation": "",
           "indicators": {
             "SAIDI": {
-              "value": null,
+              "value": 0.417,
               "subtypes": {
-                "default": null
+                "default": 0.417
               },
               "standard_specified": "Targets set by the Commission through separate guidelines/order.",
               "benchmark": "N/A",
@@ -2157,9 +2157,9 @@
               "standard_met": null
             },
             "SAIFI": {
-              "value": null,
+              "value": 8.16,
               "subtypes": {
-                "default": null
+                "default": 8.16
               },
               "standard_specified": "Targets set by the Commission through separate guidelines/order.",
               "benchmark": "N/A",
@@ -2170,9 +2170,9 @@
               "standard_met": null
             },
             "MAIFI": {
-              "value": null,
+              "value": 17.64,
               "subtypes": {
-                "default": null
+                "default": 17.64
               },
               "standard_specified": "Targets set by the Commission through separate guidelines/order.",
               "benchmark": "N/A",
@@ -2183,9 +2183,9 @@
               "standard_met": null
             },
             "CAIDI": {
-              "value": null,
+              "value": 0.052,
               "subtypes": {
-                "default": null
+                "default": 0.052
               },
               "standard_specified": "Targets set by the Commission through separate guidelines/order.",
               "benchmark": "N/A",
@@ -2196,9 +2196,9 @@
               "standard_met": null
             },
             "VOLTAGE VARIATION": {
-              "value": null,
+              "value": 0.0,
               "subtypes": {
-                "default": null
+                "default": 0.0
               },
               "standard_specified": "LV: ± 6%; HV: +6% & -9%; EHV: +10% & -12.5%. Resolve network issues in 60-180 days.",
               "benchmark": "N/A",
@@ -2209,9 +2209,9 @@
               "standard_met": null
             },
             "HARMONICS": {
-              "value": null,
+              "value": 0.0,
               "subtypes": {
-                "default": null
+                "default": 0.0
               },
               "standard_specified": "Maintenance of Total Harmonic Distortion in Voltage (THDV) within 3.5% for LT consumers; 3.0% for HT and EHT consumers.",
               "benchmark": "N/A",
@@ -2222,9 +2222,9 @@
               "standard_met": null
             },
             "TRANSFORMER FAILURE": {
-              "value": null,
+              "value": 3.61,
               "subtypes": {
-                "default": null
+                "default": 3.61
               },
               "standard_specified": "Within 6 hours in Urban areas and 24 hours in Rural areas.",
               "benchmark": "N/A",
@@ -2235,9 +2235,9 @@
               "standard_met": null
             },
             "BILLING COMPLAINT RESOLUTION": {
-              "value": null,
+              "value": 99.15,
               "subtypes": {
-                "default": null
+                "default": 99.15
               },
               "standard_specified": "Same Day (no info); 10 days (info needed); 15 days (site visit).",
               "benchmark": "N/A",
@@ -2251,13 +2251,13 @@
           "scoring": {
             "total_indicators": 8,
             "standards_available_pct": 100.0,
-            "data_reported_pct": 0.0,
+            "data_reported_pct": 100.0,
             "comparable_pct": 0.0,
             "compliance_pct": null,
-            "composite_score": 25.0,
-            "grade": "C",
+            "composite_score": 50.0,
+            "grade": "B",
             "phantom_comparable_count": 0,
-            "indicators_reported": 0
+            "indicators_reported": 8
           }
         },
         "2023-24": {
@@ -8621,19 +8621,6 @@
         "2021-22": {
           "regulation": "Madhya Pradesh Electricity Regulatory Commission (Distribution Performance Standards) Regulations, 2004",
           "indicators": {
-            "SAIDI": {
-              "value": null,
-              "subtypes": {
-                "default": null
-              },
-              "standard_specified": "To be laid down by the Commission after analysis of data furnished by Licensee",
-              "benchmark": "Not specified",
-              "benchmark_meaning": "Not specified",
-              "reported_meaning": "N/A",
-              "unit_note": null,
-              "comparison_possible": false,
-              "standard_met": null
-            },
             "SAIFI": {
               "value": null,
               "subtypes": {
@@ -8730,11 +8717,11 @@
           },
           "scoring": {
             "total_indicators": 8,
-            "standards_available_pct": 87.5,
+            "standards_available_pct": 75.0,
             "data_reported_pct": 25.0,
             "comparable_pct": 25.0,
             "compliance_pct": 100.0,
-            "composite_score": 55.6,
+            "composite_score": 52.5,
             "grade": "B",
             "phantom_comparable_count": 0,
             "indicators_reported": 2
@@ -10473,7 +10460,7 @@
       "state": "Karnataka",
       "years": {
         "2021-22": {
-          "regulation": "Karnataka Electricity Regulatory Commission (Rights of Consumers Relating to Supply of Electricity, Standards of Performance (SoP) and allied matters) Regulations, 2022.",
+          "regulation": "Karnataka Electricity Regulatory\nCommission Licensees' Standards of Performance) Regulations - 2004",
           "indicators": {
             "SAIDI": {
               "value": null,
@@ -10594,7 +10581,7 @@
           }
         },
         "2025-26": {
-          "regulation": "",
+          "regulation": "Karnataka Electricity Regulatory Commission (Rights of Consumers Relating to Supply of Electricity, Standards of Performance (SoP) and allied matters) Regulations, 2022.",
           "indicators": {
             "SAIDI": {
               "value": null,
@@ -11086,7 +11073,7 @@
       "state": "Karnataka",
       "years": {
         "2021-22": {
-          "regulation": "Karnataka Electricity Regulatory Commission (Rights of Consumers Relating to Supply of Electricity, Standards of Performance (SoP) and allied matters) Regulations, 2022.",
+          "regulation": "Karnataka Electricity Regulatory\nCommission Licensees' Standards of Performance) Regulations - 2004",
           "indicators": {
             "SAIDI": {
               "value": null,
@@ -11699,7 +11686,7 @@
       "state": "Karnataka",
       "years": {
         "2021-22": {
-          "regulation": "Karnataka Electricity Regulatory Commission (Rights of Consumers Relating to Supply of Electricity, Standards of Performance (SoP) and allied matters) Regulations, 2022.",
+          "regulation": "Karnataka Electricity Regulatory\nCommission Licensees' Standards of Performance) Regulations - 2004",
           "indicators": {
             "SAIDI": {
               "value": null,
@@ -12312,7 +12299,7 @@
       "state": "Karnataka",
       "years": {
         "2021-22": {
-          "regulation": "Karnataka Electricity Regulatory Commission (Rights of Consumers Relating to Supply of Electricity, Standards of Performance (SoP) and allied matters) Regulations, 2022.",
+          "regulation": "Karnataka Electricity Regulatory\nCommission Licensees' Standards of Performance) Regulations - 2004",
           "indicators": {
             "SAIDI": {
               "value": null,
@@ -12925,7 +12912,7 @@
       "state": "Karnataka",
       "years": {
         "2021-22": {
-          "regulation": "Karnataka Electricity Regulatory Commission (Rights of Consumers Relating to Supply of Electricity, Standards of Performance (SoP) and allied matters) Regulations, 2022.",
+          "regulation": "Karnataka Electricity Regulatory\nCommission Licensees' Standards of Performance) Regulations - 2004",
           "indicators": {
             "SAIDI": {
               "value": null,
@@ -13538,7 +13525,7 @@
       "state": "Tamil Nadu",
       "years": {
         "2021-22": {
-          "regulation": "TAMIL NADU ELECTRICITY DISTRIBUTION STANDARDS OF PERFORMANCE REGULATIONS, 200",
+          "regulation": "TAMIL NADU ELECTRICITY DISTRIBUTION STANDARDS OF PERFORMANCE REGULATIONS, 2004 (As amended upto 31-03-2024)",
           "indicators": {
             "SAIDI": {
               "value": null,
@@ -15377,7 +15364,7 @@
       "state": "West Bengal",
       "years": {
         "2021-22": {
-          "regulation": "West Bengal Electricity Regulatory Commission (Standards of Performance of Licensees Relating to Consumer Services) Regulations, 2010",
+          "regulation": "West Bengal Electricity Regulatory Commission (Standards of Performance of Licensees Relating to Consumer Services) Regulations, 2010 | West Bengal Electricity Regulatory Commission (Standards of Performance of Licensees Relating to Consumer Services) (First Amendment) Regulations, 2013.",
           "indicators": {
             "SAIDI": {
               "value": null,
@@ -15618,8 +15605,129 @@
             "indicators_reported": 0
           }
         },
+        "2024-25": {
+          "regulation": "",
+          "indicators": {
+            "SAIDI": {
+              "value": null,
+              "subtypes": {
+                "default": null
+              },
+              "standard_specified": "The Commission shall make reliability calculations and check for compliance with requirements under the Tariff Regulations.",
+              "benchmark": "N/A",
+              "benchmark_meaning": "N/A",
+              "reported_meaning": "N/A",
+              "unit_note": null,
+              "comparison_possible": false,
+              "standard_met": null
+            },
+            "SAIFI": {
+              "value": null,
+              "subtypes": {
+                "default": null
+              },
+              "standard_specified": "The Commission shall make reliability calculations and check for compliance with requirements under the Tariff Regulations.",
+              "benchmark": "N/A",
+              "benchmark_meaning": "N/A",
+              "reported_meaning": "N/A",
+              "unit_note": null,
+              "comparison_possible": false,
+              "standard_met": null
+            },
+            "MAIFI": {
+              "value": null,
+              "subtypes": {
+                "default": null
+              },
+              "standard_specified": "The Commission shall make reliability calculations and check for compliance with requirements under the Tariff Regulations.",
+              "benchmark": "N/A",
+              "benchmark_meaning": "N/A",
+              "reported_meaning": "N/A",
+              "unit_note": null,
+              "comparison_possible": false,
+              "standard_met": null
+            },
+            "CAIDI": {
+              "value": null,
+              "subtypes": {
+                "default": null
+              },
+              "standard_specified": "N/A",
+              "benchmark": "N/A",
+              "benchmark_meaning": "N/A",
+              "reported_meaning": "N/A",
+              "unit_note": null,
+              "comparison_possible": false,
+              "standard_met": null
+            },
+            "VOLTAGE VARIATION": {
+              "value": null,
+              "subtypes": {
+                "default": null
+              },
+              "standard_specified": "Take corrective measures within 15 days if the problem is local, or within 6 months if system augmentation is required.",
+              "benchmark": "N/A",
+              "benchmark_meaning": "N/A",
+              "reported_meaning": "N/A",
+              "unit_note": null,
+              "comparison_possible": false,
+              "standard_met": null
+            },
+            "HARMONICS": {
+              "value": null,
+              "subtypes": {
+                "default": null
+              },
+              "standard_specified": "N/A",
+              "benchmark": "N/A",
+              "benchmark_meaning": "N/A",
+              "reported_meaning": "N/A",
+              "unit_note": null,
+              "comparison_possible": false,
+              "standard_met": null
+            },
+            "TRANSFORMER FAILURE": {
+              "value": null,
+              "subtypes": {
+                "Urban": null,
+                "Rural": null
+              },
+              "standard_specified": "Restoration of supply through a transformer within 12 hours in Urban areas.",
+              "benchmark": "N/A",
+              "benchmark_meaning": "N/A",
+              "reported_meaning": "N/A",
+              "unit_note": null,
+              "comparison_possible": false,
+              "standard_met": null
+            },
+            "BILLING COMPLAINT RESOLUTION": {
+              "value": null,
+              "subtypes": {
+                "default": null
+              },
+              "standard_specified": "N/A",
+              "benchmark": "N/A",
+              "benchmark_meaning": "N/A",
+              "reported_meaning": "N/A",
+              "unit_note": null,
+              "comparison_possible": false,
+              "standard_met": null
+            }
+          },
+          "scoring": {
+            "total_indicators": 8,
+            "standards_available_pct": 62.5,
+            "data_reported_pct": 0.0,
+            "comparable_pct": 0.0,
+            "compliance_pct": null,
+            "composite_score": 15.6,
+            "grade": "C",
+            "phantom_comparable_count": 0,
+            "indicators_reported": 0
+          }
+        },
         "2023-24": {
-          "regulation": "202.0 | 2024-25 | 2024-25 | 2024-25 | 2024-25 | 2024-25 | 2024-25 | 2024-25 | 2024-25",
+          "regulation": "",
           "indicators": {
             "SAIDI": {
               "value": null,
@@ -15869,7 +15977,7 @@
       "state": "West Bengal",
       "years": {
         "2021-22": {
-          "regulation": "West Bengal Electricity Regulatory Commission (Standards of Performance of Licensees Relating to Consumer Services) Regulations, 2010",
+          "regulation": "West Bengal Electricity Regulatory Commission (Standards of Performance of Licensees Relating to Consumer Services) Regulations, 2010 | West Bengal Electricity Regulatory Commission (Standards of Performance of Licensees Relating to Consumer Services) (First Amendment) Regulations, 2013.",
           "indicators": {
             "SAIDI": {
               "value": null,

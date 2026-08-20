@@ -26,7 +26,7 @@
 .brand-mark {
   width: 38px;
   height: 38px;
-  background: var(--red);
+  background: var(--accent);
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
@@ -39,23 +39,23 @@
   flex-direction: column;
 }
 .brand-name {
-  font-family: var(--font-condensed);
+  font-family: var(--font-display);
   font-weight: 700;
-  font-size: 19px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  text-transform: none;
   color: #fff;
 }
 .brand-sub {
   font-size: 12px;
-  color: #8891ab;
+  color: rgba(255, 255, 255, 0.5);
   letter-spacing: 0.04em;
 }
 nav.sidenav {
   display: flex;
   flex-direction: column;
-  padding: 14px 0;
-  gap: 2px;
+  padding: 16px 12px;
+  gap: 4px;
 }
 nav.sidenav a {
   all: unset;
@@ -64,23 +64,22 @@ nav.sidenav a {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 11px 20px;
+  padding: 10px 14px;
   font-size: 14.5px;
-  color: #8891ab;
-  border-left: 3px solid transparent;
+  color: rgba(255, 255, 255, 0.55);
+  border-radius: 10px;
   font-family: inherit;
-  transition: background 180ms var(--ease), color 180ms var(--ease), padding-left 180ms var(--ease);
+  transition: background 180ms var(--ease), color 180ms var(--ease);
 }
 nav.sidenav a:hover {
   background: rgba(255, 255, 255, 0.06);
   color: #fff;
-  padding-left: 24px;
 }
 nav.sidenav a.active {
-  background: rgba(139, 26, 26, 0.22);
+  background: var(--accent);
   color: #fff;
-  border-left-color: var(--red);
-  font-weight: 500;
+  font-weight: 600;
+  box-shadow: var(--shadow-md);
 }
 nav.sidenav svg {
   display: flex;
@@ -93,13 +92,10 @@ nav.sidenav svg {
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   padding: 14px 20px;
   font-size: 12.5px;
-  color: #6c7590;
-}
-.sidebar-foot code {
-  background: rgba(255, 255, 255, 0.08);
-  color: #b7bfd6;
-  padding: 1px 4px;
-  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
 }
 
 main.app-main {

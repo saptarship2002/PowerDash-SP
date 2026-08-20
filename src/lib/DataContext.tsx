@@ -1,28 +1,35 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
-import type { DiscomsData, IndiaGeoJSON } from './types';
+import type { AccessibilityData, DiscomsData, IndiaGeoJSON } from './types';
 
 interface DataState {
   discoms: DiscomsData | null;
   geojson: IndiaGeoJSON | null;
+  accessibility: AccessibilityData | null;
   loading: boolean;
   error: string | null;
 }
 
-const DataCtx = createContext<DataState>({ discoms: null, geojson: null, loading: true, error: null });
+const initialState: DataState = { discoms: null, geojson: null, accessibility: null, loading: true, error: null };
+
+const DataCtx = createContext<DataState>(initialState);
 
 export function DataProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<DataState>({ discoms: null, geojson: null, loading: true, error: null });
+  const [state, setState] = useState<DataState>(initialState);
 
   useEffect(() => {
     let cancelled = false;
-    Promise.all([fetch('/data/discoms2.json').then((r) => r.json()), fetch('/data/india-states.geojson').then((r) => r.json())])
-      .then(([discoms, geojson]) => {
-        if (!cancelled) setState({ discoms, geojson, loading: false, error: null });
+    Promise.all([
+      fetch('/data/discoms2.json').then((r) => r.json()),
+      fetch('/data/india-states.geojson').then((r) => r.json()),
+      fetch('/data/accessibility.json').then((r) => r.json()),
+    ])
+      .then(([discoms, geojson, accessibility]) => {
+        if (!cancelled) setState({ discoms, geojson, accessibility, loading: false, error: null });
       })
       .catch((err) => {
-        if (!cancelled) setState({ discoms: null, geojson: null, loading: false, error: String(err) });
+        if (!cancelled) setState({ discoms: null, geojson: null, accessibility: null, loading: false, error: String(err) });
       });
     return () => {
       cancelled = true;

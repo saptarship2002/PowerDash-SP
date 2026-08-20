@@ -11,17 +11,16 @@
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--red);
-  background: rgba(139, 26, 26, 0.08);
+  color: var(--accent);
+  background: rgba(91, 110, 145, 0.08);
   padding: 4px 10px;
   border-radius: 3px;
 }
 .section-title {
-  font-family: var(--font-condensed);
+  font-family: var(--font-display);
   font-size: 21px;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
+  letter-spacing: -0.02em;
 }
 .section-note {
   font-size: 12.5px;

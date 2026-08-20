@@ -1,12 +1,8 @@
 'use client';
 
-import StateMultiSelect from './StateMultiSelect';
-
 interface Props {
-  allStates: string[];
   stateHue: Record<string, string>;
   compareSet: string[];
-  onAdd: (name: string) => void;
   onRemove: (name: string) => void;
   onCompare: () => void;
   onClearAll: () => void;
@@ -15,18 +11,20 @@ interface Props {
 }
 
 /** A dedicated box for building a multi-state comparison — kept separate from the
- * "click one state" Grid Explorer panel so the two workflows (single-state lookup vs.
+ * "click one state" single-state popup so the two workflows (single-state lookup vs.
  * building a comparison set) don't compete for the same space. The map-selection toggle
- * decides what a map click does: off, clicking a state selects just that one (feeds the
- * Grid Explorer panel); on, clicking adds/removes it from this comparison set instead. */
-export default function ComparePanel({ allStates, stateHue, compareSet, onAdd, onRemove, onCompare, onClearAll, compareMode, onToggleCompareMode }: Props) {
+ * decides what a map click does: off, clicking a state opens its popup (single-state lookup);
+ * on, clicking adds/removes it from this comparison set instead. Map clicks are the only way to
+ * build the set — no dropdown/search alternative — so the chips below are read-only (remove
+ * only), just reflecting what's been clicked. */
+export default function ComparePanel({ stateHue, compareSet, onRemove, onCompare, onClearAll, compareMode, onToggleCompareMode }: Props) {
   const n = compareSet.length;
 
   return (
     <aside className="control-panel">
       <div className="control-panel-head">
         <span className="control-panel-eyebrow">Analysis</span>
-        <h3>Compare States</h3>
+        <h3>Compare performance among states</h3>
       </div>
 
       <button type="button" className="toggle-row" role="switch" aria-checked={compareMode} onClick={onToggleCompareMode}>
@@ -36,10 +34,22 @@ export default function ComparePanel({ allStates, stateHue, compareSet, onAdd, o
         <span>Select states on the map</span>
       </button>
 
-      <StateMultiSelect allStates={allStates} stateHue={stateHue} selected={compareSet} onAdd={onAdd} onRemove={onRemove} />
+      {n > 0 && (
+        <div className="multiselect-chips">
+          {compareSet.map((name) => (
+            <span className="multiselect-chip" key={name}>
+              <span className="dot" style={{ background: stateHue[name] || '#999' }} />
+              {name}
+              <button type="button" aria-label={`Remove ${name}`} onClick={() => onRemove(name)}>
+                ×
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
 
       <p className="control-hint">
-        {n === 0 && (compareMode ? 'Click states on the map, or use the dropdown, to compare.' : 'Turn on map selection above, or use the dropdown, to compare.')}
+        {n === 0 && 'Turn on map selection above, then click states on the map to compare performance.'}
         {n === 1 && 'Select at least one more state to compare.'}
         {n >= 2 && `${n} states selected.`}
       </p>

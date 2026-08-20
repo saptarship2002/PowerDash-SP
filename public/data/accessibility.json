@@ -1,0 +1,320 @@
+{
+  "state_order": [
+    "Maharashtra",
+    "Gujarat",
+    "Rajasthan",
+    "Madhya Pradesh",
+    "Odisha",
+    "Telangana",
+    "Karnataka",
+    "Tamil Nadu",
+    "Bihar",
+    "West Bengal",
+    "Uttar Pradesh",
+    "Andhra Pradesh"
+  ],
+  "states": [
+    {
+      "state": "Maharashtra",
+      "regulation_available": true
+    },
+    {
+      "state": "Gujarat",
+      "regulation_available": true
+    },
+    {
+      "state": "Rajasthan",
+      "regulation_available": true
+    },
+    {
+      "state": "Madhya Pradesh",
+      "regulation_available": true
+    },
+    {
+      "state": "Odisha",
+      "regulation_available": true
+    },
+    {
+      "state": "Telangana",
+      "regulation_available": true
+    },
+    {
+      "state": "Karnataka",
+      "regulation_available": true
+    },
+    {
+      "state": "Tamil Nadu",
+      "regulation_available": true
+    },
+    {
+      "state": "Bihar",
+      "regulation_available": true
+    },
+    {
+      "state": "West Bengal",
+      "regulation_available": true
+    },
+    {
+      "state": "Uttar Pradesh",
+      "regulation_available": true
+    },
+    {
+      "state": "Andhra Pradesh",
+      "regulation_available": true
+    }
+  ],
+  "discoms": [
+    {
+      "discom": "Maharashtra State Electricity Distribution Company Limited",
+      "abbreviation": "MSEDCL",
+      "state": "Maharashtra",
+      "available_on_serc": true,
+      "machine_readable": true
+    },
+    {
+      "discom": "Dakshin Gujarat Vij Company Limited",
+      "abbreviation": "DGVCL",
+      "state": "Gujarat",
+      "available_on_serc": true,
+      "machine_readable": true
+    },
+    {
+      "discom": "Madhya Gujarat Vij Company Limited",
+      "abbreviation": "MGVCL",
+      "state": "Gujarat",
+      "available_on_serc": true,
+      "machine_readable": true
+    },
+    {
+      "discom": "Poorva Gujarat Vij Company Limited",
+      "abbreviation": "PGVCL",
+      "state": "Gujarat",
+      "available_on_serc": true,
+      "machine_readable": true
+    },
+    {
+      "discom": "Uttar Gujarat Vij Company Limited",
+      "abbreviation": "UGVCL",
+      "state": "Gujarat",
+      "available_on_serc": true,
+      "machine_readable": true
+    },
+    {
+      "discom": "Ajmer Vidyut Vitran Nigam Limited",
+      "abbreviation": "AVNNL",
+      "state": "Rajasthan",
+      "available_on_serc": true,
+      "machine_readable": false
+    },
+    {
+      "discom": "Jaipur Vidyut Vitran Nigam Limited",
+      "abbreviation": "JVVNL",
+      "state": "Rajasthan",
+      "available_on_serc": true,
+      "machine_readable": false
+    },
+    {
+      "discom": "Jodhpur Vidyut Vitran Nigam Limited",
+      "abbreviation": "JdVVNL",
+      "state": "Rajasthan",
+      "available_on_serc": true,
+      "machine_readable": false
+    },
+    {
+      "discom": "Madhya Pradesh Madhya Kshetra Vidyut Vitaran Company Limited",
+      "abbreviation": "MPCZ",
+      "state": "Madhya Pradesh",
+      "available_on_serc": true,
+      "machine_readable": true
+    },
+    {
+      "discom": "Madhya Pradesh Paschim Kshetra Vidyut Vitaran Company Limited",
+      "abbreviation": "MPWX",
+      "state": "Madhya Pradesh",
+      "available_on_serc": true,
+      "machine_readable": true
+    },
+    {
+      "discom": "Madhya Pradesh Poorv Kshetra Vidyut Vitaran Company Limited",
+      "abbreviation": "MPEZ",
+      "state": "Madhya Pradesh",
+      "available_on_serc": true,
+      "machine_readable": true
+    },
+    {
+      "discom": "Tata Power Central Odisha Distribution Limited",
+      "abbreviation": "TPCODL",
+      "state": "Odisha",
+      "available_on_serc": true,
+      "machine_readable": true
+    },
+    {
+      "discom": "Tata Power North Odisha Distribution Limited",
+      "abbreviation": "TPNODL",
+      "state": "Odisha",
+      "available_on_serc": true,
+      "machine_readable": true
+    },
+    {
+      "discom": "Tata Power South Odisha Distribution Limited",
+      "abbreviation": "TPSODL",
+      "state": "Odisha",
+      "available_on_serc": true,
+      "machine_readable": true
+    },
+    {
+      "discom": "Tata Power West Odisha Distribution Limited",
+      "abbreviation": "TPWODL",
+      "state": "Odisha",
+      "available_on_serc": true,
+      "machine_readable": true
+    },
+    {
+      "discom": "Northern Power Distribution Company of Telangana Limited",
+      "abbreviation": "TGNPDCL",
+      "state": "Telangana",
+      "available_on_serc": true,
+      "machine_readable": true
+    },
+    {
+      "discom": "Southern Power Distribution Company of Telangana Limited",
+      "abbreviation": "TGSPDCL",
+      "state": "Telangana",
+      "available_on_serc": true,
+      "machine_readable": true
+    },
+    {
+      "discom": "Bangalore Electricity Supply Company Limited",
+      "abbreviation": "BESCOM",
+      "state": "Karnataka",
+      "available_on_serc": false,
+      "machine_readable": null
+    },
+    {
+      "discom": "Chamundeshwari Electricity Supply Corporation Limited",
+      "abbreviation": "CESC",
+      "state": "Karnataka",
+      "available_on_serc": false,
+      "machine_readable": null
+    },
+    {
+      "discom": "Gulbarga Electricity Supply Company Limited",
+      "abbreviation": "GESCOM",
+      "state": "Karnataka",
+      "available_on_serc": false,
+      "machine_readable": null
+    },
+    {
+      "discom": "Hubli Electricity Supply Company Limited",
+      "abbreviation": "HESCOM",
+      "state": "Karnataka",
+      "available_on_serc": false,
+      "machine_readable": null
+    },
+    {
+      "discom": "Mangalore Electricity Supply Company Limited",
+      "abbreviation": "MESCOM",
+      "state": "Karnataka",
+      "available_on_serc": false,
+      "machine_readable": null
+    },
+    {
+      "discom": "Tamil Nadu Generation and Distribution Corporation Limited",
+      "abbreviation": "TANGEDCO",
+      "state": "Tamil Nadu",
+      "available_on_serc": false,
+      "machine_readable": null
+    },
+    {
+      "discom": "North Bihar Power Distribution Company Limited",
+      "abbreviation": "NBPDCL",
+      "state": "Bihar",
+      "available_on_serc": false,
+      "machine_readable": null
+    },
+    {
+      "discom": "South Bihar Power Distribution Company Limited",
+      "abbreviation": "SBPDCL",
+      "state": "Bihar",
+      "available_on_serc": false,
+      "machine_readable": null
+    },
+    {
+      "discom": "Durgapur Projects Limited",
+      "abbreviation": "DPL",
+      "state": "West Bengal",
+      "available_on_serc": false,
+      "machine_readable": null
+    },
+    {
+      "discom": "West Bengal State Electricity Distribution Company Limited",
+      "abbreviation": "WBSEDCL",
+      "state": "West Bengal",
+      "available_on_serc": false,
+      "machine_readable": null
+    },
+    {
+      "discom": "Dakshinanchal Vidyut Vitran Nigam Limited",
+      "abbreviation": "DVVNL",
+      "state": "Uttar Pradesh",
+      "available_on_serc": false,
+      "machine_readable": null
+    },
+    {
+      "discom": "Kanpur Electricity Supply Company",
+      "abbreviation": "KESCO",
+      "state": "Uttar Pradesh",
+      "available_on_serc": false,
+      "machine_readable": null
+    },
+    {
+      "discom": "Madhyanchal Vidyut Vitran Nigam Limited",
+      "abbreviation": "MVVNL",
+      "state": "Uttar Pradesh",
+      "available_on_serc": false,
+      "machine_readable": null
+    },
+    {
+      "discom": "Paschimanchal Vidyut Vitran Nigam Limited",
+      "abbreviation": "PVVNL",
+      "state": "Uttar Pradesh",
+      "available_on_serc": false,
+      "machine_readable": null
+    },
+    {
+      "discom": "Poorvanchal Vidyut Vitran Nigam Limited",
+      "abbreviation": "PuVVNL",
+      "state": "Uttar Pradesh",
+      "available_on_serc": false,
+      "machine_readable": null
+    },
+    {
+      "discom": "Central Power Distribution Company of Andhra Pradesh Limited",
+      "abbreviation": "APCPDCL",
+      "state": "Andhra Pradesh",
+      "available_on_serc": true,
+      "machine_readable": true
+    },
+    {
+      "discom": "Eastern Power Distribution Company of Andhra Pradesh Limited",
+      "abbreviation": "APEPDCL",
+      "state": "Andhra Pradesh",
+      "available_on_serc": true,
+      "machine_readable": true
+    },
+    {
+      "discom": "Southern Power Distribution Company of Andhra Pradesh Limited",
+      "abbreviation": "APSPDCL",
+      "state": "Andhra Pradesh",
+      "available_on_serc": true,
+      "machine_readable": true
+    }
+  ],
+  "summary": {
+    "states_total": 12,
+    "states_regulation_available": 12,
+    "discoms_total": 35,
+    "discoms_available_on_serc": 20,
+    "discoms_machine_readable": 17
+  }
+}

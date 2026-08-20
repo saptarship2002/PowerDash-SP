@@ -1,0 +1,118 @@
+'use client';
+
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { buildIndiaPaths } from '@/lib/geo2d';
+import { stateFillColor, stateIsTracked } from '@/lib/computations';
+import { lerpHex, MAP_WASH, TRANSMISSION_GOLD } from '@/lib/colors';
+import type { Discom, IndiaGeoJSON } from '@/lib/types';
+
+interface Props {
+  discoms: Discom[];
+  geojson: IndiaGeoJSON;
+  compareColorOf: (name: string) => string | null;
+  onStateClick: (name: string) => void;
+  onCentroids?: (centroids: Record<string, [number, number]>, size: { width: number; height: number }) => void;
+}
+
+/** India as a flat, editorial SVG map — warm ivory/stone and muted terracotta/clay fills (not a
+ * saturated choropleth) and a delicate hairline border, so it reads as one illustrated atlas, not
+ * a GIS layer. Every state stays visible and clickable at all times: hovering lifts one state
+ * forward with a soft gold outline and a small tooltip; selecting it (via the compare set) blends
+ * that state's category color into its own fill rather than swapping to a foreign hue, so it
+ * stays visually part of India.
+ *
+ * (An earlier pass added an SVG feTurbulence "paper grain" rect over the whole map — pulled after
+ * it turned out to render as a visible rectangular tint rather than a subtle texture, since the
+ * filter never composited back with the map beneath it; a plain <rect> with no explicit fill
+ * defaults to opaque black in SVG, and the mix-blend-mode:multiply meant to soften it instead
+ * produced a hard-edged box exactly the size of the map's own bounding box.) */
+export default function HeroMap({ discoms, geojson, compareColorOf, onStateClick, onCentroids }: Props) {
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const [size, setSize] = useState({ width: 0, height: 0 });
+  const [hovered, setHovered] = useState<string | null>(null);
+
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver((entries) => {
+      const box = entries[0]?.contentRect;
+      if (box) setSize({ width: box.width, height: box.height });
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  const projection = useMemo(() => {
+    if (!size.width || !size.height) return null;
+    return buildIndiaPaths(geojson, size.width, size.height);
+  }, [geojson, size.width, size.height]);
+
+  // held in a ref rather than the effect's own dependency array: onCentroids is a fresh inline
+  // closure on every parent render, and the parent's callback updates its own state — depending
+  // on the callback's identity here would re-fire the effect every time that state updates,
+  // which re-calls the callback again, forever. Synced via its own effect (not during render)
+  // since writing a ref mid-render is itself not allowed.
+  const onCentroidsRef = useRef(onCentroids);
+  useEffect(() => {
+    onCentroidsRef.current = onCentroids;
+  });
+
+  useEffect(() => {
+    if (!projection) return;
+    const centroids: Record<string, [number, number]> = {};
+    projection.paths.forEach((p) => {
+      centroids[p.name] = p.centroid;
+    });
+    onCentroidsRef.current?.(centroids, size);
+  }, [projection, size]);
+
+  const hoveredPath = hovered ? projection?.byName[hovered] : null;
+  const hoveredTracked = hovered ? stateIsTracked(discoms, hovered) : false;
+
+  return (
+    <div className="hero-map-2d" ref={wrapRef}>
+      {projection && (
+        <svg className="hero-map-svg" viewBox={`0 0 ${size.width} ${size.height}`} width="100%" height="100%" preserveAspectRatio="xMidYMid meet">
+          <g>
+            {projection.paths.map((p) => {
+              const clickable = stateIsTracked(discoms, p.name);
+              const selectColor = compareColorOf(p.name);
+              const isHovered = hovered === p.name;
+              const isDimmed = hovered != null && !isHovered;
+
+              let fill = stateFillColor(clickable);
+              if (selectColor) fill = lerpHex(fill, selectColor, 0.32);
+              if (isDimmed) fill = lerpHex(fill, MAP_WASH, 0.22);
+
+              const strokeColor = selectColor ?? (isHovered ? TRANSMISSION_GOLD : '#9c9179');
+              const strokeWidth = selectColor ? 1.6 : isHovered ? 1.3 : 0.7;
+              const strokeOpacity = selectColor ? 0.85 : isHovered ? 0.75 : 0.55;
+
+              return (
+                <path
+                  key={p.name}
+                  d={p.d}
+                  fill={fill}
+                  stroke={strokeColor}
+                  strokeWidth={strokeWidth}
+                  strokeOpacity={strokeOpacity}
+                  strokeLinejoin="round"
+                  className={`hero-state-path${clickable ? ' clickable' : ''}${isHovered ? ' hovered' : ''}`}
+                  onMouseEnter={() => setHovered(p.name)}
+                  onMouseLeave={() => setHovered((h) => (h === p.name ? null : h))}
+                  onClick={() => clickable && onStateClick(p.name)}
+                />
+              );
+            })}
+          </g>
+        </svg>
+      )}
+      {hoveredPath && (
+        <div className="hero-map-tip" style={{ left: hoveredPath.centroid[0], top: hoveredPath.centroid[1] }}>
+          <strong>{hovered}</strong>
+          <span>{hoveredTracked ? 'Explore state data →' : 'Not captured'}</span>
+        </div>
+      )}
+    </div>
+  );
+}

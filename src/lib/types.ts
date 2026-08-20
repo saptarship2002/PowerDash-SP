@@ -63,3 +63,39 @@ export interface IndiaGeoJSON {
 }
 
 export type MapStatus = 'full' | 'partial' | 'none' | undefined;
+
+/** Whether a state's SERC has published its standards-of-performance regulation online — not
+ * what the regulation says, just whether it's findable at all. From ACCESSIBILITY.xlsx's
+ * REGULATION sheet. `null` means the source data didn't have a Yes/No answer for this row. */
+export interface StateAccessibility {
+  state: string;
+  regulation_available: boolean | null;
+}
+
+/** Whether a licensee's reported performance data is published on its state SERC's website, and
+ * whether that publication is machine-readable (vs. e.g. a scanned PDF). From
+ * ACCESSIBILITY.xlsx's REPORTED DATAPERFORMANCE sheet. `machine_readable` is `null` whenever the
+ * source marked it "N/A" — in practice, whenever `available_on_serc` is false, since a format
+ * question doesn't apply to data that isn't published at all. */
+export interface DiscomAccessibility {
+  discom: string;
+  abbreviation: string;
+  state: string;
+  available_on_serc: boolean | null;
+  machine_readable: boolean | null;
+}
+
+export interface AccessibilitySummary {
+  states_total: number;
+  states_regulation_available: number;
+  discoms_total: number;
+  discoms_available_on_serc: number;
+  discoms_machine_readable: number;
+}
+
+export interface AccessibilityData {
+  state_order: string[];
+  states: StateAccessibility[];
+  discoms: DiscomAccessibility[];
+  summary: AccessibilitySummary;
+}

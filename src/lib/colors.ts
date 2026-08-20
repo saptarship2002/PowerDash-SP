@@ -11,15 +11,22 @@ export const STATUS = {
   mapNone: '#dfe2e8',
 };
 
-/** Map-context variants of STATUS — the hero's own institutional palette (muted, unsaturated)
- * so the map is the lightest/most prominent thing on the page, not a UI chrome color reused
- * as a fill. Just two states, factual not graded: a state either has tracked DISCOM data for
- * the selected year or it doesn't — there's no "how much/how good" tier on top of that.
- * Mirrors --map-good/--map-idle in tokens.css. */
+/** Map fills — a binary: muted terracotta/clay for every state ACPET tracks (clickable,
+ * regardless of whether its DISCOMs have reported data yet — that distinction only surfaces once
+ * you click through), and the lightest warm ivory for states entirely outside ACPET's tracked
+ * scope. Mirrors --map-tracked/--map-idle in tokens.css. */
 export const MAP_STATUS = {
-  hasData: '#3fae78',
-  idle: '#d9e0e7',
+  tracked: '#b0825c',
+  idle: '#e3ddd0',
 };
+
+/** Muted gold used for the transmission network and any hover/selection glow on the map —
+ * mirrors --map-transmission in tokens.css. */
+export const TRANSMISSION_GOLD = '#d8ae3f';
+
+/** Warm paper tone a state's fill washes toward when another state is hovered — deliberately a
+ * light wash, not a darken-to-black, so every state stays visible and reads as clickable. */
+export const MAP_WASH = '#f2ece0';
 
 export function stateHueMap(stateOrder: string[]): Record<string, string> {
   const map: Record<string, string> = {};
@@ -87,4 +94,13 @@ export function shades(baseHex: string, n: number): string[] {
 export function hexToRgba(hex: string, alpha: number): string {
   const [r, g, b] = hexToRgb(hex);
   return `rgba(${r},${g},${b},${alpha})`;
+}
+
+/** Linear-interpolate two hex colors by t (0 = a, 1 = b) — plain-color equivalent of
+ * THREE.Color.lerp, used by the 2D map to blend a state's base fill toward a hover/selection
+ * tint without introducing a separate color library. */
+export function lerpHex(a: string, b: string, t: number): string {
+  const ca = hexToRgb(a);
+  const cb = hexToRgb(b);
+  return rgbToHex([ca[0] + (cb[0] - ca[0]) * t, ca[1] + (cb[1] - ca[1]) * t, ca[2] + (cb[2] - ca[2]) * t]);
 }

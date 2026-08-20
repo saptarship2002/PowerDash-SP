@@ -69,7 +69,7 @@ export default function CompareView({ states, year }: Props) {
 
       <div className="chart-grid">
         {comparableKeys.length === 0 ? (
-          <p className="detail-placeholder">No indicator is comparable across all selected states for FY {activeYear} — they don&rsquo;t overlap on reported data.</p>
+          <p className="detail-placeholder">No indicator is comparable across all selected states for FY {activeYear}: they don&rsquo;t overlap on reported data.</p>
         ) : (
           comparableKeys.map((key, idx) => (
             <CompareChart key={key} discoms={discoms} allDiscoms={discoms.discoms} indicatorKey={key} compareSet={states} year={activeYear} animationDelay={idx * 90} />

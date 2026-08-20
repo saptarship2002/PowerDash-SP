@@ -22,14 +22,10 @@ export function stateIsTracked(discoms: Discom[], state: string): boolean {
   return discoms.some((d) => d.state === state);
 }
 
-/** Whether any of this state's DISCOMs actually reported data for the given year — a plain
- * fact, not a completeness tier (no 70%-style threshold). Used only for the map's fill color. */
-export function stateHasData(discoms: Discom[], state: string, year: string): boolean {
-  return discoms.some((d) => d.state === state && (d.years[year]?.scoring.data_reported_pct ?? 0) > 0);
-}
-
-export function stateFillColor(hasData: boolean): string {
-  return hasData ? MAP_STATUS.hasData : MAP_STATUS.idle;
+/** Map fill is binary: tracked (clickable) or not — whether a tracked state's DISCOMs have
+ * actually reported data is deferred to the click-through detail, not shown on the map itself. */
+export function stateFillColor(tracked: boolean): string {
+  return tracked ? MAP_STATUS.tracked : MAP_STATUS.idle;
 }
 
 /** Most common numeric benchmark among a set of indicator entries (raw, not reinterpreted). */

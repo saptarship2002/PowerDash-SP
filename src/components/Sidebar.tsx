@@ -6,15 +6,20 @@ import { usePathname } from 'next/navigation';
 const NAV = [
   {
     href: '/',
-    label: 'Map Explorer',
+    label: 'Home',
     icon: (
       <path d="M3 21V3M7 21v-7M12 21V8M17 21v-11" />
     ),
   },
   {
-    href: '/report',
-    label: 'Scorecards Report',
-    icon: <path d="M4 4v16h7V4H4Zm9 0v16h7V4h-7Z" />,
+    href: '/accessibility',
+    label: 'Accessibility',
+    icon: <path d="M12 3 3 7.5 12 12l9-4.5L12 3Zm-9 9 9 4.5 9-4.5M3 16.5l9 4.5 9-4.5" />,
+  },
+  {
+    href: '/methodology',
+    label: 'Methodology',
+    icon: <path d="M9 4h6l3 4v12H6V8l3-4Zm-1 8h8M8 15h5" />,
   },
 ];
 
@@ -31,8 +36,9 @@ export default function Sidebar() {
         </div>
         <div className="brand-text">
           <span className="brand-name">ACPET</span>
-          <span className="brand-sub">Power Distribution Dashboard</span>
+          <span className="brand-sub">DISCOM Performance Dashboard</span>
         </div>
+      
       </div>
       <nav className="sidenav">
         {NAV.map((item) => {
@@ -48,7 +54,9 @@ export default function Sidebar() {
         })}
       </nav>
       <div className="sidebar-foot">
-        Data: <code>Common Indicators.xlsx</code> · 35 DISCOMs · FY 2021-22 to FY 2025-26
+        <div>States: 12</div>
+        <div>DISCOMs: 35 (Public)</div>
+        <div>Years: FY 2021–22 to FY 2025–26</div>
       </div>
     </aside>
   );
