@@ -57,7 +57,7 @@ function easeOutBack(t: number) {
  * mid-scroll), so mobile just gets the fully-arrived static layout (map centered, chrome visible)
  * instead of trying to scrub the same cinematic transform through a much less predictable
  * viewport. */
-const MOBILE_QUERY = '(max-width: 900px)';
+const MOBILE_QUERY = '(max-width: 980px)';
 function isMobile() {
   return typeof window !== 'undefined' && window.matchMedia(MOBILE_QUERY).matches;
 }

@@ -8,7 +8,7 @@
 .hero-stage {
   position: relative;
   height: 230vh;
-  margin: -40px -44px 0;
+  margin: -72px -44px 0;
 }
 /* no padding here: every child is position:absolute (there's no in-flow content at all), and a
    padding box only ever constrains in-flow content or gets used as the containing block for
@@ -618,9 +618,13 @@
    only a stylesheet-level `!important` can guarantee over a plain inline style. Everything ends
    up fully visible/interactive and laid out as a normal static stack instead of the desktop
    cinematic composition, which doesn't suit a narrow viewport. */
-@media (max-width: 900px) {
+@media (max-width: 980px) {
   .hero-stage {
     height: auto;
+    /* horizontal offset matches main.app-main's mobile padding (20px, see layout.css) — left at
+       -44px (the desktop value) it bled past the viewport on both sides and caused an
+       unwanted horizontal scrollbar. */
+    margin: -72px -20px 0;
   }
   /* the scroll-driven reveal is disabled below this width (see isMobile() in HeroSection.tsx),
      so there's nothing for this CTA to be inviting the user to scroll toward. */
