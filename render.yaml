@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: power-dashboard
+    runtime: static
+    rootDir: dashboard/ui
+    buildCommand: npm install && npm run build
+    staticPublishPath: out
