@@ -265,6 +265,7 @@ export default function HeroSection({
               geojson={geojson}
               compareColorOf={(name) => compareColor(compareSet, name)}
               onStateClick={handleStateClick}
+              compareMode={compareMode}
               onCentroids={(c, size) => {
                 setCentroids(c);
                 setMapSize(size);

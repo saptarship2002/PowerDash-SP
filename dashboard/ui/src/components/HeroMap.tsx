@@ -11,6 +11,7 @@ interface Props {
   geojson: IndiaGeoJSON;
   compareColorOf: (name: string) => string | null;
   onStateClick: (name: string) => void;
+  compareMode?: boolean;
   onCentroids?: (centroids: Record<string, [number, number]>, size: { width: number; height: number }) => void;
 }
 
@@ -26,7 +27,7 @@ interface Props {
  * filter never composited back with the map beneath it; a plain <rect> with no explicit fill
  * defaults to opaque black in SVG, and the mix-blend-mode:multiply meant to soften it instead
  * produced a hard-edged box exactly the size of the map's own bounding box.) */
-export default function HeroMap({ discoms, geojson, compareColorOf, onStateClick, onCentroids }: Props) {
+export default function HeroMap({ discoms, geojson, compareColorOf, onStateClick, compareMode, onCentroids }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ width: 0, height: 0 });
   const [hovered, setHovered] = useState<string | null>(null);
@@ -83,7 +84,11 @@ export default function HeroMap({ discoms, geojson, compareColorOf, onStateClick
   const hoveredTracked = hovered ? stateIsTracked(discoms, hovered) : false;
 
   function handleClick(name: string) {
-    if (canHover) {
+    // the preview/confirm gate exists only to stop a tap from jumping straight to a state's
+    // full report before its been previewed. Compare mode never navigates — it just toggles the
+    // state in/out of the comparison set, a reversible, in-place action — so it should always
+    // take effect on the first tap, on touch devices too.
+    if (canHover || compareMode) {
       onStateClick(name);
       return;
     }
