@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const NAV = [
   {
@@ -27,16 +27,32 @@ const NAV = [
 export default function Sidebar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const asideRef = useRef<HTMLElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
+
+  // closes on a tap/click anywhere outside the open panel — the hamburger button itself is
+  // excluded so its own click isn't immediately undone by this same handler.
+  useEffect(() => {
+    if (!open) return;
+    const handlePointerDown = (e: PointerEvent) => {
+      const target = e.target as Node;
+      if (asideRef.current?.contains(target) || toggleRef.current?.contains(target)) return;
+      setOpen(false);
+    };
+    document.addEventListener('pointerdown', handlePointerDown);
+    return () => document.removeEventListener('pointerdown', handlePointerDown);
+  }, [open]);
 
   const toggle = () => setOpen((v) => !v);
 
   return (
     <>
       <button
+        ref={toggleRef}
         type="button"
         className={`menu-toggle${open ? ' open' : ''}`}
         aria-label={open ? 'Close menu' : 'Open menu'}
@@ -47,7 +63,7 @@ export default function Sidebar() {
         <span className="bar" />
         <span className="bar" />
       </button>
-      <aside className={`sidebar${open ? ' open' : ''}`}>
+      <aside ref={asideRef} className={`sidebar${open ? ' open' : ''}`}>
       <div className="sidebar-inner">
       <div className="brand">
         
