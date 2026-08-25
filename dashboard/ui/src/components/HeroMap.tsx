@@ -124,8 +124,8 @@ export default function HeroMap({ discoms, geojson, compareColorOf, onStateClick
                   strokeOpacity={strokeOpacity}
                   strokeLinejoin="round"
                   className={`hero-state-path${clickable ? ' clickable' : ''}${isHovered ? ' hovered' : ''}`}
-                  onMouseEnter={() => setHovered(p.name)}
-                  onMouseLeave={() => setHovered((h) => (h === p.name ? null : h))}
+                  onMouseEnter={canHover ? () => setHovered(p.name) : undefined}
+                  onMouseLeave={canHover ? () => setHovered((h) => (h === p.name ? null : h)) : undefined}
                   onClick={() => clickable && handleClick(p.name)}
                 />
               );
