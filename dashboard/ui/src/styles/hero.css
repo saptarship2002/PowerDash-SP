@@ -622,6 +622,11 @@
   .hero-stage {
     height: auto;
   }
+  /* the scroll-driven reveal is disabled below this width (see isMobile() in HeroSection.tsx),
+     so there's nothing for this CTA to be inviting the user to scroll toward. */
+  .hero-cta {
+    display: none;
+  }
   .hero-sticky {
     position: static;
     height: auto;

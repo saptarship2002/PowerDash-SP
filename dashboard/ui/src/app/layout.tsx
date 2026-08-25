@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Montserrat, Playfair_Display } from 'next/font/google';
 import { DataProvider } from '@/lib/DataContext';
 import Sidebar from '@/components/Sidebar';
+import OnboardingTour from '@/components/OnboardingTour';
 import './globals.css';
 
 const montserrat = Montserrat({ variable: '--font-montserrat', subsets: ['latin'], weight: ['300', '400', '500', '600'] });
@@ -26,6 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Sidebar />
             <main className="app-main">{children}</main>
           </div>
+          <OnboardingTour />
         </DataProvider>
       </body>
     </html>

@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 const NAV = [
   {
@@ -25,8 +26,29 @@ const NAV = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
+
+  const toggle = () => setOpen((v) => !v);
+
   return (
-    <aside className="sidebar">
+    <>
+      <button
+        type="button"
+        className={`menu-toggle${open ? ' open' : ''}`}
+        aria-label={open ? 'Close menu' : 'Open menu'}
+        aria-expanded={open}
+        onClick={toggle}
+      >
+        <span className="bar" />
+        <span className="bar" />
+        <span className="bar" />
+      </button>
+      <aside className={`sidebar${open ? ' open' : ''}`}>
+      <div className="sidebar-inner">
       <div className="brand">
         
         <div className="brand-mark">
@@ -58,6 +80,8 @@ export default function Sidebar() {
         <div>DISCOMs: 35 (Public)</div>
         <div>Years: FY 2021–22 to FY 2025–26</div>
       </div>
-    </aside>
+      </div>
+      </aside>
+    </>
   );
 }
