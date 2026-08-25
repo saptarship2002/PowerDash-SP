@@ -30,6 +30,19 @@ export default function HeroMap({ discoms, geojson, compareColorOf, onStateClick
   const wrapRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ width: 0, height: 0 });
   const [hovered, setHovered] = useState<string | null>(null);
+  // touch devices have no hover, so the first tap can't preview a state the way a mouse hover
+  // does — it would otherwise jump straight to that state's report before the user ever saw the
+  // tooltip. On such devices the first tap on a state just shows the tooltip (acts as "hover");
+  // a second tap on the *same*, already-previewed state is what actually navigates.
+  const [canHover, setCanHover] = useState(true);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(hover: hover)');
+    const sync = () => setCanHover(mq.matches);
+    sync();
+    mq.addEventListener('change', sync);
+    return () => mq.removeEventListener('change', sync);
+  }, []);
 
   useEffect(() => {
     const el = wrapRef.current;
@@ -69,6 +82,19 @@ export default function HeroMap({ discoms, geojson, compareColorOf, onStateClick
   const hoveredPath = hovered ? projection?.byName[hovered] : null;
   const hoveredTracked = hovered ? stateIsTracked(discoms, hovered) : false;
 
+  function handleClick(name: string) {
+    if (canHover) {
+      onStateClick(name);
+      return;
+    }
+    // first tap previews (same as hover would), second tap on the same state confirms
+    if (hovered !== name) {
+      setHovered(name);
+      return;
+    }
+    onStateClick(name);
+  }
+
   return (
     <div className="hero-map-2d" ref={wrapRef}>
       {projection && (
@@ -100,7 +126,7 @@ export default function HeroMap({ discoms, geojson, compareColorOf, onStateClick
                   className={`hero-state-path${clickable ? ' clickable' : ''}${isHovered ? ' hovered' : ''}`}
                   onMouseEnter={() => setHovered(p.name)}
                   onMouseLeave={() => setHovered((h) => (h === p.name ? null : h))}
-                  onClick={() => clickable && onStateClick(p.name)}
+                  onClick={() => clickable && handleClick(p.name)}
                 />
               );
             })}
