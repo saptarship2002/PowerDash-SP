@@ -638,6 +638,11 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
+    /* the hero bleeds past main.app-main's own top padding (see .hero-stage's negative margin
+       above) to sit flush with the viewport edge, but that also removes the clearance the fixed
+       hamburger button (.menu-toggle, top:16/height:40) needs — without this the headline sat
+       right underneath it. */
+    padding-top: 64px;
   }
   .hero-editorial,
   .hero-map-inner,
@@ -685,7 +690,7 @@
 
 @media (max-width: 720px) {
   .hero-sticky {
-    padding: 40px 24px;
+    padding: 64px 24px 40px;
   }
   .hero-editorial h1 {
     font-size: 30px;
