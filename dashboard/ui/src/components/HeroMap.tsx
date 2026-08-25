@@ -98,7 +98,19 @@ export default function HeroMap({ discoms, geojson, compareColorOf, onStateClick
   return (
     <div className="hero-map-2d" ref={wrapRef}>
       {projection && (
-        <svg className="hero-map-svg" viewBox={`0 0 ${size.width} ${size.height}`} width="100%" height="100%" preserveAspectRatio="xMidYMid meet">
+        <svg
+          className="hero-map-svg"
+          viewBox={`0 0 ${size.width} ${size.height}`}
+          width="100%"
+          height="100%"
+          preserveAspectRatio="xMidYMid meet"
+          // tapping empty space inside the map (ocean, outside every state path) cancels
+          // whatever's currently previewed — only relevant on touch (see handleClick), but
+          // harmless to clear on desktop too since a mouseleave would already have done so.
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setHovered(null);
+          }}
+        >
           <g>
             {projection.paths.map((p) => {
               const clickable = stateIsTracked(discoms, p.name);
