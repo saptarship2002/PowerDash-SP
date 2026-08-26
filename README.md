@@ -151,3 +151,44 @@ production build.
   are currently in sync (identical md5), but the copy between them is a manual step
   with nothing enforcing it — worth double-checking after any future pipeline re-run.
 - Created this README as the durable place to keep this kind of note going forward.
+
+### 2026-08-26
+- Deployed the site as a static site on **Render**, under a new GitHub repo
+  (`saptarship2002/PowerDash-SP`, separate from the `richieaj/power_dashboard` origin
+  this was cloned from — pushed there via a second git remote, `powerdash-sp`).
+  Added root-level `render.yaml` (root dir `dashboard/ui`, build
+  `npm install && npm run build`, publish dir `out`) so the Blueprint deploy is
+  reproducible; Render auto-deploys on push to `main`.
+- Added a static `/api/health` route (`export const dynamic = "force-static"`,
+  returns `{"status":"ok"}`) as the target for external uptime monitoring (e.g.
+  UptimeRobot) — there's no server runtime to health-check directly since this is a
+  static export.
+- Reworked the sidebar (`Sidebar.tsx`): hidden by default at every width, a hamburger
+  icon (morphs into an X) slides it in as an overlay, closes on outside click/tap via
+  a document-level `pointerdown` listener. (Went through a few intermediate designs —
+  push-layout, scroll-driven auto-hide — before landing back on this simpler overlay
+  version.)
+- Rebuilt `OnboardingTour.tsx`: shown once per browser (`localStorage` flag
+  `acpet-tour-completed`), 5 slides with a left/right slide animation between steps.
+  Slides 2–5 use real screenshots of the app (`public/tour/*.png`, captured via a
+  throwaway Playwright script) instead of drawn illustrations; slide 1 is plain text
+  only. Dialog is a fixed-height flex column with dots/actions pinned to the bottom so
+  the Next button lands in the same spot on every slide regardless of content length.
+- Fixed touch/tap handling on the map (`HeroMap.tsx`): touch devices have no hover, so
+  a tap used to jump straight to a state's report with no preview. Now the first tap
+  previews (tooltip) and a second tap on the *same* state confirms navigation; tapping
+  empty map space clears the preview. Root cause of an initial broken attempt: real
+  mobile browsers synthesize `mouseenter`/`click` compatibility events on tap
+  (`touchend → mouseover → click`), which was pre-empting the gate — fixed by
+  disabling the mouse handlers entirely on devices without hover capability
+  (`matchMedia('(hover: hover)')`). Compare mode bypasses the gate (a tap always
+  toggles the state in/out of the comparison set immediately — reversible, not a
+  navigation).
+- Fixed a handful of mobile-only layout bugs surfaced by testing on a real iPhone
+  (WebKit's touch/rendering behavior differs from Chromium's touch emulation, which
+  had made these look fine in earlier automated checks): a horizontal scrollbar from
+  `.hero-stage`'s negative margin not having a mobile-width override, a white gap at
+  the top of the page from that same margin not matching `main.app-main`'s padding
+  after an earlier revert, and the fixed hamburger button overlapping the headline.
+- Created a Notion page, **Power Dashboard — Codebase Reference**, mirroring this
+  README plus the above for anyone who wants the durable version outside the repo.
