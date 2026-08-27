@@ -225,6 +225,9 @@
 .hero-state-path.hovered {
   filter: brightness(1.05) drop-shadow(0 4px 10px rgba(40, 32, 10, 0.16));
 }
+.hero-state-path.clickable:active {
+  filter: brightness(0.94);
+}
 
 /* small, clean hover tooltip — state name plus a one-line cue, not the full stats popup (that's
  * StatePopup.tsx, shown on click) */
@@ -400,6 +403,9 @@
   background: var(--accent);
   border-color: var(--accent);
 }
+.toggle-row:active .toggle-switch {
+  border-color: var(--accent-light);
+}
 .toggle-thumb {
   position: absolute;
   top: 1px;
@@ -574,11 +580,16 @@
   letter-spacing: 0.04em;
   text-transform: uppercase;
   font-size: 13px;
-  transition: background 160ms var(--ease), border-color 160ms var(--ease);
+  transition: background 160ms var(--ease), border-color 160ms var(--ease), transform 120ms var(--ease);
 }
 .control-compare-btn:hover:not(:disabled) {
   background: #2f4bb1;
   border-color: #2f4bb1;
+}
+.control-compare-btn:active:not(:disabled) {
+  background: #24398a;
+  border-color: #24398a;
+  transform: scale(0.97);
 }
 .control-compare-btn:disabled {
   opacity: 0.4;
@@ -598,11 +609,15 @@
   letter-spacing: 0.04em;
   text-transform: uppercase;
   text-align: center;
-  transition: background 160ms var(--ease), color 160ms var(--ease);
+  transition: background 160ms var(--ease), color 160ms var(--ease), transform 120ms var(--ease);
 }
 .control-ghost-btn:hover {
   background: rgba(59, 95, 224, 0.08);
   color: var(--accent);
+}
+.control-ghost-btn:active:not(:disabled) {
+  background: rgba(59, 95, 224, 0.16);
+  transform: scale(0.97);
 }
 
 .control-hint {

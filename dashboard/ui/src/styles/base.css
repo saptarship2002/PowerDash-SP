@@ -68,6 +68,14 @@ h3 {
     transform: none;
   }
 }
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
 @keyframes bob {
   0%,
   100% {
@@ -79,5 +87,51 @@ h3 {
 }
 .animate-in {
   animation: fadeInUp 620ms var(--ease) both;
+}
+
+/* Response (apple-design §1): every tappable control gets instant, visible feedback on press,
+   not just on :hover — :hover alone is silent on touch, where nothing else marks a tap landed.
+   Low-specificity :where() so any component's own :active rule (e.g. .back-btn's translateX)
+   overrides this without a fight. */
+:where(button, a, [role='button'], [role='switch']):not(:disabled):active {
+  transform: scale(0.97);
+}
+
+/* Reduced motion (apple-design §14): keep feedback, drop the large/spatial motion — cross-fade
+   instead of slide, no cascade stagger, no elastic overshoot. Color/opacity changes that aid
+   comprehension (hover states, the sidebar's own translateX) are left alone. */
+@media (prefers-reduced-motion: reduce) {
+  .animate-in {
+    animation: none;
+    opacity: 1;
+  }
+  .tour-slide--forward,
+  .tour-slide--back {
+    animation-name: fadeIn;
+    animation-duration: 180ms;
+  }
+  .sidebar {
+    transition: opacity 180ms var(--ease);
+  }
+  .sidebar:not(.open) {
+    opacity: 0;
+    pointer-events: none;
+    transform: none;
+  }
+  :where(button, a, [role='button'], [role='switch']):not(:disabled):active {
+    transform: none;
+    opacity: 0.7;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .control-panel {
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: none;
+  }
+  .tour-scrim {
+    background: rgba(15, 17, 23, 0.75);
+    backdrop-filter: none;
+  }
 }
 

@@ -85,6 +85,10 @@ nav.sidenav a:hover {
   background: rgba(255, 255, 255, 0.06);
   color: #fff;
 }
+nav.sidenav a:active {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
 nav.sidenav a.active {
   background: var(--accent);
   color: #fff;
@@ -132,6 +136,11 @@ main.app-main {
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow-md);
   cursor: pointer;
+  transition: transform 120ms var(--ease);
+}
+
+.menu-toggle:active {
+  transform: scale(0.92);
 }
 
 .menu-toggle .bar {

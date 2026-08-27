@@ -122,6 +122,12 @@ export default function HeroSection({
     const pylonImg = pylonImgRef.current;
     if (!stage || !mapInner || !networkLayer || !editorial || !pylonImg) return;
     const chromeEls = [controlCompareRef.current, mapChromeRef.current].filter((el): el is HTMLDivElement => el != null);
+    // apple-design §14: a viewer who asked for reduced motion still gets the scroll-linked reveal
+    // (it only ever moves in direct response to their own scroll input, which reduced-motion
+    // guidance doesn't target), but loses the two effects that don't come from their input —
+    // the map's restrained overshoot-snap on scale, and the auto "finish the scroll for you"
+    // smooth-scroll snap, which for a reduced-motion viewer runs as a plain instant jump instead.
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     function measure() {
       const rect = stage!.getBoundingClientRect();
@@ -137,7 +143,7 @@ export default function HeroSection({
       // the map's own rightward-to-centered travel) gives the backdrop a sense of depth rather
       // than reading as a flat sticker behind the map.
       pylonImg!.style.opacity = String(lerp(0.16, 0.04, p));
-      pylonImg!.style.transform = `scale(1.5) translateX(${lerp(0, -22, easeInOutCubic(p))}px)`;
+      pylonImg!.style.transform = reduceMotion ? 'scale(1.5)' : `scale(1.5) translateX(${lerp(0, -22, easeInOutCubic(p))}px)`;
 
       // phase 1: editorial recedes — fades, lifts left, scales down slightly — over 12–45%.
       const editorialT = easeInOutCubic(remap(p, 0.12, 0.45));
@@ -151,7 +157,7 @@ export default function HeroSection({
       // overshoot so it settles into its final size with a confident snap instead of a flat,
       // mechanical arrival.
       const mapMoveT = easeInOutCubic(remap(p, 0.18, MAP_SETTLE_END));
-      const mapScaleT = easeOutBack(remap(p, 0.18, MAP_SETTLE_END));
+      const mapScaleT = reduceMotion ? mapMoveT : easeOutBack(remap(p, 0.18, MAP_SETTLE_END));
       mapInner!.style.transform = `translateX(${lerp(19, 0, mapMoveT)}%) scale(${lerp(0.82, 1, mapScaleT)})`;
 
       // network becomes more visible across roughly the same span the camera is moving in.
@@ -199,7 +205,7 @@ export default function HeroSection({
       // moved.
       const targetP = p < 0.12 ? 0 : 1;
       const targetTop = window.scrollY + rect.top + targetP * scrollRange;
-      window.scrollTo({ top: targetTop, behavior: 'smooth' });
+      window.scrollTo({ top: targetTop, behavior: reduceMotion ? 'instant' : 'smooth' });
     }
 
     function onScroll() {
@@ -284,7 +290,7 @@ export default function HeroSection({
               </div>
               <div className="map-legend-row">
                 <span className="map-legend-dot map-legend-dot--none" />
-                Not captured
+                Coming soon
               </div>
             </div>
           </div>

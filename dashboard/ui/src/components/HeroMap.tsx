@@ -153,7 +153,7 @@ export default function HeroMap({ discoms, geojson, compareColorOf, onStateClick
       {hoveredPath && (
         <div className="hero-map-tip" style={{ left: hoveredPath.centroid[0], top: hoveredPath.centroid[1] }}>
           <strong>{hovered}</strong>
-          <span>{hoveredTracked ? 'Explore state data →' : 'Not captured'}</span>
+          <span>{hoveredTracked ? 'Explore state data →' : 'Coming soon'}</span>
         </div>
       )}
     </div>
