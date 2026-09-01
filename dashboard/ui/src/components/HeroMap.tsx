@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { buildIndiaPaths } from '@/lib/geo2d';
-import { stateFillColor, stateIsTracked } from '@/lib/computations';
+import { stateFillColor, stateMapStatus } from '@/lib/computations';
 import { lerpHex, MAP_WASH, TRANSMISSION_GOLD } from '@/lib/colors';
 import type { Discom, IndiaGeoJSON } from '@/lib/types';
 
@@ -81,7 +81,8 @@ export default function HeroMap({ discoms, geojson, compareColorOf, onStateClick
   }, [projection, size]);
 
   const hoveredPath = hovered ? projection?.byName[hovered] : null;
-  const hoveredTracked = hovered ? stateIsTracked(discoms, hovered) : false;
+  const hoveredStatus = hovered ? stateMapStatus(discoms, hovered) : null;
+  const hoveredTip = hoveredStatus === 'tracked' ? 'Explore state data →' : hoveredStatus === 'no-data' ? 'Not available' : 'Coming soon';
 
   function handleClick(name: string) {
     // the preview/confirm gate exists only to stop a tap from jumping straight to a state's
@@ -118,18 +119,19 @@ export default function HeroMap({ discoms, geojson, compareColorOf, onStateClick
         >
           <g>
             {projection.paths.map((p) => {
-              const clickable = stateIsTracked(discoms, p.name);
+              const status = stateMapStatus(discoms, p.name);
+              const clickable = status === 'tracked';
               const selectColor = compareColorOf(p.name);
               const isHovered = hovered === p.name;
               const isDimmed = hovered != null && !isHovered;
 
-              let fill = stateFillColor(clickable);
+              let fill = stateFillColor(status);
               if (selectColor) fill = lerpHex(fill, selectColor, 0.32);
               if (isDimmed) fill = lerpHex(fill, MAP_WASH, 0.22);
 
-              const strokeColor = selectColor ?? (isHovered ? TRANSMISSION_GOLD : '#9c9179');
-              const strokeWidth = selectColor ? 1.6 : isHovered ? 1.3 : 0.7;
-              const strokeOpacity = selectColor ? 0.85 : isHovered ? 0.75 : 0.55;
+              const strokeColor = selectColor ?? TRANSMISSION_GOLD;
+              const strokeWidth = selectColor ? 1.6 : isHovered ? 1.4 : 1;
+              const strokeOpacity = selectColor ? 0.9 : isHovered ? 0.95 : 0.8;
 
               return (
                 <path
@@ -153,7 +155,7 @@ export default function HeroMap({ discoms, geojson, compareColorOf, onStateClick
       {hoveredPath && (
         <div className="hero-map-tip" style={{ left: hoveredPath.centroid[0], top: hoveredPath.centroid[1] }}>
           <strong>{hovered}</strong>
-          <span>{hoveredTracked ? 'Explore state data →' : 'Coming soon'}</span>
+          <span>{hoveredTip}</span>
         </div>
       )}
     </div>

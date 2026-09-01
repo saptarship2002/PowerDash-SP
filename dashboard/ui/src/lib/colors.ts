@@ -11,13 +11,14 @@ export const STATUS = {
   mapNone: '#dfe2e8',
 };
 
-/** Map fills — a binary: muted terracotta/clay for every state ACPET tracks (clickable,
- * regardless of whether its DISCOMs have reported data yet — that distinction only surfaces once
- * you click through), and the lightest warm ivory for states entirely outside ACPET's tracked
- * scope. Mirrors --map-tracked/--map-idle in tokens.css. */
+/** Map fills — a muted terracotta/clay for a tracked state with reported data (clickable through
+ * to its full report), an off-white for a tracked state still awaiting reported data (not
+ * clickable — see stateMapStatus), and a lighter tint of the tracked clay for states entirely
+ * outside ACPET's tracked scope. Mirrors --map-tracked/--map-no-data/--map-idle in tokens.css. */
 export const MAP_STATUS = {
   tracked: '#b0825c',
-  idle: '#e3ddd0',
+  noData: '#e9e6de',
+  idle: '#c8a88d',
 };
 
 /** Muted gold used for the transmission network and any hover/selection glow on the map —

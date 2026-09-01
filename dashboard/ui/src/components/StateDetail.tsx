@@ -30,7 +30,7 @@ export default function StateDetail({ name }: { name: string }) {
     return (
       <div className="state-page">
         <p className="detail-placeholder">No DISCOMs found for &ldquo;{name}&rdquo;.</p>
-        <button type="button" className="back-btn" onClick={() => router.push('/')}>
+        <button type="button" className="back-btn" onClick={() => router.back()}>
           Back to Overview
         </button>
       </div>
@@ -54,7 +54,7 @@ export default function StateDetail({ name }: { name: string }) {
   return (
     <div className="state-page">
       <div className="state-topbar">
-        <button type="button" className="back-btn" onClick={() => router.push('/')}>
+        <button type="button" className="back-btn" onClick={() => router.back()}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
             <path d="M19 12H5M12 19l-7-7 7-7" />
           </svg>

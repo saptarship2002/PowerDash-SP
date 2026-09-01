@@ -10,6 +10,7 @@
   --line: rgba(21, 24, 31, 0.1);
 
   --charcoal: #15181f;
+  --sidebar-bg: #f7f4ec;
   --accent: #3b5fe0;
   --accent-light: #7c93ea;
   --hero-mist: #eef1f7;
@@ -37,13 +38,14 @@
   --cat-7: #e34948;
 
   /* map fills — a restrained editorial palette, not a GIS choropleth: a muted terracotta/clay for
-     every state ACPET tracks (clickable, regardless of whether its DISCOMs have reported data
-     yet — that surfaces on click-through, not the map itself), and the lightest warm ivory for
-     states outside scope entirely, receding into the backdrop. Hover/selection state (handled in
-     StateMesh, not here) is what actually lifts a state forward. Mirrored in colors.ts as
-     MAP_STATUS. */
+     a tracked state with reported data (clickable through to its full report), an off-white for a
+     tracked state still awaiting reported data (not clickable — see stateMapStatus), and a
+     lighter tint of the tracked clay for states outside scope entirely, receding into the
+     backdrop. Hover/selection state (handled in StateMesh, not here) is what actually lifts a
+     state forward. Mirrored in colors.ts as MAP_STATUS. */
   --map-tracked: #b0825c;
-  --map-idle: #e3ddd0;
+  --map-idle: #c8a88d;
+  --map-no-data: #e9e6de;
   --map-highlight: #3b5fe0;
   --map-transmission: #d8ae3f;
 

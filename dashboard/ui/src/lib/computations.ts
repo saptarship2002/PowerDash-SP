@@ -15,17 +15,39 @@ export function compareColor(compareSet: string[], name: string): string | null 
   return idx === -1 ? null : CATEGORICAL[idx % CATEGORICAL.length];
 }
 
-/** Whether this state has any tracked DISCOM at all (year-independent) — gates clickability on
- * the map. A tracked state stays clickable even in a year where it happens to have no reported
- * data; only states ACPET doesn't track at all are excluded. */
+/** Whether this state has any tracked DISCOM at all (year-independent) — gates whether it's
+ * even in ACPET's scope. Only states ACPET doesn't track at all are excluded from the map;
+ * a tracked state stays in scope even in a year where it happens to have no reported data (see
+ * stateMapStatus for the "tracked but no data" split). */
 export function stateIsTracked(discoms: Discom[], state: string): boolean {
   return discoms.some((d) => d.state === state);
 }
 
-/** Map fill is binary: tracked (clickable) or not — whether a tracked state's DISCOMs have
- * actually reported data is deferred to the click-through detail, not shown on the map itself. */
-export function stateFillColor(tracked: boolean): string {
-  return tracked ? MAP_STATUS.tracked : MAP_STATUS.idle;
+/** Whether any of this state's DISCOMs have ever reported a value for any indicator, in any
+ * year — year-independent, same as stateIsTracked. */
+export function stateHasReportedData(discoms: Discom[], state: string): boolean {
+  return discoms
+    .filter((d) => d.state === state)
+    .some((d) => Object.values(d.years).some((y) => Object.values(y.indicators).some((i) => i.value != null)));
+}
+
+export type StateMapStatus = 'tracked' | 'no-data' | 'idle';
+
+/** Three-way map status for a state: 'idle' (outside ACPET's tracked scope entirely), 'no-data'
+ * (tracked, but no DISCOM has ever reported a value for any indicator), or 'tracked' (has
+ * reported data). Only 'tracked' is clickable through to the full state report. */
+export function stateMapStatus(discoms: Discom[], state: string): StateMapStatus {
+  if (!stateIsTracked(discoms, state)) return 'idle';
+  return stateHasReportedData(discoms, state) ? 'tracked' : 'no-data';
+}
+
+/** Map fill by status — a muted terracotta/clay for states with reported data, a lighter tint of
+ * that same clay for states entirely outside ACPET's tracked scope, and an off-white for
+ * tracked states still awaiting reported data. */
+export function stateFillColor(status: StateMapStatus): string {
+  if (status === 'tracked') return MAP_STATUS.tracked;
+  if (status === 'no-data') return MAP_STATUS.noData;
+  return MAP_STATUS.idle;
 }
 
 /** Most common numeric benchmark among a set of indicator entries (raw, not reinterpreted). */

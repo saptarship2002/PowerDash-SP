@@ -90,11 +90,9 @@
   }
 }
 
-/* ---------- pylon-lineart.png: the landing backdrop — a visible lattice/crossarm silhouette
-   behind the editorial text, not just a faint texture. Its opacity is scroll-driven (see
-   HeroSection's applyStyles): clearly present on landing, quieting as the camera moves in so it
-   never competes with the interactive map once that's the focus. The CSS opacity below is just
-   the pre-JS/no-JS fallback, matching the landing value. ---------- */
+/* ---------- pylon-lineart.png: the landing backdrop — a faint lattice/crossarm silhouette
+   behind the editorial text. Opacity is fixed (not scroll-driven) so it reads the same everywhere
+   on the page; only its parallax transform changes with scroll (see HeroSection's applyStyles). ---------- */
 .hero-bg-fabric {
   position: absolute;
   inset: 0;
@@ -112,7 +110,7 @@
   display: block;
   object-fit: cover;
   object-position: 72% 38%;
-  opacity: 0.16;
+  opacity: 0.05;
   filter: blur(1.5px);
   transform: scale(1.5);
 }
@@ -257,35 +255,6 @@
   font-weight: 500;
 }
 
-/* ---------- transmission network: thin muted-gold arcs + a soft halo at each node, purely
- * decorative (pointer-events: none) so it never competes with or intercepts clicks meant for the
- * state paths beneath it. ---------- */
-.transmission-layer-2d {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-}
-.grid-line {
-  fill: none;
-  stroke: var(--map-transmission);
-  stroke-width: 1.1;
-  stroke-opacity: 0.55;
-}
-.grid-pulse {
-  fill: var(--map-transmission);
-  filter: drop-shadow(0 0 3px rgba(216, 174, 63, 0.85));
-}
-.grid-node-halo {
-  fill: var(--map-transmission);
-  opacity: 0.16;
-  filter: blur(2px);
-}
-.grid-node-core {
-  fill: var(--map-transmission);
-  filter: drop-shadow(0 0 2px rgba(216, 174, 63, 0.85));
-}
-
 /* ---------- overlay chrome: compare tool (left-center) floats over the viewport; map-chrome
    (legend) floats over the map stage itself. Every one starts faded/lowered and cascades in
    together off the same chrome progress value (see chromeEls in HeroSection.tsx's applyStyles)
@@ -347,6 +316,9 @@
 }
 .map-legend-dot--tracked {
   background: var(--map-tracked);
+}
+.map-legend-dot--no-data {
+  background: var(--map-no-data);
 }
 .map-legend-dot--none {
   background: var(--map-idle);
@@ -530,6 +502,11 @@
   flex-wrap: wrap;
   gap: 6px;
   margin-top: 8px;
+  /* capped and independently scrollable so a large selection can never grow the panel itself
+   * past the sticky hero viewport (which clips with overflow: hidden) — without this, enough
+   * chips wrapping to extra rows pushed the Compare/Clear buttons below the fold and off-screen. */
+  max-height: 92px;
+  overflow-y: auto;
 }
 .multiselect-chip {
   display: inline-flex;
@@ -676,7 +653,7 @@
     pointer-events: auto !important;
   }
   .tower-photo-img {
-    opacity: 0.14 !important;
+    opacity: 0.05 !important;
   }
   .hero-editorial {
     position: static;

@@ -9,7 +9,7 @@ const NAV = [
     href: '/',
     label: 'Home',
     icon: (
-      <path d="M3 21V3M7 21v-7M12 21V8M17 21v-11" />
+      <path d="M4 11 12 4l8 7M6 10v9a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-9M10 20v-6h4v6" />
     ),
   },
   {
@@ -66,17 +66,8 @@ export default function Sidebar() {
       <aside ref={asideRef} className={`sidebar${open ? ' open' : ''}`}>
       <div className="sidebar-inner">
       <div className="brand">
-        
-        <div className="brand-mark">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#faf8f3" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
-            <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8Z" />
-          </svg>
-        </div>
-        <div className="brand-text">
-          <span className="brand-name">ACPET</span>
-          <span className="brand-sub">DISCOM Performance Dashboard</span>
-        </div>
-      
+        {/* eslint-disable-next-line @next/next/no-img-element -- static export has no Image Optimization API */}
+        <img src="/acpet-logo.png" alt="ACPET" width={208} height={69} className="brand-logo" />
       </div>
       <nav className="sidenav">
         {NAV.map((item) => {
@@ -91,11 +82,6 @@ export default function Sidebar() {
           );
         })}
       </nav>
-      <div className="sidebar-foot">
-        <div>States: 12</div>
-        <div>DISCOMs: 35 (Public)</div>
-        <div>Years: FY 2021–22 to FY 2025–26</div>
-      </div>
       </div>
       </aside>
     </>

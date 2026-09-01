@@ -1,8 +1,7 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import HeroMap from './HeroMap';
-import TransmissionLayer from './TransmissionLayer';
 import ComparePanel from './ComparePanel';
 import { compareColor } from '@/lib/computations';
 import type { Discom, IndiaGeoJSON } from '@/lib/types';
@@ -100,8 +99,6 @@ export default function HeroSection({
   const controlCompareRef = useRef<HTMLDivElement>(null);
   const mapChromeRef = useRef<HTMLDivElement>(null);
   const revealedRef = useRef(false);
-  const [centroids, setCentroids] = useState<Record<string, [number, number]>>({});
-  const [mapSize, setMapSize] = useState({ width: 0, height: 0 });
 
   // outside compare mode, a click jumps straight to that state's full report — no intermediate
   // preview card. In compare mode it instead adds/removes the state from the comparison set.
@@ -138,11 +135,10 @@ export default function HeroSection({
     }
 
     function applyStyles(p: number) {
-      // pylon texture: clearly present on landing, quieting as the camera moves in so it never
-      // competes with the interactive map. A slow, small parallax drift (opposite direction to
-      // the map's own rightward-to-centered travel) gives the backdrop a sense of depth rather
-      // than reading as a flat sticker behind the map.
-      pylonImg!.style.opacity = String(lerp(0.16, 0.04, p));
+      // pylon texture: opacity stays fixed (set in CSS) so it reads the same everywhere on the
+      // page. A slow, small parallax drift (opposite direction to the map's own rightward-to-
+      // centered travel) gives the backdrop a sense of depth rather than reading as a flat
+      // sticker behind the map.
       pylonImg!.style.transform = reduceMotion ? 'scale(1.5)' : `scale(1.5) translateX(${lerp(0, -22, easeInOutCubic(p))}px)`;
 
       // phase 1: editorial recedes — fades, lifts left, scales down slightly — over 12–45%.
@@ -272,14 +268,8 @@ export default function HeroSection({
               compareColorOf={(name) => compareColor(compareSet, name)}
               onStateClick={handleStateClick}
               compareMode={compareMode}
-              onCentroids={(c, size) => {
-                setCentroids(c);
-                setMapSize(size);
-              }}
             />
-            <div className="hero-network-layer" ref={networkLayerRef}>
-              <TransmissionLayer centroids={centroids} size={mapSize} />
-            </div>
+            <div className="hero-network-layer" ref={networkLayerRef} />
           </div>
 
           <div className="map-chrome" ref={mapChromeRef}>
@@ -287,6 +277,10 @@ export default function HeroSection({
               <div className="map-legend-row">
                 <span className="map-legend-dot map-legend-dot--tracked" />
                 Tracked
+              </div>
+              <div className="map-legend-row">
+                <span className="map-legend-dot map-legend-dot--no-data" />
+                Tracked—Data Not Reported
               </div>
               <div className="map-legend-row">
                 <span className="map-legend-dot map-legend-dot--none" />
