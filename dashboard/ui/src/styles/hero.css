@@ -114,6 +114,19 @@
   filter: blur(1.5px);
   transform: scale(1.5);
 }
+/* the left-hand pylon (near the editorial copy) reads as clutter while that copy is on top of it,
+   but a hard crop looked like an edit — fade it out gradually instead, easing from full
+   paper-color cover on the left to fully transparent by the time the rest of the tower cluster
+   starts. This is a separate overlay (not a mask on .tower-photo-img itself) so it isn't fighting
+   that image's own scroll-driven parallax transform, which is rewritten by JS every frame — the
+   overlay only ever gets its opacity toggled (see HeroSection's applyStyles), in lockstep with the
+   editorial copy's own fade-out, so once the copy has receded there's nothing left to declutter
+   for and the whole tower (including the left pylon) shows through. */
+.tower-photo-fade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, var(--paper) 0%, var(--paper) 28%, transparent 60%);
+}
 
 /* ---------- editorial cover: headline block, anchored left. Recedes (fades, lifts left, scales
    down) as the camera moves in — see HeroSection's applyStyles — rather than staying static, so
@@ -162,13 +175,18 @@
   color: #4a3aa7;
 }
 .hero-editorial p.lede {
-  margin: 12px 0 0;
-  color: var(--muted);
-  font-size: 15px;
+  margin: 18px 0 0;
+  /* darker than --muted: --muted (#6b7280) is only ~3.7:1 against --paper and reads as
+     too faint at this size; this hits ~6.7:1 against --paper. */
+  color: #4b5563;
+  font-size: 17px;
+  line-height: 1.55;
+  text-align: justify;
+  text-justify: inter-word;
   max-width: 42ch;
 }
 .hero-cta {
-  margin-top: 20px;
+  margin-top: 26px;
   font-size: 12px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -274,6 +292,15 @@
   top: 55%;
   left: var(--hero-gutter);
   width: 290px;
+  transition: left 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+/* the sidebar's push-and-narrow (see layout.css) leaves this panel's usual gutter crowding the
+   now-closer map edge — pull it in a bit further while the drawer's open, in step with the same
+   260ms the content push itself uses. Desktop only, matching that push. */
+@media (min-width: 981px) {
+  body.sidebar-open .overlay-compare {
+    left: 20px;
+  }
 }
 
 /* ---------- map chrome: legend anchored at the map's own bottom-right corner — anchored to
@@ -654,6 +681,11 @@
   }
   .tower-photo-img {
     opacity: 0.05 !important;
+  }
+  /* editorial and map are stacked, not overlapping, on mobile — there's nothing to declutter for,
+     and the scroll-driven JS that normally toggles this doesn't run below the breakpoint. */
+  .tower-photo-fade {
+    opacity: 0 !important;
   }
   .hero-editorial {
     position: static;

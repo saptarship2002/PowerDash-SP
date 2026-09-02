@@ -84,6 +84,29 @@ main.app-main {
   gap: 30px;
 }
 
+/* when the sidebar pushes in, give the content room instead of letting the drawer sit on top of
+   it — a plain margin-left push, not a transform. main.app-main has no explicit width, so per the
+   normal CSS box model its width is already computed to fill whatever space is left after
+   margins — pushing it right with margin-left automatically narrows it by exactly the drawer's
+   width, no JS measurement needed. Deliberately not `transform: scale()`: this page's home route
+   hosts HeroSection's scroll-scrubbed map reveal, which measures its own real, untransformed
+   geometry (getBoundingClientRect, window.innerHeight) to drive its animation — a transform on
+   this ancestor would throw that off and visibly clip the map mid-scroll. A margin-left reflow
+   only changes width, never height/position, so that measurement is untouched; the hero's own
+   layout is already percentage/max-width based (the map stage is 82% width, the editorial text
+   box caps at 44%), so it naturally shrinks to fit instead of needing to be scaled to fit.
+   Reverts the moment the drawer closes. Desktop only — below the sidebar's own
+   no-narrower-breakpoint width, the drawer covers most of the screen anyway, so this stays an
+   overlay there instead of squeezing content into a sliver. */
+@media (min-width: 981px) {
+  main.app-main {
+    transition: margin-left 260ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  body.sidebar-open main.app-main {
+    margin-left: 248px;
+  }
+}
+
 .menu-toggle {
   all: unset;
   display: flex;

@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { buildIndiaPaths } from '@/lib/geo2d';
 import { stateFillColor, stateMapStatus } from '@/lib/computations';
-import { lerpHex, MAP_WASH, TRANSMISSION_GOLD } from '@/lib/colors';
+import { lerpHex, MAP_BORDER, MAP_WASH } from '@/lib/colors';
 import type { Discom, IndiaGeoJSON } from '@/lib/types';
 
 interface Props {
@@ -129,9 +129,9 @@ export default function HeroMap({ discoms, geojson, compareColorOf, onStateClick
               if (selectColor) fill = lerpHex(fill, selectColor, 0.32);
               if (isDimmed) fill = lerpHex(fill, MAP_WASH, 0.22);
 
-              const strokeColor = selectColor ?? TRANSMISSION_GOLD;
-              const strokeWidth = selectColor ? 1.6 : isHovered ? 1.4 : 1;
-              const strokeOpacity = selectColor ? 0.9 : isHovered ? 0.95 : 0.8;
+              const strokeColor = selectColor ?? MAP_BORDER;
+              const strokeWidth = selectColor ? 1.6 : isHovered ? 1.4 : 1.25;
+              const strokeOpacity = selectColor ? 0.9 : isHovered ? 0.95 : 0.85;
 
               return (
                 <path

@@ -34,6 +34,13 @@ export default function Sidebar() {
     setOpen(false);
   }, [pathname]);
 
+  // lets the main content wrapper react to the sidebar's state (layout.css) even though they're
+  // siblings under app-shell, without threading this through context/props.
+  useEffect(() => {
+    document.body.classList.toggle('sidebar-open', open);
+    return () => document.body.classList.remove('sidebar-open');
+  }, [open]);
+
   // closes on a tap/click anywhere outside the open panel — the hamburger button itself is
   // excluded so its own click isn't immediately undone by this same handler.
   useEffect(() => {

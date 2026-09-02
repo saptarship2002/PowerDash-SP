@@ -25,6 +25,10 @@ export const MAP_STATUS = {
  * mirrors --map-transmission in tokens.css. */
 export const TRANSMISSION_GOLD = '#d8ae3f';
 
+/** Default state border color — a deep warm brown, dark enough to stay visible against every
+ * map fill (tracked clay, idle clay, no-data off-white) rather than the low-contrast gold. */
+export const MAP_BORDER = '#4a3320';
+
 /** Warm paper tone a state's fill washes toward when another state is hovered — deliberately a
  * light wash, not a darken-to-black, so every state stays visible and reads as clickable. */
 export const MAP_WASH = '#f2ece0';

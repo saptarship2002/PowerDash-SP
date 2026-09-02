@@ -94,6 +94,7 @@ export default function HeroSection({
   const networkLayerRef = useRef<HTMLDivElement>(null);
   const editorialRef = useRef<HTMLDivElement>(null);
   const pylonImgRef = useRef<HTMLImageElement>(null);
+  const towerFadeRef = useRef<HTMLDivElement>(null);
   // every one of these cascades in off the same chrome progress value — kept as individual named
   // refs (rather than an indexed array) so each attaches to its JSX element as a plain identifier.
   const controlCompareRef = useRef<HTMLDivElement>(null);
@@ -117,7 +118,8 @@ export default function HeroSection({
     const networkLayer = networkLayerRef.current;
     const editorial = editorialRef.current;
     const pylonImg = pylonImgRef.current;
-    if (!stage || !mapInner || !networkLayer || !editorial || !pylonImg) return;
+    const towerFade = towerFadeRef.current;
+    if (!stage || !mapInner || !networkLayer || !editorial || !pylonImg || !towerFade) return;
     const chromeEls = [controlCompareRef.current, mapChromeRef.current].filter((el): el is HTMLDivElement => el != null);
     // apple-design §14: a viewer who asked for reduced motion still gets the scroll-linked reveal
     // (it only ever moves in direct response to their own scroll input, which reduced-motion
@@ -145,6 +147,11 @@ export default function HeroSection({
       const editorialT = easeInOutCubic(remap(p, 0.12, 0.45));
       editorial!.style.opacity = String(1 - editorialT);
       editorial!.style.transform = `translate(${lerp(0, -48, editorialT)}px, -50%) scale(${lerp(1, 0.94, editorialT)})`;
+
+      // the left pylon stays hidden behind the paper-color fade only while the editorial copy
+      // sits on top of it — once that copy has receded there's nothing left to declutter for, so
+      // the fade lifts in lockstep and the full tower art (including the left pylon) shows through.
+      towerFade!.style.opacity = String(1 - editorialT);
       editorial!.style.pointerEvents = editorialT > 0.85 ? 'none' : 'auto';
 
       // phase 2: the map translates from offset-right to dead center and reaches full scale
@@ -243,6 +250,7 @@ export default function HeroSection({
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/pylon-lineart.png" alt="" className="tower-photo-img" ref={pylonImgRef} />
           </div>
+          <div className="tower-photo-fade" ref={towerFadeRef} />
         </div>
         <div className="hero-ambient-glow" aria-hidden="true" />
 
