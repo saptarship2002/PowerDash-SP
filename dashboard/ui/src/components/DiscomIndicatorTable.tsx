@@ -1,6 +1,6 @@
 'use client';
 
-import { fmt, UNIT_LABEL } from '@/lib/format';
+import { fmt, fyLabel, UNIT_LABEL } from '@/lib/format';
 import type { Discom, DiscomsData } from '@/lib/types';
 
 interface Props {
@@ -23,7 +23,7 @@ export default function DiscomIndicatorTable({ discomsData, discom, year }: Prop
       <thead>
         <tr>
           <th>Indicator</th>
-          <th>Reported (FY {year})</th>
+          <th>Reported ({fyLabel(year)})</th>
           <th>Benchmark</th>
           <th>Comparable?</th>
           <th>Standard Met?</th>
@@ -37,27 +37,27 @@ export default function DiscomIndicatorTable({ discomsData, discom, year }: Prop
               <tr key={key}>
                 <td style={{ fontWeight: 500 }}>{key}</td>
                 <td colSpan={4} style={{ color: 'var(--muted)' }}>
-                  No block reported for FY {year}
+                  No block reported for {fyLabel(year)}
                 </td>
               </tr>
             );
           }
           const unit = UNIT_LABEL[discomsData.canonical_indicators[key].unit];
-          const reported = ind.value == null ? '—' : fmt(ind.value, 2) + (unit === '%' ? '%' : ' ' + unit);
+          const reported = ind.value == null ? 'N/A' : fmt(ind.value, 2) + (unit === '%' ? '%' : ' ' + unit);
           const bench =
-            ind.benchmark == null || Number.isNaN(parseFloat(ind.benchmark)) ? 'Not specified' : fmt(parseFloat(ind.benchmark), 2) + (unit === '%' ? '%' : ' ' + unit);
-          const comparable = ind.comparison_possible === true ? 'Yes' : ind.comparison_possible === false ? 'No' : '—';
-          const met = ind.standard_met === true ? 'Yes' : ind.standard_met === false ? 'No' : '—';
+            ind.benchmark == null || Number.isNaN(parseFloat(ind.benchmark)) ? 'N/A' : fmt(parseFloat(ind.benchmark), 2) + (unit === '%' ? '%' : ' ' + unit);
+          const comparable = ind.comparison_possible === true ? 'Yes' : ind.comparison_possible === false ? 'No' : 'N/A';
+          const met = ind.standard_met === true ? 'Yes' : ind.standard_met === false ? 'No' : 'N/A';
           return (
             <tr key={key}>
               <td style={{ fontWeight: 500 }}>{key}</td>
               <td>
                 {reported}
-                <div className="meaning">{ind.reported_meaning || ''}</div>
+                <div className="meaning">{ind.reported_meaning || 'N/A'}</div>
               </td>
               <td>
                 {bench}
-                <div className="meaning">{ind.benchmark_meaning || ''}</div>
+                <div className="meaning">{ind.benchmark_meaning || 'N/A'}</div>
               </td>
               <td>{comparable}</td>
               <td>{met}</td>

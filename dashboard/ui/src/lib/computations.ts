@@ -1,5 +1,5 @@
 import { CATEGORICAL, MAP_STATUS } from './colors';
-import type { Discom, DiscomsData, IndicatorEntry } from './types';
+import type { Discom, DiscomsData, IndicatorEntry, StateSpecificData } from './types';
 
 export function indicatorsInScope(discoms: DiscomsData, group: string, indicator: string): string[] {
   return discoms.canonical_order.filter((k) => {
@@ -15,30 +15,47 @@ export function compareColor(compareSet: string[], name: string): string | null 
   return idx === -1 ? null : CATEGORICAL[idx % CATEGORICAL.length];
 }
 
-/** Whether this state has any tracked DISCOM at all (year-independent) — gates whether it's
- * even in ACPET's scope. Only states ACPET doesn't track at all are excluded from the map;
- * a tracked state stays in scope even in a year where it happens to have no reported data (see
- * stateMapStatus for the "tracked but no data" split). */
-export function stateIsTracked(discoms: Discom[], state: string): boolean {
-  return discoms.some((d) => d.state === state);
+/** Whether the Standards-of-Performance dataset has anything at all to show for this state — a
+ * per-DISCOM sheet with its own SoP indicators, or (for the 5 states with no reported SoP figures
+ * at all) the regulatory-framework listing. Either is real page content, even when every reported
+ * value in it is null. Used only to widen "in scope" — see stateIsTracked — never treated as
+ * "has reported data" on its own (a framework listing has no reported figures by definition). */
+export function stateHasSopData(stateSpecific: StateSpecificData | null | undefined, state: string): boolean {
+  if (!stateSpecific) return false;
+  return stateSpecific.discoms.some((d) => d.state === state) || stateSpecific.frameworks.some((f) => f.state === state);
 }
 
-/** Whether any of this state's DISCOMs have ever reported a value for any indicator, in any
- * year — year-independent, same as stateIsTracked. */
-export function stateHasReportedData(discoms: Discom[], state: string): boolean {
-  return discoms
+/** Whether this state is in ACPET's scope at all (year-independent) — gates whether it's on the
+ * map as anything but "Coming soon". True if either dataset tracks it, even if neither has a
+ * reported figure yet (see stateMapStatus for the "tracked but no data" split). */
+export function stateIsTracked(discoms: Discom[], state: string, stateSpecific?: StateSpecificData | null): boolean {
+  return discoms.some((d) => d.state === state) || stateHasSopData(stateSpecific, state);
+}
+
+/** Whether this state has an actual reported figure anywhere — a reliability indicator value, or
+ * a SoP indicator's reported value — in any year, in either dataset. A SoP regulatory-framework
+ * listing alone (standards and benchmarks with no reported data by definition) does NOT count:
+ * this specifically answers "is there real performance data to explore", which is what
+ * distinguishes the map's "Tracked" fill from "Tracked — Data Not Reported". */
+export function stateHasReportedData(discoms: Discom[], state: string, stateSpecific?: StateSpecificData | null): boolean {
+  const reliabilityReported = discoms
     .filter((d) => d.state === state)
     .some((d) => Object.values(d.years).some((y) => Object.values(y.indicators).some((i) => i.value != null)));
+  if (reliabilityReported) return true;
+  return !!stateSpecific?.discoms
+    .filter((d) => d.state === state)
+    .some((d) => Object.values(d.years).some((y) => y.indicators.some((i) => i.reported != null)));
 }
 
 export type StateMapStatus = 'tracked' | 'no-data' | 'idle';
 
-/** Three-way map status for a state: 'idle' (outside ACPET's tracked scope entirely), 'no-data'
- * (tracked, but no DISCOM has ever reported a value for any indicator), or 'tracked' (has
- * reported data). Only 'tracked' is clickable through to the full state report. */
-export function stateMapStatus(discoms: Discom[], state: string): StateMapStatus {
-  if (!stateIsTracked(discoms, state)) return 'idle';
-  return stateHasReportedData(discoms, state) ? 'tracked' : 'no-data';
+/** Three-way map status for a state: 'idle' (outside ACPET's scope in both datasets — "Coming
+ * soon", not clickable), 'no-data' (in scope, but no reported figure anywhere yet — still
+ * clickable, since a SoP framework listing or an all-null DISCOM sheet is real content worth
+ * seeing, just not performance data), or 'tracked' (has an actual reported figure somewhere). */
+export function stateMapStatus(discoms: Discom[], state: string, stateSpecific?: StateSpecificData | null): StateMapStatus {
+  if (!stateIsTracked(discoms, state, stateSpecific)) return 'idle';
+  return stateHasReportedData(discoms, state, stateSpecific) ? 'tracked' : 'no-data';
 }
 
 /** Map fill by status — a muted terracotta/clay for states with reported data, a lighter tint of

@@ -27,7 +27,7 @@ export default function MethodologyView() {
           <h3>Common Indicators.xlsx</h3>
         </div>
         <p className="panel-hint" style={{ margin: '8px 0 0' }}>
-          35 DISCOM sheets across 12 states, FY 2021-22 to FY 2025-26. One sheet per licensee, each listing the standards-of-performance indicators
+          35 DISCOM sheets across 12 states, FY22 to FY26. One sheet per licensee, each listing the standards-of-performance indicators
           its State Electricity Regulatory Commission (SERC) specifies, the benchmark for each, and what the licensee actually reported. Processed
           into this dashboard&rsquo;s data by <code>extraction_common.py</code>.
         </p>

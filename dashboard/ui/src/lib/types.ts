@@ -83,6 +83,7 @@ export interface DiscomAccessibility {
   state: string;
   available_on_serc: boolean | null;
   machine_readable: boolean | null;
+  drive_link: string | null;
 }
 
 export interface AccessibilitySummary {
@@ -98,4 +99,53 @@ export interface AccessibilityData {
   states: StateAccessibility[];
   discoms: DiscomAccessibility[];
   summary: AccessibilitySummary;
+}
+
+/** One raw Standards-of-Performance indicator row, from State specific Indicators.xlsx — the SoP
+ * (consumer-service) counterpart to the SAIDI/SAIFI-style Common Indicators dataset. Unlike that
+ * dataset, raw indicator names here are too varied (dozens, state-specific — fuse-off calls,
+ * meter complaints, billing mistakes...) to normalize into a small canonical set, so they're kept
+ * as-is rather than mapped to `canonical_order`. */
+export interface SopIndicator {
+  type: string | null;
+  indicator: string | null;
+  meaning: string | null;
+  standard_specified: string | null;
+  benchmark: number | null;
+  benchmark_meaning: string | null;
+  reported: number | null;
+  reported_meaning: string | null;
+  comparison_possible: boolean | null;
+  standard_met: boolean | null;
+  reason_not_comparable: string | null;
+}
+
+export interface SopYearData {
+  regulation: string | null;
+  indicators: SopIndicator[];
+}
+
+export interface SopDiscom {
+  sheet: string;
+  full_name: string | null;
+  short_name: string;
+  state: string;
+  years: Record<string, SopYearData>;
+}
+
+/** A state whose SERC publishes a Standards-of-Performance regulation with named indicators and
+ * benchmarks, but for which no licensee reported figures were available to check against them —
+ * so no compliance score can be computed. Kept separate from `SopDiscom` rather than folded in
+ * with an all-zero score, which would misleadingly read as "failing" rather than "no data". */
+export interface SopFramework {
+  state: string;
+  regulation: string;
+  indicators: SopIndicator[];
+}
+
+export interface StateSpecificData {
+  state_order: string[];
+  years: string[];
+  discoms: SopDiscom[];
+  frameworks: SopFramework[];
 }

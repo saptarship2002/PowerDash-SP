@@ -1,20 +1,27 @@
 'use client';
 
 import '@/lib/chartSetup';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Line } from 'react-chartjs-2';
 import { useData } from '@/lib/DataContext';
 import { CATEGORICAL, hexToRgba, stateHueMap } from '@/lib/colors';
-import { representativeBenchmark } from '@/lib/computations';
-import { fmt, UNIT_LABEL } from '@/lib/format';
+import { representativeBenchmark, stateHasSopData } from '@/lib/computations';
+import { fmt, fyLabel, UNIT_LABEL } from '@/lib/format';
 import AnimatedNumber from './AnimatedNumber';
+import Collapsible from './Collapsible';
 import DiscomIndicatorTable from './DiscomIndicatorTable';
 import ScoreCard from './ScoreCard';
+import SopSection from './SopSection';
 import type { Discom } from '@/lib/types';
 
 export default function StateDetail({ name }: { name: string }) {
-  const { discoms, loading, error } = useData();
+  const { discoms, stateSpecific, loading, error } = useData();
   const router = useRouter();
+  // which DISCOM detail rows are open — lifted out of Collapsible so a scorecard click can force
+  // its own row open (and let Collapsible's own scroll-into-view take over) without disturbing
+  // rows a user already opened/closed by hand. Multiple can stay open at once.
+  const [openSheets, setOpenSheets] = useState<Set<string>>(new Set());
 
   if (loading) return <p className="detail-placeholder">Loading…</p>;
   if (error || !discoms) return <p className="detail-placeholder">Could not load dashboard data.</p>;
@@ -26,10 +33,13 @@ export default function StateDetail({ name }: { name: string }) {
   const YEARS_ASC = [...discoms.years].reverse();
   const ds = discoms.discoms.filter((d) => d.state === name);
 
-  if (!ds.length) {
+  // a state can have zero reliability DISCOMs and still have real Standards-of-Performance
+  // content to show (its own per-DISCOM sheets, or a regulatory-framework listing) — only bail
+  // out entirely when neither dataset has anything for this state.
+  if (!ds.length && !stateHasSopData(stateSpecific, name)) {
     return (
       <div className="state-page">
-        <p className="detail-placeholder">No DISCOMs found for &ldquo;{name}&rdquo;.</p>
+        <p className="detail-placeholder">No data found for &ldquo;{name}&rdquo;.</p>
         <button type="button" className="back-btn" onClick={() => router.back()}>
           Back to Overview
         </button>
@@ -69,7 +79,7 @@ export default function StateDetail({ name }: { name: string }) {
         <div>
           <h1>{name}</h1>
           <div className="sub">
-            FY {activeYear} · {reportingCount} of {ds.length} DISCOMs reporting
+            {fyLabel(activeYear)} · {reportingCount} of {ds.length} DISCOMs reporting
           </div>
         </div>
         <div className="state-hero-stats">
@@ -90,13 +100,20 @@ export default function StateDetail({ name }: { name: string }) {
         <div className="panel-head">
           <div>
             <h2>DISCOM Scorecards</h2>
-            <div className="panel-hint">Full scorecards, multi-year trend charts, and per-DISCOM indicator detail for FY {activeYear}</div>
+            <div className="panel-hint">Full scorecards, multi-year trend charts, and per-DISCOM indicator detail for {fyLabel(activeYear)}</div>
           </div>
         </div>
 
         <div className="scorecard-grid">
           {ds.map((d, i) => (
-            <ScoreCard key={d.sheet} shortName={d.short_name} fullName={d.full_name} color={cols[i]} animationDelay={i * 70} />
+            <ScoreCard
+              key={d.sheet}
+              shortName={d.short_name}
+              fullName={d.full_name}
+              color={cols[i]}
+              animationDelay={i * 70}
+              onClick={() => setOpenSheets((prev) => new Set(prev).add(d.sheet))}
+            />
           ))}
         </div>
 
@@ -112,18 +129,31 @@ export default function StateDetail({ name }: { name: string }) {
 
         <div style={{ marginTop: 22, display: 'flex', flexDirection: 'column', gap: 10 }}>
           {ds.map((d, i) => (
-            <details className="discom-detail animate-in" key={d.sheet} style={{ animationDelay: `${i * 60}ms` }}>
-              <summary>
-                <span>{d.short_name}</span>
-                <span className="reg">{d.full_name}</span>
-              </summary>
+            <Collapsible
+              key={d.sheet}
+              label={d.short_name}
+              meta={d.full_name}
+              color={cols[i]}
+              animationDelay={i * 60}
+              open={openSheets.has(d.sheet)}
+              onOpenChange={(isOpen) =>
+                setOpenSheets((prev) => {
+                  const next = new Set(prev);
+                  if (isOpen) next.add(d.sheet);
+                  else next.delete(d.sheet);
+                  return next;
+                })
+              }
+            >
               <div style={{ overflowX: 'auto' }}>
                 <DiscomIndicatorTable discomsData={discoms} discom={d} year={activeYear} />
               </div>
-            </details>
+            </Collapsible>
           ))}
         </div>
       </section>
+
+      {stateSpecific && <SopSection stateSpecific={stateSpecific} stateName={name} />}
     </div>
   );
 }
@@ -184,7 +214,7 @@ function IndicatorTrendChart({
       </div>
       <div style={{ height: 320 }}>
         <Line
-          data={{ labels: yearsAsc.map((y) => 'FY ' + y), datasets }}
+          data={{ labels: yearsAsc.map((y) => fyLabel(y)), datasets }}
           options={{
             responsive: true,
             maintainAspectRatio: false,

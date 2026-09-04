@@ -26,7 +26,7 @@ SHORT_OVERRIDES = {
     'JdVVNL,RAJ': 'JdVVNL',
 }
 
-EXCLUDE_SHEETS = {'color scheme'}
+EXCLUDE_SHEETS = {'color scheme', 'verification'}
 
 YEAR_RE = re.compile(r'^\d{4}-\d{2,4}$')
 
@@ -60,6 +60,8 @@ def normalize_indicator(raw):
         return 'SAIFI', subtype
     if 'MAIFI' in u:
         return 'MAIFI', subtype
+    if 'CAIDI HT' in u:
+        return None, None
     if 'CAIDI' in u:
         return 'CAIDI', subtype
     if 'VOLTAGE VARIATION' in u:

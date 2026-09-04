@@ -26,3 +26,11 @@ export function mode(arr: number[]): number | null {
 }
 
 export const UNIT_LABEL: Record<string, string> = { hours: 'h', count: '/yr', pct: '%' };
+
+/** "2023-24" -> "FY24" — the standard Indian financial-year shorthand (named for the ending
+ * year), used everywhere a year string from the extracted data is shown to the user instead of
+ * spelling out the full "FY 2023-24" range. */
+export function fyLabel(year: string): string {
+  const end = year.split('-')[1] ?? year;
+  return 'FY' + end.slice(-2);
+}

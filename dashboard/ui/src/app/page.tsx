@@ -8,7 +8,7 @@ import { slugify } from '@/lib/slug';
 import HeroSection from '@/components/HeroSection';
 
 export default function OverviewPage() {
-  const { discoms, geojson, loading, error } = useData();
+  const { discoms, stateSpecific, geojson, loading, error } = useData();
   const router = useRouter();
 
   const [compareSet, setCompareSet] = useState<string[]>([]);
@@ -41,6 +41,7 @@ export default function OverviewPage() {
     <div id="page-overview">
       <HeroSection
         discoms={discoms.discoms}
+        stateSpecific={stateSpecific}
         geojson={geojson}
         stateHue={stateHue}
         compareSet={compareSet}

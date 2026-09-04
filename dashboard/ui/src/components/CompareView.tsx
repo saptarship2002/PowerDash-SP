@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Bar } from 'react-chartjs-2';
 import { useData } from '@/lib/DataContext';
 import { compareColor, comparableIndicators, representativeBenchmark } from '@/lib/computations';
-import { fmt, median, UNIT_LABEL } from '@/lib/format';
+import { fmt, fyLabel, median, UNIT_LABEL } from '@/lib/format';
 import StateShape from './StateShape';
 import type { Discom, DiscomsData } from '@/lib/types';
 
@@ -54,7 +54,7 @@ export default function CompareView({ states, year }: Props) {
 
       <div className="state-hero">
         <div>
-          <span className="panel-hint">FY {activeYear}</span>
+          <span className="panel-hint">{fyLabel(activeYear)}</span>
           <h1>Comparing {states.length} states</h1>
           <div className="compare-shapes">
             {states.map((name) => (
@@ -69,7 +69,7 @@ export default function CompareView({ states, year }: Props) {
 
       <div className="chart-grid">
         {comparableKeys.length === 0 ? (
-          <p className="detail-placeholder">No indicator is comparable across all selected states for FY {activeYear}: they don&rsquo;t overlap on reported data.</p>
+          <p className="detail-placeholder">No indicator is comparable across all selected states for {fyLabel(activeYear)}: they don&rsquo;t overlap on reported data.</p>
         ) : (
           comparableKeys.map((key, idx) => (
             <CompareChart key={key} discoms={discoms} allDiscoms={discoms.discoms} indicatorKey={key} compareSet={states} year={activeYear} animationDelay={idx * 90} />

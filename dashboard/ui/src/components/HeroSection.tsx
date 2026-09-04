@@ -4,10 +4,11 @@ import { useEffect, useRef } from 'react';
 import HeroMap from './HeroMap';
 import ComparePanel from './ComparePanel';
 import { compareColor } from '@/lib/computations';
-import type { Discom, IndiaGeoJSON } from '@/lib/types';
+import type { Discom, IndiaGeoJSON, StateSpecificData } from '@/lib/types';
 
 interface Props {
   discoms: Discom[];
+  stateSpecific?: StateSpecificData | null;
   geojson: IndiaGeoJSON;
   stateHue: Record<string, string>;
   compareSet: string[];
@@ -78,6 +79,7 @@ const MAP_SETTLE_END = 0.6;
  * is a separate, disconnected animation — it's one continuous camera move through five stages. */
 export default function HeroSection({
   discoms,
+  stateSpecific,
   geojson,
   stateHue,
   compareSet,
@@ -272,6 +274,7 @@ export default function HeroSection({
           <div className="hero-map-inner" ref={mapInnerRef}>
             <HeroMap
               discoms={discoms}
+              stateSpecific={stateSpecific}
               geojson={geojson}
               compareColorOf={(name) => compareColor(compareSet, name)}
               onStateClick={handleStateClick}

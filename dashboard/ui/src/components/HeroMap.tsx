@@ -4,10 +4,11 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { buildIndiaPaths } from '@/lib/geo2d';
 import { stateFillColor, stateMapStatus } from '@/lib/computations';
 import { lerpHex, MAP_BORDER, MAP_WASH } from '@/lib/colors';
-import type { Discom, IndiaGeoJSON } from '@/lib/types';
+import type { Discom, IndiaGeoJSON, StateSpecificData } from '@/lib/types';
 
 interface Props {
   discoms: Discom[];
+  stateSpecific?: StateSpecificData | null;
   geojson: IndiaGeoJSON;
   compareColorOf: (name: string) => string | null;
   onStateClick: (name: string) => void;
@@ -27,7 +28,7 @@ interface Props {
  * filter never composited back with the map beneath it; a plain <rect> with no explicit fill
  * defaults to opaque black in SVG, and the mix-blend-mode:multiply meant to soften it instead
  * produced a hard-edged box exactly the size of the map's own bounding box.) */
-export default function HeroMap({ discoms, geojson, compareColorOf, onStateClick, compareMode, onCentroids }: Props) {
+export default function HeroMap({ discoms, stateSpecific, geojson, compareColorOf, onStateClick, compareMode, onCentroids }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ width: 0, height: 0 });
   const [hovered, setHovered] = useState<string | null>(null);
@@ -81,8 +82,8 @@ export default function HeroMap({ discoms, geojson, compareColorOf, onStateClick
   }, [projection, size]);
 
   const hoveredPath = hovered ? projection?.byName[hovered] : null;
-  const hoveredStatus = hovered ? stateMapStatus(discoms, hovered) : null;
-  const hoveredTip = hoveredStatus === 'tracked' ? 'Explore state data →' : hoveredStatus === 'no-data' ? 'Not available' : 'Coming soon';
+  const hoveredStatus = hovered ? stateMapStatus(discoms, hovered, stateSpecific) : null;
+  const hoveredTip = hoveredStatus === 'tracked' ? 'Explore Performance →' : hoveredStatus === 'no-data' ? 'View Details →' : 'Coming soon';
 
   function handleClick(name: string) {
     // the preview/confirm gate exists only to stop a tap from jumping straight to a state's
@@ -119,8 +120,11 @@ export default function HeroMap({ discoms, geojson, compareColorOf, onStateClick
         >
           <g>
             {projection.paths.map((p) => {
-              const status = stateMapStatus(discoms, p.name);
-              const clickable = status === 'tracked';
+              const status = stateMapStatus(discoms, p.name, stateSpecific);
+              // 'no-data' is still worth clicking into — a SoP framework listing or an all-null
+              // DISCOM sheet is real content, just not reported performance figures — only
+              // 'idle' (outside ACPET's scope in both datasets) stays a dead end.
+              const clickable = status !== 'idle';
               const selectColor = compareColorOf(p.name);
               const isHovered = hovered === p.name;
               const isDimmed = hovered != null && !isHovered;

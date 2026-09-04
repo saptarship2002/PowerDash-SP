@@ -59,7 +59,9 @@ states.sort(key=lambda s: STATE_ORDER.index(s['state']) if s['state'] in STATE_O
 ws = wb['REPORTED DATAPERFORMANCE']
 rows = list(ws.iter_rows(values_only=True))[1:]  # skip header row
 discoms = []
-for full_name, abbrev, state, available_on_serc, machine_readable in rows:
+for row in rows:
+    full_name, abbrev, state, available_on_serc, machine_readable = row[:5]
+    drive_link = row[5] if len(row) > 5 else None
     if full_name is None:
         continue
     discoms.append({
@@ -68,6 +70,7 @@ for full_name, abbrev, state, available_on_serc, machine_readable in rows:
         'state': norm_state(state),
         'available_on_serc': to_bool(available_on_serc),
         'machine_readable': to_bool(machine_readable),
+        'drive_link': str(drive_link).strip() if drive_link else None,
     })
 discoms.sort(key=lambda d: (STATE_ORDER.index(d['state']) if d['state'] in STATE_ORDER else 99, d['discom']))
 
