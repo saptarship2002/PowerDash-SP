@@ -24,6 +24,11 @@ const SLIDES = [
   },
 ];
 
+// sessionStorage (not localStorage) is deliberate: the tour should show once per browser tab —
+// still gone after navigating between pages in that tab — but come back if the tab is closed and
+// reopened, rather than being permanently dismissed the first time anyone ever sees it.
+const STORAGE_KEY = 'acpet-tour-completed';
+
 export default function OnboardingTour() {
   const [visible, setVisible] = useState(false);
   const [step, setStep] = useState(0);
@@ -35,11 +40,22 @@ export default function OnboardingTour() {
   }
 
   useEffect(() => {
-    setVisible(true);
+    let alreadyCompleted = false;
+    try {
+      alreadyCompleted = sessionStorage.getItem(STORAGE_KEY) === '1';
+    } catch {
+      // sessionStorage unavailable (private browsing, etc.) — fall back to showing the tour
+    }
+    if (!alreadyCompleted) setVisible(true);
   }, []);
 
   function finish() {
     setVisible(false);
+    try {
+      sessionStorage.setItem(STORAGE_KEY, '1');
+    } catch {
+      // ignore — worst case the tour reappears on the next page in this tab
+    }
   }
 
   if (!visible) return null;

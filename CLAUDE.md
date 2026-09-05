@@ -71,8 +71,9 @@ to have zero reported figures in any of them.
   dashboard/ui && npm run dev -- -p 3001` if port 3000 is occupied by something else).
   Prefer `npx tsc --noEmit` and reading the diff otherwise.
 - When testing live in the browser (only when asked to), skip the onboarding tour via
-  `localStorage.setItem('acpet-tour-completed', '1')` before navigating, or it blocks
-  clicks with a scrim.
+  `sessionStorage.setItem('acpet-tour-completed', '1')` before navigating, or it blocks
+  clicks with a scrim. It's sessionStorage (not localStorage) deliberately — the tour shows
+  once per tab and comes back after the tab is closed and reopened, not just once ever.
 - Routes use slug params (`/state/madhya-pradesh`, via `slugify()` in `lib/slug.ts`),
   not raw state names — `next dev` + `output: export` needs the exact param match.
 
