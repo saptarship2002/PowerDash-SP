@@ -77,7 +77,8 @@
   --muted: #9aa1b0;
   --line: rgba(232, 233, 237, 0.12);
 
-  --charcoal: #e8e9ed;
+  /* --charcoal deliberately not overridden: it's the hamburger button's own fixed dark square
+     (white bars on top), not a semantic alias for --ink, and must stay dark in both themes. */
   --sidebar-bg: #191c22;
   --hero-mist: #1c1f27;
 
