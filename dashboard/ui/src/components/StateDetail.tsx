@@ -12,7 +12,6 @@ import CompleteDataSection from './CompleteDataSection';
 import IndicatorVisualCard, { type CardSeries } from './IndicatorVisualCard';
 import SopGallery from './SopGallery';
 import StateShape from './StateShape';
-import YearPicker from './YearPicker';
 import type { Discom, DiscomsData } from '@/lib/types';
 
 function firstIndicatorMeaning(ds: Discom[], yearsAsc: string[], key: string): string | null {
@@ -188,12 +187,6 @@ export default function StateDetail({ name }: { name: string }) {
               ))}
             </select>
           </div>
-
-          {discoms.years.length > 1 && (
-            <div className="toolbar-field toolbar-field--year">
-              <YearPicker years={discoms.years} active={activeYear} onChange={setSelectedYear} />
-            </div>
-          )}
         </div>
       )}
 
@@ -266,6 +259,7 @@ export default function StateDetail({ name }: { name: string }) {
         cols={cols}
         years={discoms.years}
         focusYear={activeYear}
+        onFocusYearChange={setSelectedYear}
         stateSpecific={showSop ? stateSpecific : null}
         stateName={name}
         discomFilter={selectedDiscom}

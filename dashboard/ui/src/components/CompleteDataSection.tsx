@@ -6,6 +6,7 @@ import { fyLabel } from '@/lib/format';
 import Collapsible from './Collapsible';
 import DiscomIndicatorTable from './DiscomIndicatorTable';
 import SopIndicatorTable from './SopIndicatorTable';
+import YearPicker from './YearPicker';
 import type { Discom, DiscomsData, StateSpecificData } from '@/lib/types';
 
 interface Props {
@@ -16,6 +17,10 @@ interface Props {
    * every one of these rather than silently narrowing to the page's Focus Year. */
   years: string[];
   focusYear: string;
+  /** The Focus Year pill lives here (sticky, reachable while scrolling this section's possibly
+   * long list of DISCOM accordions) rather than in the page-level toolbar — picking a year here
+   * also updates the same shared Focus Year the chart gallery highlights above. */
+  onFocusYearChange: (year: string) => void;
   stateSpecific: StateSpecificData | null;
   stateName: string;
   discomFilter: string;
@@ -28,9 +33,9 @@ interface Props {
  * the page where conventional data tables appear. The chart gallery above already communicates
  * meaning/benchmark/comparability/compliance visually per indicator; this section exists purely
  * so the complete original source data stays reachable, unabridged. Defaults to every fiscal year
- * (not just the Focus Year) so "Complete Data" actually means complete — a toggle narrows it to
- * one year for a quicker read when that's all that's needed. */
-export default function CompleteDataSection({ discomsData, ds, cols, years, focusYear, stateSpecific, stateName, discomFilter, indicatorKeys }: Props) {
+ * (not just the Focus Year) so "Complete Data" actually means complete — the Focus Year pill
+ * narrows it to one year for a quicker read when that's all that's needed. */
+export default function CompleteDataSection({ discomsData, ds, cols, years, focusYear, onFocusYearChange, stateSpecific, stateName, discomFilter, indicatorKeys }: Props) {
   const [openReliability, setOpenReliability] = useState<Set<string>>(new Set());
   const [openSop, setOpenSop] = useState<Set<string>>(new Set());
   const [showAllYears, setShowAllYears] = useState(true);
@@ -57,10 +62,20 @@ export default function CompleteDataSection({ discomsData, ds, cols, years, focu
         <span className="section-sub">Every source field as extracted from the workbooks</span>
       </div>
 
-      <div className="complete-data-toggle">
+      <div className="complete-data-toggle complete-data-toggle-sticky">
         <span>{showAllYears ? `Showing all ${years.length} fiscal years` : `Focused on ${fyLabel(focusYear)}`}</span>
+        {years.length > 1 && (
+          <YearPicker
+            years={years}
+            active={focusYear}
+            onChange={(y) => {
+              onFocusYearChange(y);
+              setShowAllYears(false);
+            }}
+          />
+        )}
         <button type="button" className="complete-data-toggle-btn" onClick={() => setShowAllYears((v) => !v)}>
-          {showAllYears ? `Show ${fyLabel(focusYear)} only` : 'Show all years'}
+          {showAllYears ? `Show one year` : 'Show all years'}
         </button>
       </div>
 
