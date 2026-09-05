@@ -1,66 +1,174 @@
 'use client';
 
+import { useData } from '@/lib/DataContext';
+import { stateHueMap } from '@/lib/colors';
+import { fyLabel } from '@/lib/format';
+import CompilationFlow from './CompilationFlow';
+import ComparabilityDecision from './ComparabilityDecision';
+import DatasetLanes from './DatasetLanes';
+import EvidenceSources from './EvidenceSources';
+import IndicatorUniverse from './IndicatorUniverse';
+import MethodologyExample from './MethodologyExample';
+import MethodologyJourney from './MethodologyJourney';
+import MethodologyLimitations from './MethodologyLimitations';
+import MethodologyNav from './MethodologyNav';
+import MethodologyPrinciples from './MethodologyPrinciples';
+import PurposeFlow from './PurposeFlow';
+import QualityAssurance from './QualityAssurance';
+import ScopeStrip from './ScopeStrip';
+import TechnicalProvenance from './TechnicalProvenance';
+
 export default function MethodologyView() {
+  const { discoms, loading, error } = useData();
+
+  if (loading) return <p className="detail-placeholder">Loading dashboard data…</p>;
+  if (error || !discoms) return <p className="detail-placeholder">Could not load dashboard data: {error}</p>;
+
+  const stateHue = stateHueMap(discoms.state_order);
+  const yearsAsc = [...discoms.years].reverse();
+  const fyRange = `${fyLabel(yearsAsc[0])}–${fyLabel(yearsAsc[yearsAsc.length - 1])}`;
+
+  const msedcl = discoms.discoms.find((d) => d.sheet === 'MSEDCL,MAHARASHTRA');
+  const exampleValues = yearsAsc.map((y) => msedcl?.years[y]?.indicators['VOLTAGE VARIATION']?.value ?? null);
+
   return (
-    <div>
-      <div className="kicker" style={{ marginTop: 0 }}>
-        <span className="bar" />
-        <span className="label">Methodology</span>
-      </div>
-      <div className="panel-head" style={{ marginBottom: 8 }}>
-        <h1 style={{ fontSize: 32, color: 'var(--ink)' }}>Where This Data Comes From</h1>
-      </div>
-      <p className="section-note" style={{ marginTop: 0, marginBottom: 20, fontSize: 13.5 }}>
-        What&rsquo;s behind the numbers on this dashboard, and where the map&rsquo;s Tracked / Not captured split comes from.
-      </p>
+    <div className="methodology-page">
+      <MethodologyNav />
 
-      <div className="section-header" style={{ marginTop: 32 }}>
-        <span className="section-label">Source</span>
-        <span className="section-title">DISCOM Performance Data</span>
-      </div>
-      <section className="panel" id="sec-methodology-source">
-        <div className="panel-icon-row">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
-            <path d="M4 4h16v16H4z" />
-            <path d="M4 9h16M9 4v16" />
-          </svg>
-          <h3>Common Indicators.xlsx</h3>
+      <div id="m-context">
+        <div className="kicker" style={{ marginTop: 0 }}>
+          <span className="bar" />
+          <span className="label">Methodology</span>
         </div>
-        <p className="panel-hint" style={{ margin: '8px 0 0' }}>
-          35 DISCOM sheets across 12 states, FY22 to FY26. One sheet per licensee, each listing the standards-of-performance indicators
-          its State Electricity Regulatory Commission (SERC) specifies, the benchmark for each, and what the licensee actually reported. Processed
-          into this dashboard&rsquo;s data by <code>extraction_common.py</code>.
+        <h1 className="method-hero-title">How the Evidence Base Was Built</h1>
+        <p className="section-note" style={{ marginTop: 4, marginBottom: 14, maxWidth: 640 }}>
+          From regulatory standards and utility filings to a structured, comparable record of power-quality and service-performance evidence.
         </p>
-      </section>
+        <p className="method-context">
+          Reliable, good-quality electricity supply is central to consumer welfare, economic productivity, and distribution-sector performance — the
+          Electricity (Rights of Consumers) Rules, 2020 recognise reliability of supply and standards of performance as consumer-facing obligations.
+        </p>
+        <p className="method-context method-context--note">
+          This dashboard is not an evaluative or adversarial exercise. It is a transparent, public-interest tool meant to improve reporting,
+          visibility, and constructive dialogue between regulators, utilities, and other stakeholders.
+        </p>
 
-      <div className="section-header" style={{ marginTop: 32 }}>
-        <span className="section-label">Coverage</span>
-        <span className="section-title">Tracked vs. Not Captured</span>
+        <div className="section-header">
+          <span className="section-label">Why This Exists</span>
+          <span className="section-title">A Common Evidence Base</span>
+        </div>
+        <PurposeFlow />
       </div>
-      <p className="section-note">
-        The map&rsquo;s two-tier coloring reflects ACPET&rsquo;s own tracked scope, not a judgment on any state&rsquo;s performance.
-      </p>
-      <section className="panel" id="sec-methodology-coverage">
-        <p className="panel-hint" style={{ margin: 0 }}>
-          <b>Tracked</b> means ACPET has a DISCOM sheet for that state: it&rsquo;s clickable, with a full report, regardless of whether that DISCOM
-          has actually reported data for the current indicators. <b>Not captured</b> means the state isn&rsquo;t in this phase&rsquo;s scope at
-          all. Within a tracked state&rsquo;s own report, &ldquo;no data reported&rdquo; is a plain fact read straight from the source sheet (it
-          says &ldquo;N/A&rdquo;), not a completeness score or a judgment about the DISCOM.
-        </p>
-      </section>
 
-      <div className="section-header" style={{ marginTop: 32 }}>
-        <span className="section-label">Boundaries</span>
-        <span className="section-title">Map &amp; Regulation Data</span>
+      <div id="m-scope">
+        <div className="section-header">
+          <span className="section-label">Coverage</span>
+          <span className="section-title">Scope of the Evidence Base</span>
+        </div>
+        <ScopeStrip stateOrder={discoms.state_order} discomCount={discoms.discoms.length} fyRange={fyRange} commonIndicatorCount={discoms.canonical_order.length} stateHue={stateHue} />
       </div>
-      <section className="panel" id="sec-methodology-map">
-        <p className="panel-hint" style={{ margin: 0 }}>
-          State boundaries come from the public India states GeoJSON (<code>ST_NM</code> property), simplified to 3-decimal coordinate precision.
-          Regulation and data-publication status (whether a state&rsquo;s SERC regulation and each licensee&rsquo;s reported data are published
-          online, and in a machine-readable format) is generated from <code>ACCESSIBILITY.xlsx</code> via <code>extraction_accessibility.py</code>;
-          see the <a href="/accessibility">Accessibility</a> section for the full breakdown.
+
+      <div id="m-indicators">
+        <div className="section-header">
+          <span className="section-label">What We Track</span>
+          <span className="section-title">Indicator Universe</span>
+        </div>
+        <IndicatorUniverse commonIndicators={discoms.canonical_order} />
+      </div>
+
+      <div id="m-methodology">
+        <div className="section-header">
+          <span className="section-label">Approach</span>
+          <span className="section-title">The Methodology</span>
+          <span className="section-sub">From regulatory standards to a comparable performance dashboard — a six-step process</span>
+        </div>
+        <MethodologyJourney />
+
+        <div className="section-header">
+          <span className="section-label">Decision Point</span>
+          <span className="section-title">Comparability</span>
+        </div>
+        <ComparabilityDecision />
+      </div>
+
+      <div id="m-sources">
+        <div className="section-header">
+          <span className="section-label">Evidence Base</span>
+          <span className="section-title">Sources &amp; References</span>
+        </div>
+        <EvidenceSources stateCount={discoms.state_order.length} />
+
+        <div className="section-header">
+          <span className="section-label">Process</span>
+          <span className="section-title">Data Compilation &amp; Comparison</span>
+        </div>
+        <CompilationFlow />
+
+        <div className="section-header">
+          <span className="section-label">Rigor</span>
+          <span className="section-title">Quality Assurance</span>
+        </div>
+        <QualityAssurance />
+
+        <div className="section-header">
+          <span className="section-label">In Practice</span>
+          <span className="section-title">Methodology &amp; Missing Data, Illustrated</span>
+        </div>
+        <MethodologyExample yearsAsc={yearsAsc} values={exampleValues} />
+      </div>
+
+      <div id="m-limitations">
+        <div className="section-header">
+          <span className="section-label">Honest Accounting</span>
+          <span className="section-title">Challenges &amp; Limitations</span>
+          <span className="section-sub">What the project encountered while compiling this dataset, as of the August 2026 study</span>
+        </div>
+        <MethodologyLimitations />
+      </div>
+
+      <div>
+        <div className="section-header">
+          <span className="section-label">Map</span>
+          <span className="section-title">Coverage Semantics</span>
+        </div>
+        <p className="section-note" style={{ maxWidth: 700 }}>
+          The home map&rsquo;s three-way coloring reflects ACPET&rsquo;s own tracked scope, not a judgment on any state or licensee.
         </p>
-      </section>
+        <div className="coverage-semantics">
+          <div className="coverage-semantics-item">
+            <span className="map-legend-dot map-legend-dot--tracked" aria-hidden="true" />
+            <b>Tracked</b> — the state has an actual reported figure in at least one dataset.
+          </div>
+          <div className="coverage-semantics-item">
+            <span className="map-legend-dot map-legend-dot--no-data" aria-hidden="true" />
+            <b>Tracked — Data Not Reported</b> — in scope, with a regulatory framework or source record, but no reported figure is available yet.
+          </div>
+          <div className="coverage-semantics-item">
+            <span className="map-legend-dot map-legend-dot--none" aria-hidden="true" />
+            <b>Coming Soon</b> — outside this phase&rsquo;s captured scope entirely.
+          </div>
+        </div>
+
+        <div className="section-header">
+          <span className="section-label">Datasets</span>
+          <span className="section-title">Three Lanes, One Evidence Base</span>
+        </div>
+        <DatasetLanes />
+
+        <div className="section-header">
+          <span className="section-label">Governing Rules</span>
+          <span className="section-title">Methodological Principles</span>
+        </div>
+        <MethodologyPrinciples />
+      </div>
+
+      <div id="m-provenance">
+        <div className="section-header">
+          <span className="section-label">Technical</span>
+          <span className="section-title">Provenance</span>
+        </div>
+        <TechnicalProvenance />
+      </div>
     </div>
   );
 }
