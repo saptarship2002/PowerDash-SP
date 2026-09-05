@@ -3,30 +3,35 @@
 import '@/lib/chartSetup';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Line } from 'react-chartjs-2';
 import { useData } from '@/lib/DataContext';
-import { CATEGORICAL, hexToRgba, stateHueMap } from '@/lib/colors';
-import { representativeBenchmark, stateHasSopData } from '@/lib/computations';
+import { CATEGORICAL, stateHueMap } from '@/lib/colors';
+import { stateHasSopData } from '@/lib/computations';
+import { buildSopSeries } from '@/lib/sop';
 import { fmt, fyLabel, UNIT_LABEL, UNIT_LABEL_FULL } from '@/lib/format';
-import Collapsible from './Collapsible';
-import DiscomIndicatorTable from './DiscomIndicatorTable';
-import SopSection from './SopSection';
+import CompleteDataSection from './CompleteDataSection';
+import IndicatorVisualCard, { type CardSeries } from './IndicatorVisualCard';
+import SopGallery from './SopGallery';
 import StateShape from './StateShape';
 import YearPicker from './YearPicker';
-import type { Discom } from '@/lib/types';
+import type { Discom, DiscomsData } from '@/lib/types';
+
+function firstIndicatorMeaning(ds: Discom[], yearsAsc: string[], key: string): string | null {
+  for (const d of ds) {
+    for (const y of yearsAsc) {
+      const m = d.years[y]?.indicators[key]?.indicator_meaning;
+      if (m) return m;
+    }
+  }
+  return null;
+}
 
 export default function StateDetail({ name }: { name: string }) {
   const { discoms, geojson, stateSpecific, loading, error } = useData();
   const router = useRouter();
-  // which DISCOM detail rows are open — lifted out of Collapsible so a scorecard click can force
-  // its own row open (and let Collapsible's own scroll-into-view take over) without disturbing
-  // rows a user already opened/closed by hand. Multiple can stay open at once.
-  const [openSheets, setOpenSheets] = useState<Set<string>>(new Set());
 
-  // One filter bar drives the whole page — DISCOM Scorecards, the trend-chart grid, the
-  // per-DISCOM indicator tables below them, and the Standards-of-Performance section — rather
-  // than each section owning its own picker. `null` year means "no explicit pick yet"; the
-  // actual default is resolved once `discoms` has loaded (see `activeYear` below).
+  // One filter bar drives the whole page — the trend-chart gallery (both datasets) and the
+  // Complete Data tables at the bottom — rather than each section owning its own picker. `null`
+  // year means "no explicit pick yet"; the actual default is resolved once `discoms` has loaded.
   const [selectedDiscom, setSelectedDiscom] = useState('all');
   const [selectedYear, setSelectedYear] = useState<string | null>(null);
   const [selectedGroup, setSelectedGroup] = useState('all');
@@ -87,6 +92,13 @@ export default function StateDetail({ name }: { name: string }) {
 
   const chartableKeys = filterKeys.filter((key) => ds.some((d) => YEARS_ASC.some((y) => d.years[y]?.indicators[key]?.value != null)));
 
+  // ---- Overview counts — plain counts of source records, never a derived score ----
+  const allSopDiscoms = stateSpecific?.discoms.filter((d) => d.state === name) ?? [];
+  const framework = stateSpecific?.frameworks.find((f) => f.state === name);
+  const discomNameSet = new Set([...allDs.map((d) => d.short_name), ...allSopDiscoms.map((d) => d.short_name)]);
+  const sopIndicatorCount = allSopDiscoms.reduce((n, d) => n + buildSopSeries(d, YEARS_ASC).length, 0) + (framework?.indicators.length ?? 0);
+  const fyRange = YEARS_ASC.length > 1 ? `${fyLabel(YEARS_ASC[0])}–${fyLabel(YEARS_ASC[YEARS_ASC.length - 1])}` : fyLabel(YEARS_ASC[0]);
+
   return (
     <div className="state-page">
       <div className="state-topbar">
@@ -112,6 +124,27 @@ export default function StateDetail({ name }: { name: string }) {
           </div>
         )}
       </header>
+
+      <div className="section-header" style={{ marginTop: 4, marginBottom: 4 }}>
+        <span className="section-label">State Overview</span>
+      </div>
+      <div className="stat-row overview-stat-row">
+        <div className="report-row" style={{ border: 'none', padding: 0 }}>
+          <span className="v">{discomNameSet.size}</span>
+          <span className="k"> DISCOM{discomNameSet.size === 1 ? '' : 's'}</span>
+        </div>
+        <div className="report-row" style={{ border: 'none', padding: 0 }}>
+          <span className="v">{keys.length}</span>
+          <span className="k"> reliability indicators</span>
+        </div>
+        <div className="report-row" style={{ border: 'none', padding: 0 }}>
+          <span className="v">{sopIndicatorCount}</span>
+          <span className="k"> SoP indicators</span>
+        </div>
+        <div className="report-row" style={{ border: 'none', padding: 0 }}>
+          <span className="v">{fyRange}</span>
+        </div>
+      </div>
 
       {allDs.length > 0 && (
         <div className="filter-bar">
@@ -159,171 +192,71 @@ export default function StateDetail({ name }: { name: string }) {
         </div>
       )}
 
-      <section className="panel" id="sec-detail">
-        <div className="panel-head">
-          <div>
-            <div className="panel-hint panel-hint--lead">
-              Explore year-wise performance of {name} DISCOMs across indicators of Quality and Reliability of Supply and Quality of Service
-            </div>
-          </div>
+      {discoms.years.length > 1 && (
+        <div className="year-picker-sticky">
+          <YearPicker years={discoms.years} active={activeYear} onChange={setSelectedYear} />
         </div>
+      )}
 
-        <div className="chart-grid">
-          {chartableKeys.length === 0 ? (
-            <p className="detail-placeholder">No indicator in the current filter scope has any reported data for this state.</p>
-          ) : (
-            chartableKeys.map((key, idx) => (
-              <IndicatorTrendChart key={key} discomsData={discoms} indicatorKey={key} ds={ds} cols={cols} yearsAsc={YEARS_ASC} activeYear={activeYear} animationDelay={idx * 90} />
-            ))
-          )}
-        </div>
-
-        {discoms.years.length > 1 && (
-          <div className="year-picker-sticky">
-            <YearPicker years={discoms.years} active={activeYear} onChange={setSelectedYear} />
-          </div>
-        )}
-
-        <div style={{ marginTop: 22, display: 'flex', flexDirection: 'column', gap: 10 }}>
-          {ds.map((d, i) => (
-            <Collapsible
-              key={d.sheet}
-              label={d.short_name}
-              meta={d.full_name}
-              color={cols[i]}
-              animationDelay={i * 60}
-              open={openSheets.has(d.sheet)}
-              onOpenChange={(isOpen) =>
-                setOpenSheets((prev) => {
-                  const next = new Set(prev);
-                  if (isOpen) next.add(d.sheet);
-                  else next.delete(d.sheet);
-                  return next;
-                })
-              }
-            >
-              <div style={{ overflowX: 'auto' }}>
-                <DiscomIndicatorTable discomsData={discoms} discom={d} year={activeYear} />
-              </div>
-            </Collapsible>
-          ))}
-        </div>
-      </section>
-
-      {stateSpecific && <SopSection stateSpecific={stateSpecific} stateName={name} activeYear={activeYear} discomFilter={selectedDiscom} />}
-    </div>
-  );
-}
-
-function IndicatorTrendChart({
-  discomsData,
-  indicatorKey,
-  ds,
-  cols,
-  yearsAsc,
-  activeYear,
-  animationDelay,
-}: {
-  discomsData: import('@/lib/types').DiscomsData;
-  indicatorKey: string;
-  ds: Discom[];
-  cols: string[];
-  yearsAsc: string[];
-  activeYear: string;
-  animationDelay: number;
-}) {
-  const meta = discomsData.canonical_indicators[indicatorKey];
-  const unit = UNIT_LABEL[meta.unit];
-  const unitSuffix = (v: number) => fmt(v, unit === '/yr' ? 2 : 1) + (unit === '%' ? '%' : ' ' + unit);
-  const entries = ds.map((d) => d.years[activeYear]?.indicators[indicatorKey]).filter(Boolean) as NonNullable<Discom['years'][string]>['indicators'][string][];
-  const bench = representativeBenchmark(entries);
-  // every indicator renders as a line — trend over time is the job regardless of whether a
-  // standard exists. When one does, it's drawn as its own horizontal reference line (below,
-  // via the annotation plugin) so each DISCOM's line can be read directly against it: above or
-  // below the standard, and by how much, at every point in the series.
-  const hasStandard = bench != null;
-
-  // area fill is a wash that reads fine under one line — with several DISCOMs overlapping on
-  // the same axes, stacking multiple filled areas just muddies into a solid blob, so only the
-  // single-series case gets a fill (and even then at a ~10% wash, never a saturated block)
-  const datasets = ds.map((d, i) => ({
-    label: d.short_name,
-    data: yearsAsc.map((y) => d.years[y]?.indicators[indicatorKey]?.value ?? null),
-    borderColor: cols[i],
-    borderWidth: 2,
-    fill: ds.length === 1,
-    spanGaps: false,
-    tension: 0.35,
-    backgroundColor: hexToRgba(cols[i], 0.1),
-    pointRadius: yearsAsc.map((y) => (y === activeYear ? 6 : 4)),
-    pointHoverRadius: 8,
-    pointBackgroundColor: cols[i],
-    pointBorderColor: '#faf8f3',
-    pointBorderWidth: 2,
-  }));
-
-  return (
-    <div className="chart-card animate-in" style={{ animationDelay: `${animationDelay}ms` }}>
-      <h4>{indicatorKey}</h4>
-      <div className="chart-sub">
-        {meta.group}
-        {hasStandard ? ' · vs SERC standard' : ''}
+      <div className="section-header" style={{ marginTop: 8 }}>
+        <span className="section-label">Visual Analysis</span>
+        <span className="section-title">Chart Gallery</span>
       </div>
-      <div style={{ height: 320 }}>
-        <Line
-          data={{ labels: yearsAsc.map((y) => fyLabel(y)), datasets }}
-          options={{
-            responsive: true,
-            maintainAspectRatio: false,
-            animation: { duration: 900, easing: 'easeOutQuart' },
-            interaction: { mode: 'nearest', intersect: false, axis: 'x' },
-            plugins: {
-              legend: { display: ds.length > 1, position: 'bottom', labels: { boxWidth: 10, usePointStyle: true, padding: 14, font: { size: 11.5 } } },
-              tooltip: {
-                backgroundColor: '#1c2127',
-                padding: 10,
-                cornerRadius: 8,
-                displayColors: true,
-                callbacks: { label: (c) => c.dataset.label + ': ' + (c.raw == null ? 'no data' : unitSuffix(c.raw as number)) },
-              },
-              annotation:
-                bench == null
-                  ? { annotations: {} }
-                  : {
-                      annotations: {
-                        standard: {
-                          type: 'line',
-                          yMin: bench,
-                          yMax: bench,
-                          borderColor: '#b1441c',
-                          borderWidth: 2,
-                          borderDash: [7, 5],
-                          label: {
-                            display: true,
-                            content: 'SERC Standard: ' + unitSuffix(bench),
-                            position: 'start',
-                            backgroundColor: '#b1441c',
-                            color: '#fff',
-                            font: { size: 10.5, weight: 600 },
-                            padding: { x: 6, y: 3 },
-                            borderRadius: 4,
-                          },
-                        },
-                      },
-                    },
-            },
-            scales: {
-              y: {
-                beginAtZero: true,
-                grid: { color: 'rgba(18,23,42,0.07)' },
-                ticks: { font: { size: 11.5 } },
-                title: { display: true, text: UNIT_LABEL_FULL[meta.unit], font: { size: 11.5, weight: 600 }, color: '#6b7280' },
-              },
-              x: { grid: { display: false }, ticks: { font: { size: 11.5 } } },
-            },
-          }}
-        />
-      </div>
+
+      {allDs.length > 0 && (
+        <>
+          <div className="chart-group-title">Reliability &amp; Power Quality</div>
+          <div className="chart-grid">
+            {chartableKeys.length === 0 ? (
+              <p className="detail-placeholder">No indicator in the current filter scope has any reported data for this state.</p>
+            ) : (
+              chartableKeys.map((key, idx) => {
+                const meta = discoms.canonical_indicators[key];
+                const unit = UNIT_LABEL[meta.unit];
+                const unitSuffix = (v: number) => fmt(v, unit === '/yr' ? 2 : 1) + (unit === '%' ? '%' : ' ' + unit);
+                const series: CardSeries[] = ds.map((d, i) => ({
+                  label: d.short_name,
+                  color: cols[i],
+                  points: YEARS_ASC.map((y) => {
+                    const ind = d.years[y]?.indicators[key];
+                    const benchNum = ind?.benchmark != null && !Number.isNaN(parseFloat(ind.benchmark)) ? parseFloat(ind.benchmark) : null;
+                    return {
+                      year: y,
+                      value: ind?.value ?? null,
+                      benchmark: benchNum,
+                      benchmarkMeaning: ind?.benchmark_meaning ?? null,
+                      reportedMeaning: ind?.reported_meaning ?? null,
+                      standardSpecified: ind?.standard_specified ?? null,
+                      comparisonPossible: ind?.comparison_possible ?? null,
+                      standardMet: ind?.standard_met ?? null,
+                      reasonNotComparable: ind?.reason_not_comparable ?? null,
+                      regulation: d.years[y]?.regulation || null,
+                    };
+                  }),
+                }));
+                return (
+                  <IndicatorVisualCard
+                    key={key}
+                    title={key}
+                    typeLabel={meta.group}
+                    meaning={firstIndicatorMeaning(ds, YEARS_ASC, key)}
+                    unitSuffix={unitSuffix}
+                    yAxisLabel={UNIT_LABEL_FULL[meta.unit]}
+                    yearsAsc={YEARS_ASC}
+                    activeYear={activeYear}
+                    series={series}
+                    animationDelay={idx * 90}
+                  />
+                );
+              })
+            )}
+          </div>
+        </>
+      )}
+
+      {stateSpecific && <SopGallery stateSpecific={stateSpecific} stateName={name} activeYear={activeYear} discomFilter={selectedDiscom} yearsAsc={YEARS_ASC} />}
+
+      <CompleteDataSection discomsData={discoms as DiscomsData} ds={ds} cols={cols} activeYear={activeYear} stateSpecific={stateSpecific} stateName={name} discomFilter={selectedDiscom} />
     </div>
   );
 }

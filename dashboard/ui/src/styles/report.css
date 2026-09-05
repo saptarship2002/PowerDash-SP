@@ -65,7 +65,7 @@
   flex-wrap: wrap;
 }
 
-/* ---- Standards-of-Performance year picker (SopSection) ---- */
+/* ---- Standards-of-Performance year picker ---- */
 /* stays reachable while scrolling through the (possibly long) list of DISCOM accordions below it
    — sticks to the top of the panel it's part of, and scrolls away normally once that panel ends,
    rather than floating over unrelated sections of the page. */

@@ -5,6 +5,7 @@
 @import '../styles/panels.css';
 @import '../styles/state.css';
 @import '../styles/report.css';
+@import '../styles/visual-card.css';
 
 html,
 body {

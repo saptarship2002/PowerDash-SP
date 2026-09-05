@@ -8,6 +8,7 @@ export interface CanonicalIndicatorMeta {
 export interface IndicatorEntry {
   value: number | null;
   subtypes: Record<string, number | null>;
+  indicator_meaning: string | null;
   standard_specified: string | null;
   benchmark: string | null;
   benchmark_meaning: string | null;
@@ -15,6 +16,7 @@ export interface IndicatorEntry {
   unit_note: string | null;
   comparison_possible: boolean;
   standard_met: boolean | null;
+  reason_not_comparable: string | null;
 }
 
 export interface Scoring {

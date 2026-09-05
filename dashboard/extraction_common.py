@@ -210,6 +210,7 @@ def collapse_canonical(entries):
         out[canon] = {
             'value': round(sum(vals) / len(vals), 3) if vals else None,
             'subtypes': {e['subtype'] or 'default': e['value'] for e in es},
+            'indicator_meaning': rep['indicator_meaning'],
             'standard_specified': rep['standard_specified'],
             'benchmark': rep['benchmark'],
             'benchmark_meaning': rep['benchmark_meaning'],
@@ -217,6 +218,7 @@ def collapse_canonical(entries):
             'unit_note': rep['unit_note'],
             'comparison_possible': any(e['comparison_possible'] for e in es if e['comparison_possible'] is not None) if any(e['comparison_possible'] is not None for e in es) else None,
             'standard_met': all(e['standard_met'] for e in es if e['standard_met'] is not None) if any(e['standard_met'] is not None for e in es) else None,
+            'reason_not_comparable': rep['reason_not_comparable'],
         }
     return out
 

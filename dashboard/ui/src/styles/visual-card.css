@@ -1,0 +1,372 @@
+/* ---- Chart-first visual storytelling cards (IndicatorVisualCard and its parts) ---- */
+
+.chart-group-title {
+  font-family: var(--font-condensed);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 22px 0 4px;
+}
+
+.overview-stat-row {
+  gap: 40px;
+  align-items: baseline;
+}
+.overview-stat-row .report-row {
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  gap: 8px;
+  align-items: baseline;
+}
+.overview-stat-row .v {
+  font-size: 22px;
+  font-weight: 700;
+}
+.overview-stat-row .k {
+  font-size: 12.5px;
+}
+
+.visual-card {
+  display: flex;
+  flex-direction: column;
+}
+.visual-card-identity {
+  margin-bottom: 2px;
+}
+.visual-card-meaning {
+  font-size: 12.5px;
+  color: var(--muted);
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+/* ---- Layer C: context lenses ---- */
+.context-lens-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+.context-lens {
+  flex: 1 1 150px;
+  min-width: 140px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+}
+.context-lens-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+.context-lens-icon {
+  font-size: 12px;
+}
+.context-lens-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.context-lens-value {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.35;
+}
+.context-lens-sub {
+  font-size: 11.5px;
+  color: var(--muted);
+  margin-top: 3px;
+  line-height: 1.35;
+}
+.lens-more-btn {
+  all: unset;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+}
+.lens-more-btn:hover {
+  text-decoration: underline;
+}
+
+/* ---- Layer D: compliance rail ---- */
+.compliance-rail-group {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.compliance-rail {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.compliance-rail-label {
+  font-size: 12px;
+  font-weight: 700;
+  flex: none;
+  min-width: 64px;
+}
+.compliance-rail-chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.compliance-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+}
+.compliance-chip-year {
+  opacity: 0.75;
+}
+.rail-met {
+  background: var(--good-soft);
+  color: var(--good-deep);
+}
+.rail-not-met {
+  background: var(--critical-soft);
+  color: var(--critical-deep);
+}
+.rail-not-comparable {
+  background: var(--warning-soft);
+  color: var(--warning-deep);
+}
+.rail-na {
+  background: rgba(18, 23, 42, 0.06);
+  color: var(--muted);
+}
+
+/* ---- exception / regulation callouts ---- */
+.exception-callout {
+  margin-top: 14px;
+  border: 1.5px solid var(--warning);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  background: var(--warning-soft);
+}
+.exception-callout-head {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--warning-deep);
+  margin-bottom: 4px;
+}
+.exception-callout-text {
+  font-size: 12.5px;
+  color: var(--ink);
+  line-height: 1.4;
+}
+.exception-callout-text + .exception-callout-text {
+  margin-top: 6px;
+}
+
+.regulation-badge {
+  margin-top: 12px;
+}
+.regulation-badge-group {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.regulation-badge-toggle {
+  all: unset;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  padding: 5px 12px;
+  background: var(--panel);
+  transition: color 180ms var(--ease), border-color 180ms var(--ease);
+}
+.regulation-badge-toggle:hover {
+  color: var(--accent);
+  border-color: var(--accent-light);
+}
+.regulation-badge-chevron {
+  transition: transform 200ms var(--ease);
+}
+.regulation-badge-chevron.open {
+  transform: rotate(180deg);
+}
+.regulation-badge-text {
+  margin-top: 8px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--muted);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+}
+
+/* ---- Layer E: FY evidence cards ---- */
+.evidence-row {
+  margin-top: 16px;
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+.evidence-card {
+  flex: none;
+  width: 168px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--paper);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.evidence-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 2px;
+}
+.evidence-card-fy {
+  font-family: var(--font-condensed);
+  font-weight: 700;
+  font-size: 13px;
+}
+.evidence-card-series {
+  font-size: 11px;
+  font-weight: 600;
+}
+.evidence-card-k {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.evidence-card-v {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.evidence-card-sub {
+  font-size: 10.5px;
+  color: var(--muted);
+  line-height: 1.3;
+}
+.evidence-card-arrow {
+  text-align: center;
+  color: var(--muted);
+  font-size: 11px;
+  margin: 1px 0;
+}
+.evidence-card-status {
+  margin-top: 2px;
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  text-align: center;
+}
+.evidence-status-met {
+  background: var(--good-soft);
+  color: var(--good-deep);
+}
+.evidence-status-not-met {
+  background: var(--critical-soft);
+  color: var(--critical-deep);
+}
+.evidence-status-not-comparable {
+  background: var(--warning-soft);
+  color: var(--warning-deep);
+}
+.evidence-status-na {
+  background: rgba(18, 23, 42, 0.06);
+  color: var(--muted);
+}
+.evidence-card-reason {
+  font-size: 10.5px;
+  color: var(--muted);
+  line-height: 1.35;
+  margin-top: 2px;
+}
+
+/* ---- SoP gallery ---- */
+.sop-gallery-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 14px 0 6px;
+}
+.sop-search-input {
+  font-family: inherit;
+  font-size: 13.5px;
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--panel);
+  min-width: 220px;
+  flex: 1 1 220px;
+}
+.sop-gallery-filters select {
+  font-family: inherit;
+  font-size: 13.5px;
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--panel);
+  cursor: pointer;
+}
+.sop-discom-group {
+  margin-top: 20px;
+}
+.sop-discom-group-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-condensed);
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+.sop-discom-group-title .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex: none;
+}
+.sop-discom-group-full {
+  font-weight: 400;
+  color: var(--muted);
+  font-size: 12.5px;
+}
+
+.framework-only-card {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 640px) {
+  .chart-grid {
+    grid-template-columns: 1fr;
+  }
+  .context-lens {
+    flex: 1 1 100%;
+  }
+}
