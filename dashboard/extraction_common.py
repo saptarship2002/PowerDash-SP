@@ -26,6 +26,18 @@ SHORT_OVERRIDES = {
     'JdVVNL,RAJ': 'JdVVNL',
 }
 
+# Uttar Pradesh's 5 sheets have a blank cell where every other sheet in the workbook carries the
+# licensee's full legal name (row 1, col A) — confirmed against the source file, not a parsing
+# gap. Filled in from UPPCL's own site (https://www.uppcl.org/uppcl/en/article/discoms) since the
+# workbook itself has nothing to extract here.
+FULL_NAME_OVERRIDES = {
+    'PVVNL, UP': 'Pashchimanchal Vidyut Vitaran Nigam Limited',
+    'MVVNL,UP': 'Madhyanchal Vidyut Vitaran Nigam Limited',
+    'DVVNL,UP': 'Dakshinanchal Vidyut Vitaran Nigam Limited',
+    'PuVVNL,UP': 'Purvanchal Vidyut Vitaran Nigam Limited',
+    'KESCO,UP': 'Kanpur Electricity Supply Company Limited',
+}
+
 EXCLUDE_SHEETS = {'color scheme', 'verification'}
 
 YEAR_RE = re.compile(r'^\d{4}-\d{2,4}$')
@@ -118,7 +130,7 @@ def normalize_value(canon_key, raw_val, meaning):
 
 def parse_sheet(sheet_name, ws):
     rows = list(ws.iter_rows(values_only=True))
-    full_name = clean(rows[0][0])
+    full_name = clean(rows[0][0]) or FULL_NAME_OVERRIDES.get(sheet_name)
     code, _, state_part = sheet_name.partition(',')
     code = code.strip()
     state = STATE_MAP.get(state_part.strip().upper(), state_part.strip() or 'Unknown')
