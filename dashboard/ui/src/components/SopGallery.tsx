@@ -53,15 +53,11 @@ export default function SopGallery({ stateSpecific, stateName, activeYear, disco
 
   return (
     <>
-      <div className="section-header" style={{ marginTop: 40 }}>
+      <div className="section-header">
         <span className="section-label">Standards of Performance</span>
         <span className="section-title">Consumer Service Compliance</span>
+        <span className="section-sub">Whether each figure reported is comparable to its notified standard, and whether it was met</span>
       </div>
-      <p className="section-note">
-        Whether each licensee restores supply, resolves meter and billing complaints, and processes new connections within the timelines its SERC has
-        notified — and whether it actually reported a figure the Commission could check against that standard. Every figure below is shown exactly as
-        reported, with nothing computed on top.
-      </p>
 
       {anyIndicators && (
         <div className="sop-gallery-filters">

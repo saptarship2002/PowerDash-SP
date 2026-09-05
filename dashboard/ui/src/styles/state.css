@@ -103,11 +103,9 @@
   position: relative;
   overflow: hidden;
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  padding: 34px 36px;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px 26px;
   background: var(--panel);
   border: 1px solid var(--line);
   border-left: 6px solid var(--accent);
@@ -122,75 +120,104 @@
   pointer-events: none;
   background: linear-gradient(120deg, color-mix(in srgb, var(--hero-color, var(--accent)) 12%, transparent) 0%, transparent 55%);
 }
+/* the compact masthead: name/DISCOMs/silhouette on one line, source-derived counts on the next —
+   replaces the old tall hero + separate "State Overview" block below it (~35-45% shorter) */
+.state-hero-main {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
 .state-hero-shape {
   position: relative;
   flex: none;
   opacity: 0.92;
 }
-
-/* ---------- one page-level filter bar (DISCOM / Indicator Type / Indicator) drives every
-   section below it — scorecards, trend charts, per-DISCOM tables, and the SoP section — rather
-   than each owning its own picker. The Financial Year pill is the one exception: it stays
-   sticky at the top of the DISCOM Scorecards panel (year-picker-sticky, below), same spot it
-   held before this filter bar existed — only its state is shared, not its position. ---------- */
-.filter-bar {
+.state-hero-stats-inline {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-start;
   gap: 22px;
-  padding: 18px 24px;
+  font-size: 12.5px;
+  color: var(--muted);
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+}
+.state-hero-stats-inline b {
+  font-family: var(--font-condensed);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-right: 4px;
+}
+
+/* ---------- one compact analytical toolbar drives every section below it — the chart gallery
+   (both datasets) and the Complete Data tables — rather than each owning its own picker. Focus
+   Year lives in this same row (not a separately floating/sticky control) so it reads as one more
+   toolbar input, not an accidental overlay. ---------- */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 20px;
+  padding: 10px 18px;
   background: var(--panel);
   border: 1px solid var(--line);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   box-shadow: var(--shadow-sm);
   animation: fadeInUp 520ms var(--ease) both;
 }
-.filter-field {
+.toolbar-field {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  align-items: center;
+  gap: 8px;
 }
-.filter-field label {
+.toolbar-field label {
   font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--muted);
 }
-.filter-field select {
+.toolbar-field select {
   appearance: none;
   -webkit-appearance: none;
   font-family: var(--font-condensed);
-  font-size: 13.5px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--ink);
-  background: var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' viewBox='0 0 11 7' fill='none'%3E%3Cpath d='M1 1L5.5 5.5L10 1' stroke='%236b7280' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 13px center;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-  padding: 9px 34px 9px 14px;
-  min-width: 168px;
+  background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' viewBox='0 0 11 7' fill='none'%3E%3Cpath d='M1 1L5.5 5.5L10 1' stroke='%236b7280' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 2px center;
+  border: none;
+  border-bottom: 1.5px solid var(--line);
+  padding: 3px 18px 3px 2px;
   cursor: pointer;
-  box-shadow: 0 1px 2px rgba(18, 23, 42, 0.03);
-  transition: border-color 200ms var(--ease), box-shadow 200ms var(--ease), background-color 200ms var(--ease);
+  transition: border-color 180ms var(--ease);
 }
-.filter-field select:hover {
+.toolbar-field select:hover {
   border-color: var(--accent-light);
-  background-color: var(--panel);
 }
-.filter-field select:focus-visible {
+.toolbar-field select:focus-visible {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+.toolbar-field--year {
+  margin-left: auto;
+}
+.toolbar-field--year .year-picker {
+  padding-top: 0;
 }
 .state-hero h1 {
-  font-size: 44px;
+  font-family: var(--font-display);
+  font-size: 28px;
   font-weight: 700;
   letter-spacing: -0.01em;
   position: relative;
 }
 .state-hero .sub {
-  margin-top: 6px;
-  font-size: 14px;
+  margin-top: 3px;
+  font-size: 13px;
   color: var(--muted);
   position: relative;
 }
@@ -280,9 +307,7 @@
   line-height: 1.3;
 }
 .discom-detail {
-  /* leaves room below the SoP section's sticky year picker (~70px tall) when a row scrolls into
-     view on open, so the picker doesn't cover the row's own header */
-  scroll-margin-top: 90px;
+  scroll-margin-top: 16px;
   margin-top: 22px;
   display: flex;
   flex-direction: column;

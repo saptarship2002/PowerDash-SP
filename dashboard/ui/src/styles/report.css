@@ -1,9 +1,19 @@
 .section-header {
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
-  gap: 16px;
-  margin-bottom: 20px;
-  margin-top: 8px;
+  gap: 8px 16px;
+  margin-bottom: 16px;
+  margin-top: 28px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+}
+/* the sub-line ("Trends, regulatory targets…") always starts its own row under label+title,
+   rather than competing with them on the same baseline */
+.section-header .section-sub {
+  flex-basis: 100%;
+  font-size: 12.5px;
+  color: var(--muted);
 }
 .section-label {
   font-family: var(--font-condensed);
@@ -65,32 +75,19 @@
   flex-wrap: wrap;
 }
 
-/* ---- Standards-of-Performance year picker ---- */
-/* stays reachable while scrolling through the (possibly long) list of DISCOM accordions below it
-   — sticks to the top of the panel it's part of, and scrolls away normally once that panel ends,
-   rather than floating over unrelated sections of the page. */
-.year-picker-sticky {
-  position: sticky;
-  top: 12px;
-  z-index: 5;
-  display: flex;
-  justify-content: flex-end;
-  margin: 14px 0 2px;
-}
+/* ---- Focus Year control — lives inline in the page toolbar, not a separately floating/sticky
+   panel (a prior version stuck to the viewport top and could visually overlap the chart
+   section). ---- */
 .year-picker {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 6px;
+  align-items: center;
+  gap: 8px;
   flex: none;
-  background: var(--panel);
-  padding: 6px 0 0;
-  border-radius: var(--radius);
 }
 .year-picker .yp-label {
   font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--muted);
 }

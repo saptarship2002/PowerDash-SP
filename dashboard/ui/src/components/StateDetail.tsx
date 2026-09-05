@@ -117,43 +117,38 @@ export default function StateDetail({ name }: { name: string }) {
         </div>
       </div>
 
-      <header className="state-hero" style={{ ['--hero-color' as string]: color, borderLeftColor: color }}>
-        <div>
-          <h1>{name}</h1>
-          <div className="sub">{allDs.length ? allDs.map((d) => `${d.full_name} (${d.short_name})`).join(' · ') : 'No DISCOMs tracked'}</div>
-        </div>
-        {geojson && (
-          <div className="state-hero-shape">
-            <StateShape geojson={geojson} name={name} size={120} color={color} />
+      <header className="state-hero state-hero--compact" style={{ ['--hero-color' as string]: color, borderLeftColor: color }}>
+        <div className="state-hero-main">
+          <div>
+            <h1>{name}</h1>
+            <div className="sub">{allDs.length ? allDs.map((d) => `${d.full_name} (${d.short_name})`).join(' · ') : 'No DISCOMs tracked'}</div>
           </div>
-        )}
+          {geojson && (
+            <div className="state-hero-shape">
+              <StateShape geojson={geojson} name={name} size={72} color={color} />
+            </div>
+          )}
+        </div>
+        <div className="state-hero-stats-inline">
+          <span>
+            <b>{discomNameSet.size}</b> DISCOM{discomNameSet.size === 1 ? '' : 's'}
+          </span>
+          <span>
+            <b>{keys.length}</b> reliability indicators
+          </span>
+          <span>
+            <b>{sopIndicatorCount}</b> SoP indicators
+          </span>
+          <span>
+            <b>{fyRange}</b>
+          </span>
+        </div>
       </header>
 
-      <div className="section-header" style={{ marginTop: 4, marginBottom: 4 }}>
-        <span className="section-label">State Overview</span>
-      </div>
-      <div className="stat-row overview-stat-row">
-        <div className="report-row" style={{ border: 'none', padding: 0 }}>
-          <span className="v">{discomNameSet.size}</span>
-          <span className="k"> DISCOM{discomNameSet.size === 1 ? '' : 's'}</span>
-        </div>
-        <div className="report-row" style={{ border: 'none', padding: 0 }}>
-          <span className="v">{keys.length}</span>
-          <span className="k"> reliability indicators</span>
-        </div>
-        <div className="report-row" style={{ border: 'none', padding: 0 }}>
-          <span className="v">{sopIndicatorCount}</span>
-          <span className="k"> SoP indicators</span>
-        </div>
-        <div className="report-row" style={{ border: 'none', padding: 0 }}>
-          <span className="v">{fyRange}</span>
-        </div>
-      </div>
-
       {allDs.length > 0 && (
-        <div className="filter-bar">
-          <div className="filter-field">
-            <label>DISCOM</label>
+        <div className="toolbar">
+          <div className="toolbar-field">
+            <label>Discom</label>
             <select value={selectedDiscom} onChange={(e) => setSelectedDiscom(e.target.value)}>
               <option value="all">All DISCOMs</option>
               {allDs.map((d) => (
@@ -164,8 +159,8 @@ export default function StateDetail({ name }: { name: string }) {
             </select>
           </div>
 
-          <div className="filter-field">
-            <label>Indicator Type</label>
+          <div className="toolbar-field">
+            <label>Type</label>
             <select
               value={selectedGroup}
               onChange={(e) => {
@@ -182,7 +177,7 @@ export default function StateDetail({ name }: { name: string }) {
             </select>
           </div>
 
-          <div className="filter-field">
+          <div className="toolbar-field">
             <label>Indicator</label>
             <select value={selectedIndicator} onChange={(e) => setSelectedIndicator(e.target.value)}>
               <option value="all">All Indicators</option>
@@ -193,18 +188,19 @@ export default function StateDetail({ name }: { name: string }) {
               ))}
             </select>
           </div>
+
+          {discoms.years.length > 1 && (
+            <div className="toolbar-field toolbar-field--year">
+              <YearPicker years={discoms.years} active={activeYear} onChange={setSelectedYear} />
+            </div>
+          )}
         </div>
       )}
 
-      {discoms.years.length > 1 && (
-        <div className="year-picker-sticky">
-          <YearPicker years={discoms.years} active={activeYear} onChange={setSelectedYear} />
-        </div>
-      )}
-
-      <div className="section-header" style={{ marginTop: 8 }}>
+      <div className="section-header">
         <span className="section-label">Visual Analysis</span>
         <span className="section-title">Chart Gallery</span>
+        <span className="section-sub">Trends, regulatory targets and compliance context</span>
       </div>
 
       {allDs.length > 0 && (
@@ -268,7 +264,8 @@ export default function StateDetail({ name }: { name: string }) {
         discomsData={discoms as DiscomsData}
         ds={ds}
         cols={cols}
-        activeYear={activeYear}
+        years={discoms.years}
+        focusYear={activeYear}
         stateSpecific={showSop ? stateSpecific : null}
         stateName={name}
         discomFilter={selectedDiscom}

@@ -27,7 +27,7 @@ export default function FrameworkOnlyCard({ framework, stateName }: Props) {
         {stateName}&rsquo;s SERC has notified {framework.indicators.length} SoP indicators with standards and benchmarks, but no licensee performance
         figures were available in the source workbook.
         <br />
-        ○ No reported time-series figures are available for this state.
+        No reported time-series figures are available for this state.
       </div>
 
       <RegulationBadge text={framework.regulation} label="View regulatory framework" />

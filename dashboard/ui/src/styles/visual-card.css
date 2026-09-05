@@ -7,88 +7,83 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--muted);
-  margin: 22px 0 4px;
-}
-
-.overview-stat-row {
-  gap: 40px;
-  align-items: baseline;
-}
-.overview-stat-row .report-row {
-  flex-direction: row-reverse;
-  justify-content: flex-end;
-  gap: 8px;
-  align-items: baseline;
-}
-.overview-stat-row .v {
-  font-size: 22px;
-  font-weight: 700;
-}
-.overview-stat-row .k {
-  font-size: 12.5px;
+  margin: 4px 0 4px;
 }
 
 .visual-card {
   display: flex;
   flex-direction: column;
+  gap: 8px;
 }
 .visual-card-identity {
-  margin-bottom: 2px;
+  margin-bottom: 0;
+}
+.visual-card-title-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.visual-card-title-row h4 {
+  font-family: var(--font-sans);
+}
+.visual-card-type {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: rgba(18, 23, 42, 0.05);
+  padding: 2px 7px;
+  border-radius: var(--radius-pill);
 }
 .visual-card-meaning {
-  font-size: 12.5px;
+  font-size: 12px;
   color: var(--muted);
-  margin-top: 4px;
-  line-height: 1.4;
+  line-height: 1.35;
+  margin-top: 1px;
 }
 
-/* ---- Layer C: context lenses ---- */
+/* ---- Layer C: compact inline context lenses — metadata, not form panels ---- */
 .context-lens-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 14px;
+  column-gap: 18px;
+  row-gap: 4px;
 }
 .context-lens {
-  flex: 1 1 150px;
-  min-width: 140px;
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-  padding: 10px 12px;
-}
-.context-lens-head {
   display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 4px;
-}
-.context-lens-icon {
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px;
   font-size: 12px;
+  max-width: 100%;
 }
 .context-lens-label {
   font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--muted);
 }
+.context-lens-sep {
+  color: var(--muted);
+}
 .context-lens-value {
-  font-size: 13.5px;
   font-weight: 600;
   color: var(--ink);
-  line-height: 1.35;
+  line-height: 1.3;
 }
 .context-lens-sub {
-  font-size: 11.5px;
+  flex-basis: 100%;
+  font-size: 11px;
   color: var(--muted);
-  margin-top: 3px;
-  line-height: 1.35;
+  line-height: 1.3;
 }
 .lens-more-btn {
   all: unset;
   cursor: pointer;
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 600;
   color: var(--accent);
 }
@@ -96,216 +91,188 @@
   text-decoration: underline;
 }
 
-/* ---- Layer D: compliance rail ---- */
-.compliance-rail-group {
-  margin-top: 16px;
+/* ---- the chart is the dominant object: quiet gridlines, no competing chrome above it ---- */
+.visual-card-chart {
+  height: 200px;
+  margin-top: 2px;
+}
+
+/* ---- Layers D+E merged: one compact evidence rail per DISCOM/series, evenly spaced across the
+   chart's full width, aligned with its x-axis ticks — replaces separate compliance chips and
+   tall repeated FY cards. ---- */
+.series-block {
   display: flex;
   flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+}
+.evidence-rail {
+  display: flex;
+  align-items: center;
   gap: 8px;
 }
-.compliance-rail {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-.compliance-rail-label {
-  font-size: 12px;
+.evidence-rail-label {
+  font-size: 11px;
   font-weight: 700;
   flex: none;
-  min-width: 64px;
+  max-width: 72px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
-.compliance-rail-chips {
+.evidence-rail-cells {
+  flex: 1;
+  display: grid;
+  gap: 4px;
+}
+.evidence-cell {
+  all: unset;
+  box-sizing: border-box;
+  cursor: pointer;
   display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-.compliance-chip {
-  display: inline-flex;
+  flex-direction: column;
   align-items: center;
-  gap: 5px;
-  font-size: 11px;
-  font-weight: 600;
-  padding: 3px 9px;
+  gap: 1px;
+  text-align: center;
+  padding: 4px 2px 5px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  background: var(--paper);
+  transition: border-color 150ms var(--ease), background-color 150ms var(--ease), transform 150ms var(--ease);
+}
+.evidence-cell:hover,
+.evidence-cell:focus-visible {
+  border-color: var(--accent-light);
+}
+.evidence-cell.active {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 7%, var(--paper));
+  transform: translateY(-1px);
+}
+.evidence-cell-fy {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+.evidence-cell-v {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.2;
+}
+.evidence-cell-status {
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 1px 5px;
   border-radius: var(--radius-pill);
   white-space: nowrap;
 }
-.compliance-chip-year {
-  opacity: 0.75;
-}
-.rail-met {
+.eviq-met .evidence-cell-status {
   background: var(--good-soft);
   color: var(--good-deep);
 }
-.rail-not-met {
+.eviq-not-met .evidence-cell-status {
   background: var(--critical-soft);
   color: var(--critical-deep);
 }
-.rail-not-comparable {
+.eviq-not-comparable .evidence-cell-status {
   background: var(--warning-soft);
   color: var(--warning-deep);
 }
-.rail-na {
+.eviq-no-benchmark .evidence-cell-status,
+.eviq-unavailable .evidence-cell-status {
   background: rgba(18, 23, 42, 0.06);
   color: var(--muted);
 }
+.eviq-no-value .evidence-cell-status {
+  background: rgba(18, 23, 42, 0.04);
+  color: var(--muted);
+}
+.eviq-no-value .evidence-cell-v {
+  color: var(--muted);
+  font-weight: 500;
+}
 
-/* ---- exception / regulation callouts ---- */
+/* ---- compact exception rail — a footnote-weight warning, not a box louder than the chart ---- */
 .exception-callout {
-  margin-top: 14px;
-  border: 1.5px solid var(--warning);
-  border-radius: var(--radius-sm);
-  padding: 12px 14px;
-  background: var(--warning-soft);
+  border-left: 3px solid var(--warning);
+  padding: 4px 0 4px 10px;
+  font-size: 11.5px;
 }
 .exception-callout-head {
-  font-size: 11.5px;
   font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
   color: var(--warning-deep);
-  margin-bottom: 4px;
+  margin-bottom: 1px;
 }
 .exception-callout-text {
-  font-size: 12.5px;
-  color: var(--ink);
-  line-height: 1.4;
+  color: var(--muted);
+  line-height: 1.35;
 }
 .exception-callout-text + .exception-callout-text {
-  margin-top: 6px;
+  margin-top: 3px;
+}
+.exception-callout-text b {
+  color: var(--ink);
+  font-weight: 600;
 }
 
-.regulation-badge {
-  margin-top: 12px;
+/* ---- regulatory citation as provenance, not another panel ---- */
+.provenance {
+  margin-top: 2px;
 }
 .regulation-badge-group {
-  margin-top: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.regulation-badge-toggle {
-  all: unset;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11.5px;
-  font-weight: 600;
-  color: var(--muted);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-pill);
-  padding: 5px 12px;
-  background: var(--panel);
-  transition: color 180ms var(--ease), border-color 180ms var(--ease);
-}
-.regulation-badge-toggle:hover {
-  color: var(--accent);
-  border-color: var(--accent-light);
-}
-.regulation-badge-chevron {
-  transition: transform 200ms var(--ease);
-}
-.regulation-badge-chevron.open {
-  transform: rotate(180deg);
-}
-.regulation-badge-text {
-  margin-top: 8px;
-  font-size: 12px;
-  line-height: 1.5;
-  color: var(--muted);
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-  padding: 10px 12px;
-}
-
-/* ---- Layer E: FY evidence cards ---- */
-.evidence-row {
-  margin-top: 16px;
-  display: flex;
-  gap: 10px;
-  overflow-x: auto;
-  padding-bottom: 4px;
-}
-.evidence-card {
-  flex: none;
-  width: 168px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-  background: var(--paper);
-  padding: 10px 12px;
+  margin-top: 2px;
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
-.evidence-card-head {
+.provenance-toggle {
+  all: unset;
+  cursor: pointer;
   display: flex;
-  justify-content: space-between;
   align-items: baseline;
-  margin-bottom: 2px;
-}
-.evidence-card-fy {
-  font-family: var(--font-condensed);
-  font-weight: 700;
-  font-size: 13px;
-}
-.evidence-card-series {
+  gap: 6px;
+  width: 100%;
   font-size: 11px;
-  font-weight: 600;
+  color: var(--muted);
+  transition: color 150ms var(--ease);
 }
-.evidence-card-k {
-  font-size: 9.5px;
+.provenance-toggle:hover {
+  color: var(--accent);
+}
+.provenance-label {
   font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--muted);
+  flex: none;
 }
-.evidence-card-v {
-  font-size: 13.5px;
-  font-weight: 600;
-  color: var(--ink);
+.provenance-preview {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
-.evidence-card-sub {
-  font-size: 10.5px;
-  color: var(--muted);
-  line-height: 1.3;
+.provenance-chevron {
+  flex: none;
+  transition: transform 200ms var(--ease);
 }
-.evidence-card-arrow {
-  text-align: center;
-  color: var(--muted);
-  font-size: 11px;
-  margin: 1px 0;
+.provenance-chevron.open {
+  transform: rotate(180deg);
 }
-.evidence-card-status {
-  margin-top: 2px;
+.provenance-text {
+  margin-top: 6px;
   font-size: 11.5px;
-  font-weight: 700;
-  padding: 4px 8px;
+  line-height: 1.5;
+  color: var(--muted);
+  background: var(--paper);
   border-radius: var(--radius-sm);
-  text-align: center;
+  padding: 8px 10px;
 }
-.evidence-status-met {
-  background: var(--good-soft);
-  color: var(--good-deep);
+.provenance-text p {
+  margin: 0;
 }
-.evidence-status-not-met {
-  background: var(--critical-soft);
-  color: var(--critical-deep);
-}
-.evidence-status-not-comparable {
-  background: var(--warning-soft);
-  color: var(--warning-deep);
-}
-.evidence-status-na {
-  background: rgba(18, 23, 42, 0.06);
-  color: var(--muted);
-}
-.evidence-card-reason {
-  font-size: 10.5px;
-  color: var(--muted);
-  line-height: 1.35;
-  margin-top: 2px;
+.provenance-text p + p {
+  margin-top: 6px;
 }
 
 /* ---- SoP gallery ---- */
@@ -313,7 +280,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin: 14px 0 6px;
+  margin: 10px 0 4px;
 }
 .sop-search-input {
   font-family: inherit;
@@ -335,7 +302,7 @@
   cursor: pointer;
 }
 .sop-discom-group {
-  margin-top: 20px;
+  margin-top: 18px;
 }
 .sop-discom-group-title {
   display: flex;
@@ -344,7 +311,7 @@
   font-family: var(--font-condensed);
   font-weight: 700;
   font-size: 14px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 .sop-discom-group-title .dot {
   width: 10px;
@@ -362,11 +329,56 @@
   grid-column: 1 / -1;
 }
 
+/* ---- Complete Data: an unmistakably different band from the chart gallery above it ---- */
+.complete-data-band {
+  margin-top: 12px;
+  padding-top: 4px;
+  border-top: 3px solid var(--ink);
+}
+.complete-data-toggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12.5px;
+  color: var(--muted);
+  margin: -8px 0 14px;
+}
+.complete-data-toggle-btn {
+  all: unset;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+  border: 1px solid var(--accent-light);
+  border-radius: var(--radius-pill);
+  padding: 4px 12px;
+}
+.complete-data-toggle-btn:hover {
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+.complete-data-year-label {
+  font-family: var(--font-condensed);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+
 @media (max-width: 640px) {
   .chart-grid {
     grid-template-columns: 1fr;
   }
-  .context-lens {
-    flex: 1 1 100%;
+  .evidence-rail {
+    flex-wrap: wrap;
+  }
+  .evidence-rail-cells {
+    overflow-x: auto;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(56px, 1fr);
+  }
+  .toolbar-field--year {
+    margin-left: 0;
   }
 }

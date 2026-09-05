@@ -31,7 +31,7 @@ export default function YearPicker({ years, active, onChange }: Props) {
 
   return (
     <div className="year-picker">
-      <span className="yp-label">Financial Year</span>
+      <span className="yp-label">Focus Year</span>
       <div className="yp-years" ref={trackRef}>
         {slider && <span className="yp-slider" style={{ left: slider.left, width: slider.width }} />}
         {ordered.map((y) => (

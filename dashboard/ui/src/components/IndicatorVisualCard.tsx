@@ -4,9 +4,9 @@ import { useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import { hexToRgba } from '@/lib/colors';
 import { fyLabel } from '@/lib/format';
+import { allSame } from '@/lib/evidenceStatus';
 import ContextLens from './ContextLens';
-import ComplianceRail, { complianceStatus } from './ComplianceRail';
-import ObservationEvidenceCard from './ObservationEvidenceCard';
+import EvidenceRail from './EvidenceRail';
 import RegulationBadge from './RegulationBadge';
 
 export interface CardPoint {
@@ -73,7 +73,19 @@ function firstNonNull<T>(series: CardSeries[], pick: (p: CardPoint) => T | null 
   return null;
 }
 
-function truncated(text: string, max = 140): { short: string; needsMore: boolean } {
+/** A plotted-but-not-comparable benchmark reads as generic "N/A" no matter which of three very
+ * different situations produced it — distinguish them from the fields already extracted, without
+ * inventing anything the source didn't say. */
+function benchmarkLensValue(series: CardSeries[], bench: number | null, unitSuffix: (v: number) => string): string {
+  if (bench != null) return unitSuffix(bench);
+  const anyRawBenchmark = series.some((s) => s.points.some((p) => p.benchmark != null));
+  const anyNotComparable = series.some((s) => s.points.some((p) => p.comparisonPossible === false));
+  if (anyRawBenchmark && anyNotComparable) return 'Not directly comparable';
+  if (!anyRawBenchmark) return 'No benchmark specified';
+  return 'N/A';
+}
+
+function truncated(text: string, max = 130): { short: string; needsMore: boolean } {
   if (text.length <= max) return { short: text, needsMore: false };
   return { short: text.slice(0, max).trimEnd() + '…', needsMore: true };
 }
@@ -83,7 +95,6 @@ function StandardLens({ text }: { text: string }) {
   const { short, needsMore } = truncated(text);
   return (
     <ContextLens
-      icon="📜"
       label="Standard"
       value={<span>{expanded ? text : short}</span>}
       sub={
@@ -97,27 +108,21 @@ function StandardLens({ text }: { text: string }) {
   );
 }
 
-/** The core reusable visual unit: indicator identity, a time-series chart, compact context
- * lenses, a per-year compliance rail, per-observation evidence cards, and any not-comparable
- * exception callouts and regulatory citations — all inside one card so a chart never needs a
- * hidden table underneath it to be understood. Used for both reliability/power-quality
- * indicators (one series per DISCOM) and Standards-of-Performance indicators (one series per
- * DISCOM/indicator pair). */
+/** The core reusable visual unit: compact indicator identity, a dominant time-series chart,
+ * inline context lenses, and — per DISCOM/series — a fiscal-year evidence rail with any
+ * not-comparable exception and regulatory citation deduplicated across years that share the same
+ * value. Hovering/focusing an evidence cell drives the chart's enlarged point and a vertical
+ * guide line, connecting "this year" to "this point" without a separate control. */
 export default function IndicatorVisualCard({ title, typeLabel, meaning, measuredAsLabel, unitSuffix, yAxisLabel, yearsAsc, activeYear, series, animationDelay }: Props) {
+  const [hoverYear, setHoverYear] = useState<string | null>(null);
+  const effectiveYear = hoverYear ?? activeYear;
+
   const hasNumeric = series.some((s) => s.points.some((p) => p.value != null));
   const bench = representativeComparableBenchmark(series);
-
   const benchmarkMeaning = firstNonNull(series, (p) => p.benchmarkMeaning);
   const standardSpecified = firstNonNull(series, (p) => p.standardSpecified);
   const reportedMeaning = measuredAsLabel ?? firstNonNull(series, (p) => p.reportedMeaning);
-
-  const regulations = Array.from(new Set(series.flatMap((s) => s.points.map((p) => p.regulation).filter((r): r is string => !!r))));
-
-  const reasons = Array.from(
-    new Set(
-      series.flatMap((s) => s.points.filter((p) => p.comparisonPossible === false && p.reasonNotComparable && p.reasonNotComparable !== 'N/A').map((p) => p.reasonNotComparable as string))
-    )
-  );
+  const benchmarkValueText = benchmarkLensValue(series, bench, unitSuffix);
 
   const datasets = series.map((s) => ({
     label: s.label,
@@ -126,139 +131,153 @@ export default function IndicatorVisualCard({ title, typeLabel, meaning, measure
     borderWidth: 2,
     fill: series.length === 1,
     spanGaps: false,
-    tension: 0.35,
-    backgroundColor: hexToRgba(s.color, 0.1),
-    pointRadius: s.points.map((p) => (p.year === activeYear ? 6 : 4)),
-    pointHoverRadius: 8,
+    tension: 0.3,
+    backgroundColor: hexToRgba(s.color, 0.07),
+    pointRadius: s.points.map((p) => (p.year === effectiveYear ? 6 : 3)),
+    pointHoverRadius: 7,
     pointBackgroundColor: s.color,
     pointBorderColor: '#faf8f3',
-    pointBorderWidth: 2,
+    pointBorderWidth: 1.5,
   }));
+
+  const focusLabel = fyLabel(effectiveYear);
 
   return (
     <div className="chart-card visual-card animate-in" style={animationDelay ? { animationDelay: `${animationDelay}ms` } : undefined}>
       <div className="visual-card-identity">
-        <h4>{title}</h4>
-        {typeLabel && <div className="chart-sub">{typeLabel}</div>}
+        <div className="visual-card-title-row">
+          <h4>{title}</h4>
+          {typeLabel && <span className="visual-card-type">{typeLabel}</span>}
+        </div>
         {meaning && <div className="visual-card-meaning">{meaning}</div>}
       </div>
 
       <div className="context-lens-row">
-        {(benchmarkMeaning || bench != null) && <ContextLens icon="🎯" label="Benchmark" value={bench != null ? unitSuffix(bench) : 'N/A'} sub={benchmarkMeaning} />}
-        {reportedMeaning && <ContextLens icon="📏" label="Measured as" value={reportedMeaning} />}
+        <ContextLens label="Benchmark" value={benchmarkValueText} sub={benchmarkMeaning} />
+        {reportedMeaning && <ContextLens label="Measured as" value={reportedMeaning} />}
         {standardSpecified && <StandardLens text={standardSpecified} />}
       </div>
 
       {hasNumeric ? (
-        <div style={{ height: 300, marginTop: 14 }}>
+        <div className="visual-card-chart">
           <Line
             data={{ labels: yearsAsc.map((y) => fyLabel(y)), datasets }}
             options={{
               responsive: true,
               maintainAspectRatio: false,
-              animation: { duration: 900, easing: 'easeOutQuart' },
+              animation: { duration: 700, easing: 'easeOutQuart' },
               interaction: { mode: 'nearest', intersect: false, axis: 'x' },
               plugins: {
-                legend: { display: series.length > 1, position: 'bottom', labels: { boxWidth: 10, usePointStyle: true, padding: 14, font: { size: 11.5 } } },
+                legend: { display: series.length > 1, position: 'bottom', labels: { boxWidth: 8, usePointStyle: true, padding: 10, font: { size: 10.5 } } },
                 tooltip: {
                   backgroundColor: '#1c2127',
-                  padding: 10,
-                  cornerRadius: 8,
+                  padding: 9,
+                  cornerRadius: 7,
                   displayColors: true,
                   callbacks: { label: (c) => c.dataset.label + ': ' + (c.raw == null ? 'no data' : unitSuffix(c.raw as number)) },
                 },
-                annotation:
-                  bench == null
-                    ? { annotations: {} }
-                    : {
-                        annotations: {
+                annotation: {
+                  annotations: {
+                    ...(bench != null
+                      ? {
                           standard: {
-                            type: 'line',
+                            type: 'line' as const,
                             yMin: bench,
                             yMax: bench,
                             borderColor: '#b1441c',
-                            borderWidth: 2,
-                            borderDash: [7, 5],
+                            borderWidth: 1.5,
+                            borderDash: [6, 4],
                             label: {
                               display: true,
                               content: 'Benchmark: ' + unitSuffix(bench),
-                              position: 'start',
+                              position: 'start' as const,
                               backgroundColor: '#b1441c',
                               color: '#fff',
-                              font: { size: 10.5, weight: 600 },
-                              padding: { x: 6, y: 3 },
-                              borderRadius: 4,
+                              font: { size: 9.5, weight: 600 },
+                              padding: { x: 5, y: 2 },
+                              borderRadius: 3,
                             },
                           },
-                        },
-                      },
+                        }
+                      : {}),
+                    focus: {
+                      type: 'line' as const,
+                      xMin: focusLabel,
+                      xMax: focusLabel,
+                      borderColor: 'rgba(59,95,224,0.35)',
+                      borderWidth: 1.5,
+                      borderDash: [3, 3],
+                    },
+                  },
+                },
               },
               scales: {
                 y: {
                   beginAtZero: true,
-                  grid: { color: 'rgba(18,23,42,0.07)' },
-                  ticks: { font: { size: 11.5 } },
-                  title: yAxisLabel ? { display: true, text: yAxisLabel, font: { size: 11.5, weight: 600 }, color: '#6b7280' } : undefined,
+                  grid: { color: 'rgba(18,23,42,0.05)' },
+                  ticks: { font: { size: 10.5 } },
+                  title: yAxisLabel ? { display: true, text: yAxisLabel, font: { size: 10, weight: 600 }, color: '#8a93a3' } : undefined,
                 },
-                x: { grid: { display: false }, ticks: { font: { size: 11.5 } } },
+                x: { grid: { display: false }, ticks: { font: { size: 10.5 } } },
               },
             }}
           />
         </div>
       ) : (
-        <div className="no-data-box" style={{ marginTop: 14 }}>
-          ○ No numeric time-series figures reported for this indicator
+        <div className="no-data-box" style={{ marginTop: 10 }}>
+          No numeric time-series figures reported for this indicator
         </div>
       )}
 
-      <div className="compliance-rail-group">
-        {series.map((s) => (
-          <ComplianceRail key={s.label} yearsAsc={yearsAsc} label={series.length > 1 ? s.label : undefined} color={series.length > 1 ? s.color : undefined} statuses={s.points.map((p) => complianceStatus(p.comparisonPossible, p.standardMet))} />
-        ))}
-      </div>
+      {series.map((s) => {
+        const notComparablePts = s.points.filter((p) => p.comparisonPossible === false);
+        const constantReason = notComparablePts.length ? allSame(notComparablePts.map((p) => p.reasonNotComparable)) : null;
+        const distinctReasons = Array.from(new Set(notComparablePts.map((p) => p.reasonNotComparable).filter((r): r is string => !!r && r !== 'N/A')));
+        const seriesRegulation = allSame(s.points.map((p) => p.regulation));
+        const distinctRegulations = seriesRegulation ? [] : Array.from(new Set(s.points.map((p) => p.regulation).filter((r): r is string => !!r)));
 
-      {reasons.length > 0 && (
-        <div className="exception-callout">
-          <div className="exception-callout-head">⚠ Why comparison isn&rsquo;t possible</div>
-          {reasons.map((r, i) => (
-            <div key={i} className="exception-callout-text">
-              {r}
-            </div>
-          ))}
-        </div>
-      )}
-
-      <div className="evidence-row">
-        {series.flatMap((s) =>
-          s.points.map((p) => (
-            <ObservationEvidenceCard
-              key={s.label + p.year}
-              year={p.year}
+        return (
+          <div key={s.label} className="series-block">
+            <EvidenceRail
+              yearsAsc={yearsAsc}
+              points={s.points}
+              unitSuffix={unitSuffix}
               seriesLabel={series.length > 1 ? s.label : undefined}
-              color={s.color}
-              reportedText={p.value == null ? 'N/A' : unitSuffix(p.value)}
-              reportedSub={p.reportedMeaning}
-              benchmarkText={p.benchmark == null ? null : unitSuffix(p.benchmark)}
-              benchmarkSub={p.benchmarkMeaning}
-              comparisonPossible={p.comparisonPossible}
-              standardMet={p.standardMet}
-              reasonNotComparable={p.reasonNotComparable}
+              color={series.length > 1 ? s.color : undefined}
+              hoverYear={hoverYear}
+              focusYear={activeYear}
+              onHoverYear={setHoverYear}
             />
-          ))
-        )}
-      </div>
 
-      {regulations.length === 1 && <RegulationBadge text={regulations[0]} />}
-      {regulations.length > 1 && (
-        <div className="regulation-badge-group">
-          {series.map(
-            (s) =>
-              s.points.some((p) => p.regulation) && (
-                <RegulationBadge key={s.label} text={s.points.find((p) => p.regulation)?.regulation} label={`${s.label}: regulatory citation`} />
-              )
-          )}
-        </div>
-      )}
+            {notComparablePts.length > 0 && (
+              <div className="exception-callout">
+                <div className="exception-callout-head">
+                  {notComparablePts.length === s.points.length ? 'Not comparable in every year shown' : `Not comparable in ${notComparablePts.length} of ${s.points.length} years`}
+                </div>
+                {constantReason && constantReason !== 'N/A' ? (
+                  <div className="exception-callout-text">{constantReason}</div>
+                ) : (
+                  distinctReasons.map((r) => (
+                    <div key={r} className="exception-callout-text">
+                      <b>{notComparablePts.filter((p) => p.reasonNotComparable === r).map((p) => fyLabel(p.year)).join(', ')}: </b>
+                      {r}
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
+
+            {seriesRegulation && <RegulationBadge text={seriesRegulation} label={series.length > 1 ? `${s.label} — source regulation` : 'Source regulation'} />}
+            {distinctRegulations.length > 0 && (
+              <div className="regulation-badge-group">
+                {distinctRegulations.map((r, i) => (
+                  <RegulationBadge key={i} text={r} label={`${s.label} — regulation variant ${i + 1}`} />
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }
