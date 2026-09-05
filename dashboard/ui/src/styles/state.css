@@ -202,6 +202,14 @@
   outline: none;
   border-color: var(--accent);
 }
+/* the <select> itself picks up `color` from inheritance/computed styles fine, but its dropdown
+   popup list does not reliably inherit either color or background from the parent element on
+   every platform (confirmed on Windows/Chromium) — without this, the popup falls back to a
+   default white background with inherited (near-white, in dark mode) text. */
+.toolbar-field select option {
+  color: var(--ink);
+  background: var(--panel);
+}
 .toolbar-field--year {
   margin-left: auto;
 }

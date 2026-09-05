@@ -301,6 +301,10 @@
   background: var(--panel);
   cursor: pointer;
 }
+.sop-gallery-filters select option {
+  color: var(--ink);
+  background: var(--panel);
+}
 .sop-discom-group {
   margin-top: 18px;
 }
