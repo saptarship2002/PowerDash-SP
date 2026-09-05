@@ -18,10 +18,16 @@ export const metadata: Metadata = {
     'Understanding how electricity distribution companies in India perform with respect to the Standards of Performance specified by their respective State Electricity Regulatory Commissions (SERCs), and assessing comparative performance among states.',
 };
 
+// Sets data-theme on <html> before first paint — a plain synchronous inline script (not an
+// effect) is the only way to avoid a flash of the wrong theme on load in a statically exported
+// app with no per-request server render to inject it during.
+const THEME_INIT_SCRIPT = `(function(){try{var s=localStorage.getItem('acpet-theme');var t=s==='light'||s==='dark'?s:(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${montserrat.variable} ${playfair.variable}`}>
       <body>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <DataProvider>
           <div className="app-shell">
             <Sidebar />

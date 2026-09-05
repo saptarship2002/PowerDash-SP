@@ -13,6 +13,12 @@ body {
   font-family: var(--font-sans);
   font-size: 15px;
   line-height: 1.5;
+  transition: background-color 200ms var(--ease), color 200ms var(--ease);
+}
+@media (prefers-reduced-motion: reduce) {
+  body {
+    transition: none;
+  }
 }
 a {
   color: var(--accent);

@@ -63,3 +63,26 @@
   --shadow-lg: 0 22px 48px rgba(23, 37, 84, 0.12), 0 8px 18px rgba(23, 37, 84, 0.06);
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
+
+/* Dark theme — chrome tokens only (paper/panel/ink/muted/line/shadows). Status and categorical
+   tokens are deliberately left untouched in both themes: they're validated for contrast/CVD-safety
+   as an already-dark-on-light or light-on-dark palette and are documented as "reserved, never
+   themed" above — re-deriving them per theme would risk breaking that validation. Applied via
+   `data-theme` on <html>, set by the blocking init script in layout.tsx (no flash on load) and
+   toggled by ThemeToggle in the sidebar; persisted to localStorage under 'acpet-theme'. */
+:root[data-theme='dark'] {
+  --paper: #14161c;
+  --panel: #1c1f27;
+  --ink: #e8e9ed;
+  --muted: #9aa1b0;
+  --line: rgba(232, 233, 237, 0.12);
+
+  --charcoal: #e8e9ed;
+  --sidebar-bg: #191c22;
+  --hero-mist: #1c1f27;
+
+  --shadow-float: 0 18px 48px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 1px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 10px 28px rgba(0, 0, 0, 0.4), 0 2px 6px rgba(0, 0, 0, 0.25);
+  --shadow-lg: 0 22px 48px rgba(0, 0, 0, 0.5), 0 8px 18px rgba(0, 0, 0, 0.3);
+}
