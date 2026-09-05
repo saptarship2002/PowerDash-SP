@@ -1,0 +1,396 @@
+/* ---- Accessibility page: editorial + analytical, not a scorecard grid ----
+   Deliberately few boxed surfaces: the pipeline and the licensee matrix are the only two
+   bordered panels on the page. Everything else (stats, takeaway, regulation coverage, state
+   comparison) sits directly in the page flow — typography and rules carry the hierarchy. */
+
+/* ---- headline stats: an inline statistical strip, not KPI cards ---- */
+.stat-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  margin-bottom: 14px;
+}
+.stat-strip-item {
+  flex: 1 1 160px;
+  padding: 0 24px;
+  border-left: 1px solid var(--line);
+}
+.stat-strip-item:first-child {
+  padding-left: 0;
+  border-left: none;
+}
+.stat-strip-frac {
+  font-family: var(--font-condensed);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.1;
+}
+.stat-strip-pct {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-top: 1px;
+}
+.stat-strip-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+/* ---- key takeaway: an editorial annotation, not a callout card ---- */
+.access-takeaway {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink);
+  border-left: 2px solid var(--accent);
+  padding-left: 14px;
+  max-width: 620px;
+  margin-bottom: 4px;
+}
+
+.section-title-figure {
+  margin-left: auto;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+/* ---- Pipeline: the one strong primary visual — a single analytical surface ---- */
+.pipeline {
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 18px 4px;
+}
+.pipeline-stage {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.pipeline-stage-label {
+  flex: none;
+  width: 190px;
+  font-family: var(--font-condensed);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+}
+.pipeline-stage-track {
+  flex: 1;
+  height: 20px;
+  border-radius: var(--radius-sm);
+  background: rgba(18, 23, 42, 0.05);
+  overflow: hidden;
+}
+.pipeline-stage-fill {
+  height: 100%;
+  border-radius: var(--radius-sm);
+  transition: width 900ms var(--ease);
+}
+.pipeline-stage-fill--muted {
+  background: var(--muted);
+}
+.pipeline-stage-fill--accent {
+  background: var(--accent);
+}
+.pipeline-stage-fill--good {
+  background: var(--good);
+}
+.pipeline-gap {
+  font-size: 12px;
+  color: var(--warning-deep);
+  padding: 8px 0 8px 20px;
+  border-left: 2px dashed var(--warning);
+  margin-left: 9px;
+}
+
+/* ---- Regulation coverage: a flowing line in the page, no card ---- */
+.reg-coverage-flow {
+  font-size: 13.5px;
+  line-height: 2.1;
+  margin: 4px 0 6px;
+}
+.reg-coverage-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+}
+.reg-coverage-sep {
+  color: var(--line);
+  margin: 0 2px;
+}
+.reg-coverage-summary {
+  font-size: 12.5px;
+  color: var(--good-deep);
+  font-weight: 600;
+  margin: 2px 0 14px;
+}
+
+/* ---- State comparison: one continuous dot-matrix visual, never one card per state ---- */
+.dot-matrix {
+  border-top: 1px solid var(--line);
+  padding-top: 6px;
+}
+.dot-matrix-legend {
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.dot-matrix-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 18px;
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(18, 23, 42, 0.06);
+}
+.dot-matrix-row:last-child {
+  border-bottom: none;
+}
+.dot-matrix-row.active {
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+}
+.dot-matrix-state {
+  all: unset;
+  cursor: pointer;
+  flex: none;
+  width: 148px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  padding: 2px 4px;
+}
+.dot-matrix-state:hover,
+.dot-matrix-state:focus-visible {
+  color: var(--accent);
+}
+.dot-matrix-lines {
+  flex: 1;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.dot-matrix-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.dot-matrix-line-label {
+  flex: none;
+  width: 116px;
+  font-size: 10.5px;
+  color: var(--muted);
+}
+.dot-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.dot-cell {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex: none;
+}
+.dot-cell-on {
+  background: var(--good);
+}
+.dot-cell-off {
+  background: var(--critical);
+}
+.dot-cell-na {
+  background: rgba(18, 23, 42, 0.14);
+}
+.dot-matrix-line-value {
+  flex: none;
+  font-size: 11px;
+  color: var(--muted);
+  min-width: 30px;
+}
+.dot-matrix-na {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* ---- Status text (no icon glyphs — text + color only) ---- */
+.access-status {
+  font-size: 12.5px;
+  font-weight: 500;
+}
+.access-status-ok {
+  color: var(--muted);
+}
+.access-status-gap {
+  display: inline-flex;
+  padding: 2px 9px;
+  border-radius: var(--radius-pill);
+  font-weight: 700;
+  background: var(--critical-soft);
+  color: var(--critical-deep);
+}
+.access-status-na {
+  display: inline-flex;
+  padding: 2px 9px;
+  border-radius: var(--radius-pill);
+  background: rgba(18, 23, 42, 0.06);
+  color: var(--muted);
+}
+
+/* ---- Licensee matrix: the one large structured surface on the page ---- */
+.access-matrix-surface {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px 20px 8px;
+  box-shadow: var(--shadow-sm);
+}
+.access-matrix-toolbar {
+  padding: 8px 0;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+}
+.access-gaps-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+  margin-left: auto;
+}
+.access-matrix-count {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 4px 0 10px;
+}
+table.access-matrix {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+table.access-matrix thead th {
+  text-align: left;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 6px 8px;
+  border-bottom: 2px solid var(--line);
+  position: sticky;
+  top: 0;
+  background: var(--panel);
+}
+tr.access-matrix-group-row th {
+  text-align: left;
+  font-family: var(--font-condensed);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink);
+  padding: 10px 8px 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+table.access-matrix td {
+  padding: 5px 8px;
+  border-bottom: 1px solid rgba(18, 23, 42, 0.06);
+  vertical-align: middle;
+}
+.access-matrix-abbr {
+  font-weight: 600;
+}
+.access-matrix-full {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+@media (max-width: 900px) {
+  .stat-strip-item {
+    flex: 1 1 33%;
+    padding: 0 14px;
+  }
+}
+
+@media (max-width: 640px) {
+  .stat-strip {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .stat-strip-item {
+    border-left: none;
+    border-top: 1px solid var(--line);
+    padding: 10px 0 0;
+  }
+  .stat-strip-item:first-child {
+    border-top: none;
+  }
+  .dot-matrix-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .dot-matrix-state {
+    width: auto;
+  }
+  .pipeline-stage {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  .pipeline-stage-label {
+    width: auto;
+  }
+  .pipeline-stage-track {
+    width: 100%;
+  }
+
+  /* licensee rows become stacked mini-cards; the header row is visually redundant at this width */
+  table.access-matrix thead {
+    display: none;
+  }
+  table.access-matrix,
+  table.access-matrix tbody,
+  table.access-matrix tr,
+  table.access-matrix td {
+    display: block;
+    width: 100%;
+  }
+  table.access-matrix tr {
+    padding: 6px 0;
+  }
+  table.access-matrix td {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: none;
+    padding: 3px 0;
+  }
+  table.access-matrix td[data-th]::before {
+    content: attr(data-th);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  table.access-matrix td[data-th='Licensee']::before {
+    content: '';
+  }
+  tr.access-matrix-group-row {
+    border-bottom: 1px solid var(--line);
+    margin-top: 6px;
+  }
+}

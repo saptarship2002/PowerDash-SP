@@ -1,5 +1,5 @@
 import { CATEGORICAL, MAP_STATUS } from './colors';
-import type { Discom, DiscomsData, IndicatorEntry, StateSpecificData } from './types';
+import type { AccessibilityData, Discom, DiscomsData, IndicatorEntry, StateSpecificData } from './types';
 
 export function indicatorsInScope(discoms: DiscomsData, group: string, indicator: string): string[] {
   return discoms.canonical_order.filter((k) => {
@@ -104,4 +104,61 @@ export function comparableIndicators(discoms: Discom[], canonicalOrder: string[]
     });
     return { key, comparable: perState.every((p) => p.hasData), missingIn: perState.filter((p) => !p.hasData).map((p) => p.name) };
   });
+}
+
+/** One state's direct aggregation of its licensees' accessibility booleans — a count/percentage
+ * summary, never a weighted or composite score. `publishedPct`/`machineReadablePct` are `null`
+ * only when the state has zero tracked licensees to divide by. */
+export interface StateAccessibilityCoverage {
+  state: string;
+  regulationAvailable: boolean | null;
+  licenseeCount: number;
+  publishedCount: number;
+  machineReadableCount: number;
+  publishedPct: number | null;
+  machineReadablePct: number | null;
+}
+
+export function accessibilityByState(accessibility: AccessibilityData): StateAccessibilityCoverage[] {
+  const regByState = new Map(accessibility.states.map((s) => [s.state, s.regulation_available]));
+  return accessibility.state_order.map((state) => {
+    const group = accessibility.discoms.filter((d) => d.state === state);
+    const publishedCount = group.filter((d) => d.available_on_serc === true).length;
+    const machineReadableCount = group.filter((d) => d.machine_readable === true).length;
+    return {
+      state,
+      regulationAvailable: regByState.get(state) ?? null,
+      licenseeCount: group.length,
+      publishedCount,
+      machineReadableCount,
+      publishedPct: group.length ? Math.round((100 * publishedCount) / group.length) : null,
+      machineReadablePct: group.length ? Math.round((100 * machineReadableCount) / group.length) : null,
+    };
+  });
+}
+
+/** Sorted for the state comparison chart only (machine-readable % desc, then published % desc) —
+ * every other view (grid, small-multiples, matrix) keeps `state_order` so it stays directly
+ * comparable to the source workbook. Array.prototype.sort is stable, so states tied on both
+ * percentages keep their original state_order position as the tie-break. */
+export function sortStatesForComparison(coverage: StateAccessibilityCoverage[]): StateAccessibilityCoverage[] {
+  return [...coverage].sort((a, b) => {
+    const machineDelta = (b.machineReadablePct ?? -1) - (a.machineReadablePct ?? -1);
+    if (machineDelta !== 0) return machineDelta;
+    return (b.publishedPct ?? -1) - (a.publishedPct ?? -1);
+  });
+}
+
+/** Direct counts of where accessibility breaks down across every tracked licensee — never a
+ * derived score. */
+export interface AccessibilityGaps {
+  notPublished: number;
+  publishedNotMachineReadable: number;
+}
+
+export function accessibilityGaps(accessibility: AccessibilityData): AccessibilityGaps {
+  return {
+    notPublished: accessibility.discoms.filter((d) => d.available_on_serc !== true).length,
+    publishedNotMachineReadable: accessibility.discoms.filter((d) => d.available_on_serc === true && d.machine_readable !== true).length,
+  };
 }
