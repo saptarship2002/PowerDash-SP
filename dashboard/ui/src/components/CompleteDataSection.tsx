@@ -16,13 +16,16 @@ interface Props {
   stateSpecific: StateSpecificData | null;
   stateName: string;
   discomFilter: string;
+  /** Narrows the reliability table to the page-level Indicator Type/Indicator filter's scope —
+   * so picking SAIDI up top shows only SAIDI's row down here too, not every tracked indicator. */
+  indicatorKeys: string[];
 }
 
 /** Every full raw table for this state, in one place at the bottom of the page — the only spot on
  * the page where conventional data tables appear. The chart gallery above already communicates
  * meaning/benchmark/comparability/compliance visually per indicator; this section exists purely
  * so the complete original source data stays reachable, unabridged. */
-export default function CompleteDataSection({ discomsData, ds, cols, activeYear, stateSpecific, stateName, discomFilter }: Props) {
+export default function CompleteDataSection({ discomsData, ds, cols, activeYear, stateSpecific, stateName, discomFilter, indicatorKeys }: Props) {
   const [openReliability, setOpenReliability] = useState<Set<string>>(new Set());
   const [openSop, setOpenSop] = useState<Set<string>>(new Set());
 
@@ -67,7 +70,7 @@ export default function CompleteDataSection({ discomsData, ds, cols, activeYear,
                 onOpenChange={(isOpen) => toggle(setOpenReliability, d.sheet, isOpen)}
               >
                 <div style={{ overflowX: 'auto' }}>
-                  <DiscomIndicatorTable discomsData={discomsData} discom={d} year={activeYear} />
+                  <DiscomIndicatorTable discomsData={discomsData} discom={d} year={activeYear} indicatorKeys={indicatorKeys} />
                 </div>
               </Collapsible>
             ))}

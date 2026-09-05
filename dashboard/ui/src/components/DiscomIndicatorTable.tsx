@@ -7,6 +7,9 @@ interface Props {
   discomsData: DiscomsData;
   discom: Discom;
   year: string;
+  /** Narrows which canonical indicators the table shows — e.g. just SAIDI when the page-level
+   * Indicator filter is set to SAIDI. Defaults to every tracked indicator. */
+  indicatorKeys?: string[];
 }
 
 /** Full raw reported detail for one DISCOM/year: every tracked indicator's reported value and
@@ -14,9 +17,9 @@ interface Props {
  * are comparable, and whether the standard was met — straight from the extracted data, with no
  * derived score/grade layered on top. Shared by the per-state page and the Scorecards Report's
  * per-state listing so both show the same thing. */
-export default function DiscomIndicatorTable({ discomsData, discom, year }: Props) {
+export default function DiscomIndicatorTable({ discomsData, discom, year, indicatorKeys }: Props) {
   const y = discom.years[year];
-  const keys = discomsData.canonical_order;
+  const keys = indicatorKeys ?? discomsData.canonical_order;
 
   return (
     <table className="detail-table">

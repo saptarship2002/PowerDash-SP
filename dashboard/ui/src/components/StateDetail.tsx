@@ -91,6 +91,10 @@ export default function StateDetail({ name }: { name: string }) {
   const filterKeys = selectedIndicator === 'all' ? groupKeys : groupKeys.filter((k) => k === selectedIndicator);
 
   const chartableKeys = filterKeys.filter((key) => ds.some((d) => YEARS_ASC.some((y) => d.years[y]?.indicators[key]?.value != null)));
+  // Standards of Performance is a separate, non-canonicalized dataset — once the reliability
+  // Indicator Type/Indicator filter narrows to something specific, showing all of SoP alongside
+  // it would defeat "show just this indicator and nothing else".
+  const showSop = selectedGroup === 'all' && selectedIndicator === 'all';
 
   // ---- Overview counts — plain counts of source records, never a derived score ----
   const allSopDiscoms = stateSpecific?.discoms.filter((d) => d.state === name) ?? [];
@@ -254,9 +258,22 @@ export default function StateDetail({ name }: { name: string }) {
         </>
       )}
 
-      {stateSpecific && <SopGallery stateSpecific={stateSpecific} stateName={name} activeYear={activeYear} discomFilter={selectedDiscom} yearsAsc={YEARS_ASC} />}
+      {/* SoP indicators aren't part of the reliability Indicator Type/Indicator scoping (they're
+          a separate, non-canonicalized dataset) — so narrowing to one reliability indicator (e.g.
+          SAIDI) hides Standards of Performance entirely rather than showing an unrelated dataset
+          alongside a single-indicator view. */}
+      {showSop && stateSpecific && <SopGallery stateSpecific={stateSpecific} stateName={name} activeYear={activeYear} discomFilter={selectedDiscom} yearsAsc={YEARS_ASC} />}
 
-      <CompleteDataSection discomsData={discoms as DiscomsData} ds={ds} cols={cols} activeYear={activeYear} stateSpecific={stateSpecific} stateName={name} discomFilter={selectedDiscom} />
+      <CompleteDataSection
+        discomsData={discoms as DiscomsData}
+        ds={ds}
+        cols={cols}
+        activeYear={activeYear}
+        stateSpecific={showSop ? stateSpecific : null}
+        stateName={name}
+        discomFilter={selectedDiscom}
+        indicatorKeys={filterKeys}
+      />
     </div>
   );
 }
