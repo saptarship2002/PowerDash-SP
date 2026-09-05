@@ -1,6 +1,5 @@
 'use client';
 
-import { useLayoutEffect, useRef, useState } from 'react';
 import Collapsible from './Collapsible';
 import { CATEGORICAL } from '@/lib/colors';
 import { fmt, fyLabel } from '@/lib/format';
@@ -9,6 +8,10 @@ import type { SopIndicator, StateSpecificData } from '@/lib/types';
 interface Props {
   stateSpecific: StateSpecificData;
   stateName: string;
+  /** Both driven by the one page-level filter bar in StateDetail — this section never owns its
+   * own year/DISCOM selection, so every part of the page always agrees on what's showing. */
+  activeYear: string;
+  discomFilter: string;
 }
 
 function MetPill({ met }: { met: boolean | null }) {
@@ -63,61 +66,15 @@ function IndicatorTable({ indicators, showReported }: { indicators: SopIndicator
   );
 }
 
-function YearPicker({ years, active, onChange }: { years: string[]; active: string; onChange: (y: string) => void }) {
-  // earliest year first, left to right (ascending)
-  const ordered = [...years].sort((a, b) => (a < b ? -1 : 1));
-  const trackRef = useRef<HTMLDivElement>(null);
-  const btnRefs = useRef<Record<string, HTMLButtonElement | null>>({});
-  const [slider, setSlider] = useState<{ left: number; width: number } | null>(null);
-
-  // measured from the actual active button rather than assumed from index * fixed-width, so the
-  // swipe lands exactly under the label regardless of how wide "2025-26" renders vs "2021-22"
-  useLayoutEffect(() => {
-    const track = trackRef.current;
-    const btn = btnRefs.current[active];
-    if (!track || !btn) return;
-    const trackRect = track.getBoundingClientRect();
-    const btnRect = btn.getBoundingClientRect();
-    setSlider({ left: btnRect.left - trackRect.left, width: btnRect.width });
-  }, [active, years.join(',')]);
-
-  return (
-    <div className="year-picker">
-      <span className="yp-label">Financial Year</span>
-      <div className="yp-years" ref={trackRef}>
-        {slider && <span className="yp-slider" style={{ left: slider.left, width: slider.width }} />}
-        {ordered.map((y) => (
-          <button
-            key={y}
-            type="button"
-            ref={(el) => {
-              btnRefs.current[y] = el;
-            }}
-            className={y === active ? 'active' : ''}
-            onClick={() => onChange(y)}
-            aria-pressed={y === active}
-          >
-            {fyLabel(y)}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-export default function SopSection({ stateSpecific, stateName }: Props) {
-  const discomsForState = stateSpecific.discoms.filter((d) => d.state === stateName);
+export default function SopSection({ stateSpecific, stateName, activeYear, discomFilter }: Props) {
+  const allDiscomsForState = stateSpecific.discoms.filter((d) => d.state === stateName);
+  const discomsForState = discomFilter === 'all' ? allDiscomsForState : allDiscomsForState.filter((d) => d.short_name === discomFilter);
   const framework = stateSpecific.frameworks.find((f) => f.state === stateName);
 
-  // only years for which at least one of this state's licensees actually has a SoP block —
-  // the picker should never offer a year with nothing to show for this particular state.
-  const availableYears = stateSpecific.years.filter((y) => discomsForState.some((d) => d.years[y]));
-  const defaultYear = availableYears.includes('2023-24') ? '2023-24' : availableYears[0];
-  const [activeYear, setActiveYear] = useState(defaultYear);
-
   // same fixed-order categorical hue each DISCOM already carries on its scorecard/chart line in
-  // the reliability report above, so the SoP accordion's chip reads as the same DISCOM.
-  const cols = CATEGORICAL.slice(0, discomsForState.length);
+  // the reliability report above, so the SoP accordion's chip reads as the same DISCOM — indexed
+  // against the full (unfiltered) list so a color never shifts when the DISCOM filter narrows it.
+  const cols = allDiscomsForState.map((_, i) => CATEGORICAL[i]);
 
   if (!discomsForState.length && !framework) return null;
 
@@ -143,17 +100,12 @@ export default function SopSection({ stateSpecific, stateName }: Props) {
             </div>
           </div>
 
-          {availableYears.length > 1 && (
-            <div className="year-picker-sticky">
-              <YearPicker years={availableYears} active={activeYear} onChange={setActiveYear} />
-            </div>
-          )}
-
           <div style={{ marginTop: 6, display: 'flex', flexDirection: 'column', gap: 10 }}>
             {discomsForState.map((d, i) => {
               const y = d.years[activeYear];
+              const color = cols[allDiscomsForState.indexOf(d)];
               return (
-                <Collapsible key={d.sheet} label={d.short_name} meta={d.full_name} color={cols[i]} animationDelay={i * 60}>
+                <Collapsible key={d.sheet} label={d.short_name} meta={d.full_name} color={color} animationDelay={i * 60}>
                   <div style={{ overflowX: 'auto' }}>
                     {y ? (
                       <IndicatorTable indicators={y.indicators} showReported />

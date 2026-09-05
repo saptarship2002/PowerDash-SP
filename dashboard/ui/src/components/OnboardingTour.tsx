@@ -2,32 +2,25 @@
 
 import { useEffect, useState } from 'react';
 
-const STORAGE_KEY = 'acpet-tour-completed';
-
 const SLIDES = [
   {
-    title: 'Welcome to the DISCOM Performance Dashboard',
+    title: 'Welcome to the India DISCOM Performance Dashboard',
     body: 'A quick look at how to find your way around before you dive in — this only takes a few seconds.',
   },
   {
     title: 'Explore the map',
-    body: 'Scroll down on the home page to bring the map of India into focus. Every clay-colored state is one ACPET tracks.',
+    body: 'Scroll down on the home page to bring the map of India into focus.',
     image: '/tour/map.png',
   },
   {
-    title: 'Open a state’s report',
-    body: 'Click any tracked state on the map to jump straight to its full performance report.',
+    title: "Open a State's Performance Report",
+    body: 'Click on any state to explore its performance with respect to Quality and Reliability of Supply and the Quality of Service.',
     image: '/tour/report.png',
   },
   {
-    title: 'Compare states side by side',
-    body: 'Turn on Compare mode from the map controls, click states to add them, then review them together.',
+    title: 'Compare performance side by side',
+    body: 'Turn on Compare mode from the Analysis Pane, click states to add them, then review their comparable indicators.',
     image: '/tour/compare.png',
-  },
-  {
-    title: 'Use the sidebar to navigate',
-    body: 'The menu icon in the top-left opens Home, Accessibility, and Methodology at any time.',
-    image: '/tour/sidebar.png',
   },
 ];
 
@@ -42,22 +35,11 @@ export default function OnboardingTour() {
   }
 
   useEffect(() => {
-    try {
-      if (!window.localStorage.getItem(STORAGE_KEY)) {
-        setVisible(true);
-      }
-    } catch {
-      // localStorage unavailable — skip the tour rather than risk a crash
-    }
+    setVisible(true);
   }, []);
 
   function finish() {
     setVisible(false);
-    try {
-      window.localStorage.setItem(STORAGE_KEY, '1');
-    } catch {
-      // ignore — worst case the tour reappears next visit
-    }
   }
 
   if (!visible) return null;

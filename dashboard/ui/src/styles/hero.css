@@ -7,7 +7,11 @@
    map independent of anything else. ---------- */
 .hero-stage {
   position: relative;
-  height: 230vh;
+  /* enough scroll track for the 0-97% animated timeline (see HeroSection's applyStyles) to read
+     as a smooth scrub, without much left over once it's done settling — a taller track here was
+     found to leave a stretch of scroll where the view had already fully arrived and nothing was
+     left to animate, which read as dead/blank scroll space before the section released. */
+  height: 190vh;
   margin: -72px -44px 0;
 }
 /* no padding here: every child is position:absolute (there's no in-flow content at all), and a

@@ -83,7 +83,7 @@ export default function HeroMap({ discoms, stateSpecific, geojson, compareColorO
 
   const hoveredPath = hovered ? projection?.byName[hovered] : null;
   const hoveredStatus = hovered ? stateMapStatus(discoms, hovered, stateSpecific) : null;
-  const hoveredTip = hoveredStatus === 'tracked' ? 'Explore Performance →' : hoveredStatus === 'no-data' ? 'View Details →' : 'Coming soon';
+  const hoveredTip = hoveredStatus === 'tracked' ? 'Explore Performance →' : hoveredStatus === 'no-data' ? 'View Details →' : 'Coming soon →';
 
   function handleClick(name: string) {
     // the preview/confirm gate exists only to stop a tap from jumping straight to a state's
@@ -121,10 +121,6 @@ export default function HeroMap({ discoms, stateSpecific, geojson, compareColorO
           <g>
             {projection.paths.map((p) => {
               const status = stateMapStatus(discoms, p.name, stateSpecific);
-              // 'no-data' is still worth clicking into — a SoP framework listing or an all-null
-              // DISCOM sheet is real content, just not reported performance figures — only
-              // 'idle' (outside ACPET's scope in both datasets) stays a dead end.
-              const clickable = status !== 'idle';
               const selectColor = compareColorOf(p.name);
               const isHovered = hovered === p.name;
               const isDimmed = hovered != null && !isHovered;
@@ -146,10 +142,10 @@ export default function HeroMap({ discoms, stateSpecific, geojson, compareColorO
                   strokeWidth={strokeWidth}
                   strokeOpacity={strokeOpacity}
                   strokeLinejoin="round"
-                  className={`hero-state-path${clickable ? ' clickable' : ''}${isHovered ? ' hovered' : ''}`}
+                  className={`hero-state-path clickable${isHovered ? ' hovered' : ''}`}
                   onMouseEnter={canHover ? () => setHovered(p.name) : undefined}
                   onMouseLeave={canHover ? () => setHovered((h) => (h === p.name ? null : h)) : undefined}
-                  onClick={() => clickable && handleClick(p.name)}
+                  onClick={() => handleClick(p.name)}
                 />
               );
             })}

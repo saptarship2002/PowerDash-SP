@@ -51,12 +51,60 @@
   font-weight: 500;
 }
 
+.coming-soon-panel {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 14px;
+  padding: 90px 32px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  animation: fadeInUp 520ms var(--ease) both;
+}
+.coming-soon-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--accent) 10%, transparent) 0%, transparent 60%);
+}
+.coming-soon-icon {
+  position: relative;
+  color: var(--accent);
+  opacity: 0.85;
+}
+.coming-soon-panel h1 {
+  position: relative;
+  font-family: var(--font-display);
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin: 0;
+}
+.coming-soon-panel p {
+  position: relative;
+  font-family: var(--font-condensed);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0;
+}
+
 .state-hero {
   position: relative;
   overflow: hidden;
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   gap: 24px;
   padding: 34px 36px;
@@ -73,6 +121,66 @@
   inset: 0;
   pointer-events: none;
   background: linear-gradient(120deg, color-mix(in srgb, var(--hero-color, var(--accent)) 12%, transparent) 0%, transparent 55%);
+}
+.state-hero-shape {
+  position: relative;
+  flex: none;
+  opacity: 0.92;
+}
+
+/* ---------- one page-level filter bar (DISCOM / Indicator Type / Indicator) drives every
+   section below it — scorecards, trend charts, per-DISCOM tables, and the SoP section — rather
+   than each owning its own picker. The Financial Year pill is the one exception: it stays
+   sticky at the top of the DISCOM Scorecards panel (year-picker-sticky, below), same spot it
+   held before this filter bar existed — only its state is shared, not its position. ---------- */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 22px;
+  padding: 18px 24px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  animation: fadeInUp 520ms var(--ease) both;
+}
+.filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.filter-field label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.filter-field select {
+  appearance: none;
+  -webkit-appearance: none;
+  font-family: var(--font-condensed);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' viewBox='0 0 11 7' fill='none'%3E%3Cpath d='M1 1L5.5 5.5L10 1' stroke='%236b7280' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 13px center;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 9px 34px 9px 14px;
+  min-width: 168px;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(18, 23, 42, 0.03);
+  transition: border-color 200ms var(--ease), box-shadow 200ms var(--ease), background-color 200ms var(--ease);
+}
+.filter-field select:hover {
+  border-color: var(--accent-light);
+  background-color: var(--panel);
+}
+.filter-field select:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
 }
 .state-hero h1 {
   font-size: 44px;
@@ -127,13 +235,6 @@
   font-size: 13px;
   color: var(--ink);
   white-space: nowrap;
-}
-
-.scorecard-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 18px;
-  margin-top: 18px;
 }
 .scorecard {
   all: unset;

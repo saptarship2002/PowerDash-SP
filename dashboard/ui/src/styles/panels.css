@@ -62,6 +62,12 @@
   font-size: 13px;
   color: var(--muted);
 }
+/* used where the hint stands in for a section heading rather than sitting under one */
+.panel-hint--lead {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--ink);
+}
 .panel-icon-row {
   display: flex;
   align-items: center;

@@ -73,8 +73,11 @@ const MAP_SETTLE_END = 0.6;
  *   20–60% the "camera" moves in — headline recedes (fades/lifts/shrinks left), the map
  *          translates from its offset position to dead center and reaches full scale, the
  *          transmission network becomes more visible
- *   60–85% control chrome (legend, compare panel) cascades in around the now-centered map
- *   85–100% settle room — everything is already in its final state
+ *   60–97% control chrome (legend, compare panel) cascades in around the now-centered map
+ *   97–100% settle room — everything is already in its final state
+ * Kept short (previously 60–85%, with 85–100% dead) — the sticky pin held the fully-arrived view
+ * static for a stretch of scroll with nothing left to animate, which read as a chunk of blank
+ * scrollable space below the map before the section released.
  * Every phase reads off the same smoothed scroll progress via remap()+easeInOutCubic, so nothing
  * is a separate, disconnected animation — it's one continuous camera move through five stages. */
 export default function HeroSection({
@@ -170,8 +173,8 @@ export default function HeroSection({
       networkLayer!.style.opacity = String(lerp(0.35, 1, networkT));
 
       // phase 3: chrome (stats, compass, legend, both panels) cascades in around the now-
-      // centered map, 60–85%.
-      const chromeT = easeInOutCubic(remap(p, MAP_SETTLE_END, 0.85));
+      // centered map, 60–97%.
+      const chromeT = easeInOutCubic(remap(p, MAP_SETTLE_END, 0.97));
       chromeEls.forEach((el) => {
         el.style.opacity = String(chromeT);
         el.style.transform = `translateY(${lerp(14, 0, chromeT)}px)`;
@@ -257,7 +260,7 @@ export default function HeroSection({
         <div className="hero-ambient-glow" aria-hidden="true" />
 
         <div className="hero-editorial" ref={editorialRef}>
-          <h1>DISCOM Performance Dashboard</h1>
+          <h1>India DISCOM Performance Dashboard</h1>
           <div className="hero-scope">
             <span className="scope-pill scope-pill--a">Reliability of Supply</span>
             <span className="scope-pill scope-pill--b">Quality of Supply</span>

@@ -28,7 +28,7 @@ export default function CompareView({ states, year }: Props) {
       <div className="state-page">
         <p className="detail-placeholder">Pick at least 2 states to compare from the map explorer.</p>
         <button type="button" className="back-btn" onClick={() => router.back()}>
-          Back to Overview
+          Back to Home
         </button>
       </div>
     );
@@ -45,10 +45,10 @@ export default function CompareView({ states, year }: Props) {
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
             <path d="M19 12H5M12 19l-7-7 7-7" />
           </svg>
-          Back to Overview
+          Back to Home
         </button>
         <div className="breadcrumb">
-          Dashboard <span>/</span> <b>Compare</b>
+          India DISCOM Performance Dashboard <span>/</span> <b>Compare</b>
         </div>
       </div>
 

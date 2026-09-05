@@ -7,42 +7,65 @@ import { Line } from 'react-chartjs-2';
 import { useData } from '@/lib/DataContext';
 import { CATEGORICAL, hexToRgba, stateHueMap } from '@/lib/colors';
 import { representativeBenchmark, stateHasSopData } from '@/lib/computations';
-import { fmt, fyLabel, UNIT_LABEL } from '@/lib/format';
-import AnimatedNumber from './AnimatedNumber';
+import { fmt, fyLabel, UNIT_LABEL, UNIT_LABEL_FULL } from '@/lib/format';
 import Collapsible from './Collapsible';
 import DiscomIndicatorTable from './DiscomIndicatorTable';
-import ScoreCard from './ScoreCard';
 import SopSection from './SopSection';
+import StateShape from './StateShape';
+import YearPicker from './YearPicker';
 import type { Discom } from '@/lib/types';
 
 export default function StateDetail({ name }: { name: string }) {
-  const { discoms, stateSpecific, loading, error } = useData();
+  const { discoms, geojson, stateSpecific, loading, error } = useData();
   const router = useRouter();
   // which DISCOM detail rows are open — lifted out of Collapsible so a scorecard click can force
   // its own row open (and let Collapsible's own scroll-into-view take over) without disturbing
   // rows a user already opened/closed by hand. Multiple can stay open at once.
   const [openSheets, setOpenSheets] = useState<Set<string>>(new Set());
 
+  // One filter bar drives the whole page — DISCOM Scorecards, the trend-chart grid, the
+  // per-DISCOM indicator tables below them, and the Standards-of-Performance section — rather
+  // than each section owning its own picker. `null` year means "no explicit pick yet"; the
+  // actual default is resolved once `discoms` has loaded (see `activeYear` below).
+  const [selectedDiscom, setSelectedDiscom] = useState('all');
+  const [selectedYear, setSelectedYear] = useState<string | null>(null);
+  const [selectedGroup, setSelectedGroup] = useState('all');
+  const [selectedIndicator, setSelectedIndicator] = useState('all');
+
   if (loading) return <p className="detail-placeholder">Loading…</p>;
   if (error || !discoms) return <p className="detail-placeholder">Could not load dashboard data.</p>;
 
-  // no year picker here: the trend charts below already show the full time series at once, and
-  // per-DISCOM detail (DiscomIndicatorTable) needs one representative snapshot year rather than
-  // a user-selectable one — same default year used across the rest of the dashboard.
-  const activeYear = discoms.years.includes('2023-24') ? '2023-24' : discoms.years[0];
+  const activeYear = selectedYear ?? (discoms.years.includes('2023-24') ? '2023-24' : discoms.years[0]);
   const YEARS_ASC = [...discoms.years].reverse();
-  const ds = discoms.discoms.filter((d) => d.state === name);
+  const allDs = discoms.discoms.filter((d) => d.state === name);
+  const ds = selectedDiscom === 'all' ? allDs : allDs.filter((d) => d.short_name === selectedDiscom);
 
   // a state can have zero reliability DISCOMs and still have real Standards-of-Performance
   // content to show (its own per-DISCOM sheets, or a regulatory-framework listing) — only bail
   // out entirely when neither dataset has anything for this state.
-  if (!ds.length && !stateHasSopData(stateSpecific, name)) {
+  if (!allDs.length && !stateHasSopData(stateSpecific, name)) {
     return (
       <div className="state-page">
-        <p className="detail-placeholder">No data found for &ldquo;{name}&rdquo;.</p>
-        <button type="button" className="back-btn" onClick={() => router.back()}>
-          Back to Overview
-        </button>
+        <div className="state-topbar">
+          <button type="button" className="back-btn" onClick={() => router.back()}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+              <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            Back to Home
+          </button>
+          <div className="breadcrumb">
+            India DISCOM Performance Dashboard <span>/</span> <b>{name}</b>
+          </div>
+        </div>
+
+        <div className="coming-soon-panel">
+          <svg className="coming-soon-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 7v5l3 3" />
+          </svg>
+          <h1>Information Coming Soon</h1>
+          <p>Data Collation in Progress</p>
+        </div>
       </div>
     );
   }
@@ -50,16 +73,19 @@ export default function StateDetail({ name }: { name: string }) {
   const color = stateHueMap(discoms.state_order)[name] || '#8B1A1A';
   // DISCOMs within a state are nominal identities with no inherent order — each gets its own
   // fixed-order categorical hue (never a lightness ramp of one hue, which is the right encoding
-  // for an *ordered* series, not distinct companies). Every state page reuses the same 8 slots
-  // from the top since only one state's DISCOMs are ever shown together at once.
-  const cols = CATEGORICAL.slice(0, ds.length);
+  // for an *ordered* series, not distinct companies). Indexed against the full (unfiltered) list
+  // so a DISCOM's color never shifts depending on what the DISCOM filter narrows it to.
+  const allCols = allDs.map((_, i) => CATEGORICAL[i]);
+  const cols = ds.map((d) => allCols[allDs.indexOf(d)]);
   const keys = discoms.canonical_order;
 
-  const withYear = ds.map((d) => d.years[activeYear]).filter(Boolean) as NonNullable<Discom['years'][string]>[];
-  const reportingCount = withYear.filter((y) => y.scoring.data_reported_pct > 0).length;
-  const avgReported = withYear.length ? withYear.reduce((s, y) => s + y.scoring.indicators_reported, 0) / withYear.length : null;
+  // "Indicator Type" (from Common Indicators.xlsx's own grouping) narrows which indicators
+  // "Indicator" can offer, in source order rather than alphabetical.
+  const groups = Array.from(new Set(keys.map((k) => discoms.canonical_indicators[k].group)));
+  const groupKeys = selectedGroup === 'all' ? keys : keys.filter((k) => discoms.canonical_indicators[k].group === selectedGroup);
+  const filterKeys = selectedIndicator === 'all' ? groupKeys : groupKeys.filter((k) => k === selectedIndicator);
 
-  const chartableKeys = keys.filter((key) => ds.some((d) => YEARS_ASC.some((y) => d.years[y]?.indicators[key]?.value != null)));
+  const chartableKeys = filterKeys.filter((key) => ds.some((d) => YEARS_ASC.some((y) => d.years[y]?.indicators[key]?.value != null)));
 
   return (
     <div className="state-page">
@@ -68,53 +94,78 @@ export default function StateDetail({ name }: { name: string }) {
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
             <path d="M19 12H5M12 19l-7-7 7-7" />
           </svg>
-          Back to Overview
+          Back to Home
         </button>
         <div className="breadcrumb">
-          Dashboard <span>/</span> <b>{name}</b>
+          India DISCOM Performance Dashboard <span>/</span> <b>{name}</b>
         </div>
       </div>
 
       <header className="state-hero" style={{ ['--hero-color' as string]: color, borderLeftColor: color }}>
         <div>
           <h1>{name}</h1>
-          <div className="sub">
-            {fyLabel(activeYear)} · {reportingCount} of {ds.length} DISCOMs reporting
-          </div>
+          <div className="sub">{allDs.length ? allDs.map((d) => `${d.full_name} (${d.short_name})`).join(' · ') : 'No DISCOMs tracked'}</div>
         </div>
-        <div className="state-hero-stats">
-          <div className="stat">
-            <b>
-              <AnimatedNumber target={ds.length} digits={0} />
-            </b>
-            <span>DISCOMs</span>
+        {geojson && (
+          <div className="state-hero-shape">
+            <StateShape geojson={geojson} name={name} size={120} color={color} />
           </div>
-          <div className="stat">
-            <b>{avgReported == null ? '—' : <AnimatedNumber target={avgReported} digits={1} suffix={` of ${keys.length}`} />}</b>
-            <span>Avg. Indicators Reported</span>
-          </div>
-        </div>
+        )}
       </header>
+
+      {allDs.length > 0 && (
+        <div className="filter-bar">
+          <div className="filter-field">
+            <label>DISCOM</label>
+            <select value={selectedDiscom} onChange={(e) => setSelectedDiscom(e.target.value)}>
+              <option value="all">All DISCOMs</option>
+              {allDs.map((d) => (
+                <option key={d.sheet} value={d.short_name}>
+                  {d.short_name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="filter-field">
+            <label>Indicator Type</label>
+            <select
+              value={selectedGroup}
+              onChange={(e) => {
+                setSelectedGroup(e.target.value);
+                setSelectedIndicator('all');
+              }}
+            >
+              <option value="all">All Types</option>
+              {groups.map((g) => (
+                <option key={g} value={g}>
+                  {g}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="filter-field">
+            <label>Indicator</label>
+            <select value={selectedIndicator} onChange={(e) => setSelectedIndicator(e.target.value)}>
+              <option value="all">All Indicators</option>
+              {groupKeys.map((k) => (
+                <option key={k} value={k}>
+                  {k}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      )}
 
       <section className="panel" id="sec-detail">
         <div className="panel-head">
           <div>
-            <h2>DISCOM Scorecards</h2>
-            <div className="panel-hint">Full scorecards, multi-year trend charts, and per-DISCOM indicator detail for {fyLabel(activeYear)}</div>
+            <div className="panel-hint panel-hint--lead">
+              Explore year-wise performance of {name} DISCOMs across indicators of Quality and Reliability of Supply and Quality of Service
+            </div>
           </div>
-        </div>
-
-        <div className="scorecard-grid">
-          {ds.map((d, i) => (
-            <ScoreCard
-              key={d.sheet}
-              shortName={d.short_name}
-              fullName={d.full_name}
-              color={cols[i]}
-              animationDelay={i * 70}
-              onClick={() => setOpenSheets((prev) => new Set(prev).add(d.sheet))}
-            />
-          ))}
         </div>
 
         <div className="chart-grid">
@@ -126,6 +177,12 @@ export default function StateDetail({ name }: { name: string }) {
             ))
           )}
         </div>
+
+        {discoms.years.length > 1 && (
+          <div className="year-picker-sticky">
+            <YearPicker years={discoms.years} active={activeYear} onChange={setSelectedYear} />
+          </div>
+        )}
 
         <div style={{ marginTop: 22, display: 'flex', flexDirection: 'column', gap: 10 }}>
           {ds.map((d, i) => (
@@ -153,7 +210,7 @@ export default function StateDetail({ name }: { name: string }) {
         </div>
       </section>
 
-      {stateSpecific && <SopSection stateSpecific={stateSpecific} stateName={name} />}
+      {stateSpecific && <SopSection stateSpecific={stateSpecific} stateName={name} activeYear={activeYear} discomFilter={selectedDiscom} />}
     </div>
   );
 }
@@ -209,7 +266,7 @@ function IndicatorTrendChart({
     <div className="chart-card animate-in" style={{ animationDelay: `${animationDelay}ms` }}>
       <h4>{indicatorKey}</h4>
       <div className="chart-sub">
-        {meta.group} · {unit}
+        {meta.group}
         {hasStandard ? ' · vs SERC standard' : ''}
       </div>
       <div style={{ height: 320 }}>
@@ -256,7 +313,12 @@ function IndicatorTrendChart({
                     },
             },
             scales: {
-              y: { beginAtZero: true, grid: { color: 'rgba(18,23,42,0.07)' }, ticks: { font: { size: 11.5 } } },
+              y: {
+                beginAtZero: true,
+                grid: { color: 'rgba(18,23,42,0.07)' },
+                ticks: { font: { size: 11.5 } },
+                title: { display: true, text: UNIT_LABEL_FULL[meta.unit], font: { size: 11.5, weight: 600 }, color: '#6b7280' },
+              },
               x: { grid: { display: false }, ticks: { font: { size: 11.5 } } },
             },
           }}
